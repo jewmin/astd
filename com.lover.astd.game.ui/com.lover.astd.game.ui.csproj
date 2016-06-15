@@ -1,0 +1,273 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4E4C5A06-6B6D-49F4-BF5F-FA6306EB6F13}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>com.lover.astd.game.ui</RootNamespace>
+    <AssemblyName>astd</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>laptop.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AxSHDocVw, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\AxSHDocVw.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>bin\Debug\Microsoft.mshtml.dll</HintPath>
+    </Reference>
+    <Reference Include="SHDocVw, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>bin\Debug\SHDocVw.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="weaponcalc">
+      <HintPath>..\aso\bin\Debug\weaponcalc.exe</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="NewAttackTargetSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewAttackTargetSelector.Designer.cs">
+      <DependentUpon>NewAttackTargetSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewLoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewLoginForm.Designer.cs">
+      <DependentUpon>NewLoginForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewMainForm.Designer.cs">
+      <DependentUpon>NewMainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewReportViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewReportViewer.Designer.cs">
+      <DependentUpon>NewReportViewer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewTempServerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewTempServerForm.Designer.cs">
+      <DependentUpon>NewTempServerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewTrainHeroCalc.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewTrainHeroCalc.Designer.cs">
+      <DependentUpon>NewTrainHeroCalc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewTranslator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewTranslator.Designer.cs">
+      <DependentUpon>NewTranslator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="server\impl\activities\ArchServer.cs" />
+    <Compile Include="server\impl\activities\BGServer.cs" />
+    <Compile Include="server\impl\activities\BoatServer.cs" />
+    <Compile Include="server\impl\activities\CakeServer.cs" />
+    <Compile Include="server\impl\activities\CrossPlatformCompeteServer.cs" />
+    <Compile Include="server\impl\activities\DailyTreasureGameServer.cs" />
+    <Compile Include="server\impl\activities\FestivalEventServer.cs" />
+    <Compile Include="server\impl\activities\GemDumpServer.cs" />
+    <Compile Include="server\impl\activities\GemFlopServer.cs" />
+    <Compile Include="server\impl\activities\GiftEventServer.cs" />
+    <Compile Include="server\impl\activities\JailEventServer.cs" />
+    <Compile Include="server\impl\activities\KfRankServer.cs" />
+    <Compile Include="server\impl\activities\NewDayTreasureGameServer.cs" />
+    <Compile Include="server\impl\activities\PlayerCompeteServer.cs" />
+    <Compile Include="server\impl\activities\QingmingServer.cs" />
+    <Compile Include="server\impl\activities\ResCampaignServer.cs" />
+    <Compile Include="server\impl\activities\SilverFlopServer.cs" />
+    <Compile Include="server\impl\activities\SuperFanpaiServer.cs" />
+    <Compile Include="server\impl\activities\TowerServer.cs" />
+    <Compile Include="server\impl\activities\TreasureGameServer.cs" />
+    <Compile Include="server\impl\activities\TroopFeedbackServer.cs" />
+    <Compile Include="server\impl\activities\TroopTurntableServer.cs" />
+    <Compile Include="server\impl\activities\WorldArmyServer.cs" />
+    <Compile Include="server\impl\activities\YueBingServer.cs" />
+    <Compile Include="server\impl\BaiShenServer.cs" />
+    <Compile Include="server\impl\battle\AttackServer.cs" />
+    <Compile Include="server\impl\battle\BattleServer.cs" />
+    <Compile Include="server\impl\battle\KfBanquetServer.cs" />
+    <Compile Include="server\impl\BuildingServer.cs" />
+    <Compile Include="server\impl\CommonServer.cs" />
+    <Compile Include="server\impl\economy\BaoshiStoneServer.cs" />
+    <Compile Include="server\impl\economy\DinnerServer.cs" />
+    <Compile Include="server\impl\economy\FeteServer.cs" />
+    <Compile Include="server\impl\economy\ImposeServer.cs" />
+    <Compile Include="server\impl\economy\MarketServer.cs" />
+    <Compile Include="server\impl\economy\MovableServer.cs" />
+    <Compile Include="server\impl\economy\StockServer.cs" />
+    <Compile Include="server\impl\economy\StoneServer.cs" />
+    <Compile Include="server\impl\equipment\DailyWeaponServer.cs" />
+    <Compile Include="server\impl\equipment\MerchantServer.cs" />
+    <Compile Include="server\impl\equipment\MhServer.cs" />
+    <Compile Include="server\impl\equipment\PolishServer.cs" />
+    <Compile Include="server\impl\equipment\QhServer.cs" />
+    <Compile Include="server\impl\equipment\StoreServer.cs" />
+    <Compile Include="server\impl\equipment\WarChariotServer.cs" />
+    <Compile Include="server\impl\equipment\WeaponServer.cs" />
+    <Compile Include="server\impl\logger\TempLogger.cs" />
+    <Compile Include="server\impl\QiFuServer.cs" />
+    <Compile Include="server\impl\ShenHuoServer.cs" />
+    <Compile Include="server\impl\troop\HeroTrainServer.cs" />
+    <Compile Include="server\impl\troop\HeroWashServer.cs" />
+    <Compile Include="server\impl\secretary\SecretaryServer.cs" />
+    <Compile Include="server\LogicServer.cs" />
+    <Compile Include="ui\NewDailyTreasureGameSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ui\NewDailyTreasureGameSelector.Designer.cs">
+      <DependentUpon>NewDailyTreasureGameSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ui\NewNpcSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ui\NewNpcSelector.Designer.cs">
+      <DependentUpon>NewNpcSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ui\NewResCampaignSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ui\NewResCampaignSelector.Designer.cs">
+      <DependentUpon>NewResCampaignSelector.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="NewAttackTargetSelector.resx">
+      <DependentUpon>NewAttackTargetSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewLoginForm.resx">
+      <DependentUpon>NewLoginForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewMainForm.resx">
+      <DependentUpon>NewMainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewReportViewer.resx">
+      <DependentUpon>NewReportViewer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewTempServerForm.resx">
+      <DependentUpon>NewTempServerForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewTrainHeroCalc.resx">
+      <DependentUpon>NewTrainHeroCalc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewTranslator.resx">
+      <DependentUpon>NewTranslator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\NewDailyTreasureGameSelector.resx">
+      <DependentUpon>NewDailyTreasureGameSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\NewNpcSelector.resx">
+      <DependentUpon>NewNpcSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\NewResCampaignSelector.resx">
+      <DependentUpon>NewResCampaignSelector.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\com.lover.astd.common\com.lover.astd.common.csproj">
+      <Project>{567D7054-FF2D-4F91-A0D3-1988169A7E72}</Project>
+      <Name>com.lover.astd.common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\com.lover.common\com.lover.common.csproj">
+      <Project>{7770831E-B63D-4A24-B90D-B4C092FE592A}</Project>
+      <Name>com.lover.common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Net.Json\System.Net.Json.csproj">
+      <Project>{517CCC3E-5425-4FF3-8707-D972828B6E52}</Project>
+      <Name>System.Net.Json</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\zlib.net\zlib.net.csproj">
+      <Project>{9947F321-8EE0-4F42-A1DB-C4E92BA77C78}</Project>
+      <Name>zlib.net</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="laptop.ico" />
+    <Content Include="协议\决斗.xml" />
+    <Content Include="协议\决斗2.xml" />
+    <Content Include="协议\协议.xml" />
+    <Content Include="协议\地区区域.xml" />
+    <Content Include="协议\天降奇兵.xml" />
+    <Content Include="协议\小秘书.xml" />
+    <Content Include="协议\悬赏.xml" />
+    <Content Include="协议\战绩.xml" />
+    <Content Include="协议\摇钱树.xml" />
+    <Content Include="协议\攻击.xml" />
+    <Content Include="协议\新世界.xml" />
+    <Content Include="协议\武将.xml" />
+    <Content Include="协议\每日登录.xml" />
+    <Content Include="协议\炼化.xml" />
+    <Content Include="协议\玩家信息.xml" />
+    <Content Include="协议\璞玉矿.xml" />
+    <Content Include="协议\监狱.xml" />
+    <Content Include="协议\神灵降福.xml" />
+    <Content Include="协议\祭祀.xml" />
+    <Content Include="协议\精炼.xml" />
+    <Content Include="协议\精炼2.xml" />
+    <Content Include="协议\精炼3.xml" />
+    <Content Include="协议\精炼4.xml" />
+    <Content Include="协议\纺织.xml" />
+    <Content Include="协议\终极探宝.xml" />
+    <Content Include="协议\终极探宝2.xml" />
+    <Content Include="协议\终极探宝3.xml" />
+    <Content Include="协议\通商.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,257 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{567D7054-FF2D-4F91-A0D3-1988169A7E72}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>com.lover.astd.common</RootNamespace>
+    <AssemblyName>com.lover.astd.common</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ClientCache.cs" />
+    <Compile Include="CommonReceiver.cs" />
+    <Compile Include="ConfigStrings.cs" />
+    <Compile Include="config\OtherConfig.cs" />
+    <Compile Include="config\GameConfig.cs" />
+    <Compile Include="config\GlobalConfig.cs" />
+    <Compile Include="config\TreasureConfig.cs" />
+    <Compile Include="IExecute.cs" />
+    <Compile Include="ILogger.cs" />
+    <Compile Include="IServer.cs" />
+    <Compile Include="ISettings.cs" />
+    <Compile Include="ITempExe.cs" />
+    <Compile Include="locales\locale_zh_CN.cs" />
+    <Compile Include="logicexe\activities\ArchExe.cs" />
+    <Compile Include="logicexe\activities\BGExe.cs" />
+    <Compile Include="logicexe\activities\BoatExe.cs" />
+    <Compile Include="logicexe\activities\CakeExe.cs" />
+    <Compile Include="logicexe\activities\CrossplatformCompeteExe.cs" />
+    <Compile Include="logicexe\activities\DailyTreasureGameExe.cs" />
+    <Compile Include="logicexe\activities\FestivalEventExe.cs" />
+    <Compile Include="logicexe\activities\GemDumpExe.cs" />
+    <Compile Include="logicexe\activities\GemFlopExe.cs" />
+    <Compile Include="logicexe\activities\GiftEventExe.cs" />
+    <Compile Include="logicexe\activities\JailEventExe.cs" />
+    <Compile Include="logicexe\activities\KfBanquetExe.cs" />
+    <Compile Include="logicexe\activities\KFRankExe.cs" />
+    <Compile Include="logicexe\activities\NewDayTreasureGameExe.cs" />
+    <Compile Include="logicexe\activities\PlayerCompeteExe.cs" />
+    <Compile Include="logicexe\activities\QingmingExe.cs" />
+    <Compile Include="logicexe\activities\SilverFlopExe.cs" />
+    <Compile Include="logicexe\activities\SuperFanpaiExe.cs" />
+    <Compile Include="logicexe\activities\TowerExe.cs" />
+    <Compile Include="logicexe\activities\TreasureGameExe.cs" />
+    <Compile Include="logicexe\activities\TroopFeedbackExe.cs" />
+    <Compile Include="logicexe\activities\TroopTurntableExe.cs" />
+    <Compile Include="logicexe\activities\WorldArmyExe.cs" />
+    <Compile Include="logicexe\activities\YueBingExe.cs" />
+    <Compile Include="logicexe\BaiShenExe.cs" />
+    <Compile Include="logicexe\battle\AttackExe.cs" />
+    <Compile Include="logicexe\battle\BattleExe.cs" />
+    <Compile Include="logicexe\battle\ResCampaignExe.cs" />
+    <Compile Include="logicexe\building\BuildingExe.cs" />
+    <Compile Include="logicexe\CommonExe.cs" />
+    <Compile Include="logicexe\economy\BaoshiStoneExe.cs" />
+    <Compile Include="logicexe\economy\DinnerExe.cs" />
+    <Compile Include="logicexe\economy\FeteExe.cs" />
+    <Compile Include="logicexe\economy\ImposeExe.cs" />
+    <Compile Include="logicexe\economy\MarketExe.cs" />
+    <Compile Include="logicexe\economy\MovableExe.cs" />
+    <Compile Include="logicexe\economy\StockExe.cs" />
+    <Compile Include="logicexe\economy\StoneExe.cs" />
+    <Compile Include="logicexe\equip\DailyWeaponExe.cs" />
+    <Compile Include="logicexe\equip\MerchantExe.cs" />
+    <Compile Include="logicexe\equip\MhExe.cs" />
+    <Compile Include="logicexe\equip\PolishExe.cs" />
+    <Compile Include="logicexe\equip\QhExe.cs" />
+    <Compile Include="logicexe\equip\StoreExe.cs" />
+    <Compile Include="logicexe\equip\WarChariotExe.cs" />
+    <Compile Include="logicexe\equip\WeaponExe.cs" />
+    <Compile Include="logicexe\ExeBase.cs" />
+    <Compile Include="logicexe\hero\BigHeroTrainExe.cs" />
+    <Compile Include="logicexe\hero\HeroTrainExe.cs" />
+    <Compile Include="logicexe\hero\HeroWashExe.cs" />
+    <Compile Include="logicexe\temp\CampaignExe.cs" />
+    <Compile Include="logicexe\temp\CreditWashExe.cs" />
+    <Compile Include="logicexe\temp\DumpStoreExe.cs" />
+    <Compile Include="logicexe\temp\EquipMeltExe.cs" />
+    <Compile Include="logicexe\temp\HongbaoExe.cs" />
+    <Compile Include="logicexe\temp\JuedouExe.cs" />
+    <Compile Include="logicexe\temp\RawStoneExe.cs" />
+    <Compile Include="logicexe\temp\TempExeBase.cs" />
+    <Compile Include="logicexe\temp\TicketExchangeExe.cs" />
+    <Compile Include="logicexe\secretary\SecretaryExe.cs" />
+    <Compile Include="logicexe\PingExe.cs" />
+    <Compile Include="logicexe\QiFuExe.cs" />
+    <Compile Include="logicexe\ShenHuoExe.cs" />
+    <Compile Include="logicexe\temp\WeaveExe.cs" />
+    <Compile Include="logic\ActivityMgr.cs" />
+    <Compile Include="logic\BattleMgr.cs" />
+    <Compile Include="logic\BigHeroMgr.cs" />
+    <Compile Include="logic\BuildingMgr.cs" />
+    <Compile Include="logic\CampaignMgr.cs" />
+    <Compile Include="logic\EquipMgr.cs" />
+    <Compile Include="logic\HeroMgr.cs" />
+    <Compile Include="logic\MgrBase.cs" />
+    <Compile Include="logic\MiscMgr.cs" />
+    <Compile Include="logic\ProtocolMgr.cs" />
+    <Compile Include="logic\ServiceFactory.cs" />
+    <Compile Include="logic\TroopMgr.cs" />
+    <Compile Include="manager\EnumString.cs" />
+    <Compile Include="manager\ExeMgr.cs" />
+    <Compile Include="manager\LogHelper.cs" />
+    <Compile Include="manager\LoginMgr.cs" />
+    <Compile Include="manager\SettingsMgr.cs" />
+    <Compile Include="manager\TimeMgr.cs" />
+    <Compile Include="manager\WeaponHelper.cs" />
+    <Compile Include="model\AccountData.cs" />
+    <Compile Include="model\AsObject.cs" />
+    <Compile Include="model\attack\AreaInfo.cs" />
+    <Compile Include="model\attack\PkInfo.cs" />
+    <Compile Include="model\attack\ScopeCity.cs" />
+    <Compile Include="model\attack\UserToken.cs" />
+    <Compile Include="model\battle\CampaignItem.cs" />
+    <Compile Include="model\battle\Npc.cs" />
+    <Compile Include="model\battle\ResCampaign.cs" />
+    <Compile Include="model\BigHero.cs" />
+    <Compile Include="model\building\Building.cs" />
+    <Compile Include="model\building\BuildingLine.cs" />
+    <Compile Include="model\ClientUser.cs" />
+    <Compile Include="model\enumer\AccountStatus.cs" />
+    <Compile Include="model\enumer\ActivityType.cs" />
+    <Compile Include="model\enumer\ServerType.cs" />
+    <Compile Include="model\Equipment.cs" />
+    <Compile Include="model\EquipmentQuality.cs" />
+    <Compile Include="model\EquipmentType.cs" />
+    <Compile Include="model\Game.cs" />
+    <Compile Include="model\GameEvent.cs" />
+    <Compile Include="model\GoodsType.cs" />
+    <Compile Include="model\Hero.cs" />
+    <Compile Include="model\LogLevel.cs" />
+    <Compile Include="model\misc\KfzbItemConfig.cs" />
+    <Compile Include="model\misc\Reward.cs" />
+    <Compile Include="model\misc\SlaveInfo.cs" />
+    <Compile Include="model\misc\TGame.cs" />
+    <Compile Include="model\misc\TicketItem.cs" />
+    <Compile Include="model\ServerResult.cs" />
+    <Compile Include="model\User.cs" />
+    <Compile Include="model\WarChariot.cs" />
+    <Compile Include="model\activity\WineInfo.cs" />
+    <Compile Include="partner\ILoginReceiver.cs" />
+    <Compile Include="partner\impl\AoshitangLogin.cs" />
+    <Compile Include="partner\impl\BaiduLogin.cs" />
+    <Compile Include="partner\impl\CgaLogin.cs" />
+    <Compile Include="partner\impl\DuowanLogin.cs" />
+    <Compile Include="partner\impl\FunshionLogin.cs" />
+    <Compile Include="partner\impl\Game2Login.cs" />
+    <Compile Include="partner\impl\HuanlangLogin.cs" />
+    <Compile Include="partner\impl\HuolawanLogin.cs" />
+    <Compile Include="partner\impl\IfengLogin.cs" />
+    <Compile Include="partner\impl\IspeakLogin.cs" />
+    <Compile Include="partner\impl\JinjuziLogin.cs" />
+    <Compile Include="partner\impl\KuaiwanLogin.cs" />
+    <Compile Include="partner\impl\KugouLogin.cs" />
+    <Compile Include="partner\impl\KunlunLogin.cs" />
+    <Compile Include="partner\impl\Kuwan8Login.cs" />
+    <Compile Include="partner\impl\KuwoLogin.cs" />
+    <Compile Include="partner\impl\LequLogin.cs" />
+    <Compile Include="partner\impl\Letou8Login.cs" />
+    <Compile Include="partner\impl\MiyouLogin.cs" />
+    <Compile Include="partner\impl\NiuaLogin.cs" />
+    <Compile Include="partner\impl\PeiyouLogin.cs" />
+    <Compile Include="partner\impl\PluLogin.cs" />
+    <Compile Include="partner\impl\PpsLogin.cs" />
+    <Compile Include="partner\impl\PptvLogin.cs" />
+    <Compile Include="partner\impl\QidianLogin.cs" />
+    <Compile Include="partner\impl\RenrenLogin.cs" />
+    <Compile Include="partner\impl\sf\SfLogin.cs" />
+    <Compile Include="partner\impl\SnsteleLogin.cs" />
+    <Compile Include="partner\impl\TgbusLogin.cs" />
+    <Compile Include="partner\impl\TianyaLogin.cs" />
+    <Compile Include="partner\impl\Uz73Login.cs" />
+    <Compile Include="partner\impl\VerycdLogin.cs" />
+    <Compile Include="partner\impl\WebxgameLogin.cs" />
+    <Compile Include="partner\impl\XdwanLogin.cs" />
+    <Compile Include="partner\impl\YaoWanLogin.cs" />
+    <Compile Include="partner\impl\YouwoLogin.cs" />
+    <Compile Include="partner\impl\ZhulangLogin.cs" />
+    <Compile Include="partner\impl\_178Login.cs" />
+    <Compile Include="partner\impl\_29wwLogin.cs" />
+    <Compile Include="partner\impl\_360Login.cs" />
+    <Compile Include="partner\impl\_37WanLogin.cs" />
+    <Compile Include="partner\impl\_3896Login.cs" />
+    <Compile Include="partner\impl\_4399Login.cs" />
+    <Compile Include="partner\impl\_51Login.cs" />
+    <Compile Include="partner\impl\_51wanLogin.cs" />
+    <Compile Include="partner\impl\_53wanLogin.cs" />
+    <Compile Include="partner\impl\_56uuLogin.cs" />
+    <Compile Include="partner\impl\_6711Login.cs" />
+    <Compile Include="partner\impl\_6998Login.cs" />
+    <Compile Include="partner\impl\_789hiLogin.cs" />
+    <Compile Include="partner\impl\_8zyLogin.cs" />
+    <Compile Include="partner\impl\_91Login.cs" />
+    <Compile Include="partner\impl\_91wanLogin.cs" />
+    <Compile Include="partner\impl\_96PkLogin.cs" />
+    <Compile Include="partner\LoginImplBase.cs" />
+    <Compile Include="partner\LoginResult.cs" />
+    <Compile Include="partner\LoginStatusCode.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="protocol\command\BaseClientCommand.cs" />
+    <Compile Include="protocol\command\GetUserInfoCommand.cs" />
+    <Compile Include="protocol\command\LoginCommand.cs" />
+    <Compile Include="protocol\response\BaseClientResponse.cs" />
+    <Compile Include="protocol\response\GetUserInfoResponse.cs" />
+    <Compile Include="protocol\response\LoginResponse.cs" />
+    <Compile Include="UserSessionMgr.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\com.lover.common\com.lover.common.csproj">
+      <Project>{7770831E-B63D-4A24-B90D-B4C092FE592A}</Project>
+      <Name>com.lover.common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Net.Json\System.Net.Json.csproj">
+      <Project>{517CCC3E-5425-4FF3-8707-D972828B6E52}</Project>
+      <Name>System.Net.Json</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="locales\locale.zh_CN.resources" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
