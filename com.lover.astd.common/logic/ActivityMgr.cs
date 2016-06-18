@@ -3207,6 +3207,8 @@ namespace com.lover.astd.common.logic
                 XmlDocument cmdResult2 = xml3.CmdResult;
                 this.handleArmyNode(protocol, logger, cmdResult2, ref gold_available, buy_box1, buy_box2, ref daojishi, ref recovering, ref can_attack, ref boxnum, ref army_info, ref defeated, ref attlefttime, ref nextarmy);
             }
+            int round = 1;
+            int times = 1;
             DateTime beforDT;
             DateTime afterDT;
             while (attlefttime > 0)
@@ -3228,7 +3230,7 @@ namespace com.lover.astd.common.logic
                     }
                 }
                 this.refreshByGoldMain(protocol, logger, ref gold_available, refresh_type, army_info, armytype);
-                int num5 = this.attackArmy(protocol, logger, is_zongzi, armyid, armytype, ref gold_available, buy_box1, buy_box2, ref daojishi, ref recovering, ref can_attack, ref boxnum, ref army_info, ref defeated, ref attlefttime, ref nextarmy);
+                int num5 = this.attackArmy(protocol, logger, is_zongzi, armyid, armytype, ref gold_available, buy_box1, buy_box2, ref daojishi, ref recovering, ref can_attack, ref boxnum, ref army_info, ref defeated, ref attlefttime, ref nextarmy, ref round, ref times);
                 if ((defeated || num5 == 3 || attlefttime == 0) & auto_open_box)
                 {
                     this.openBoxMain(protocol, logger, ref gold_available, auto_open_box, open_box_type, boxnum);
@@ -3237,16 +3239,19 @@ namespace com.lover.astd.common.logic
                 }
                 if (recovering)
                 {
+                    round++;
+                    times = 1;
                     logInfo(logger, string.Format("下次攻击时间: {0}", nextarmy));
                     //Thread.Sleep(18000);
-                    Thread.Sleep(nextarmy - 100);
+                    Thread.Sleep(nextarmy - 200);
                     ServerResult xml4 = protocol.getXml(url, "获取世界军团信息");
                     XmlDocument cmdResult3 = xml4.CmdResult;
                     this.handleArmyNode(protocol, logger, cmdResult3, ref gold_available, buy_box1, buy_box2, ref daojishi, ref recovering, ref can_attack, ref boxnum, ref army_info, ref defeated, ref attlefttime, ref nextarmy);
                 }
                 else
                 {
-                    Thread.Sleep(5900);
+                    times++;
+                    Thread.Sleep(5800);
                     ServerResult xml5 = protocol.getXml(url, "获取世界军团信息");
                     XmlDocument cmdResult4 = xml5.CmdResult;
                     this.handleArmyNode(protocol, logger, cmdResult4, ref gold_available, buy_box1, buy_box2, ref daojishi, ref recovering, ref can_attack, ref boxnum, ref army_info, ref defeated, ref attlefttime, ref nextarmy);
@@ -3489,7 +3494,7 @@ namespace com.lover.astd.common.logic
             }
         }
 
-        private int attackArmy(ProtocolMgr protocol, ILogger logger, bool is_zongzi, int armyid, int army_type, ref int gold_available, bool buy_box1, bool buy_box2, ref int _daojishi, ref bool _recovering, ref bool _can_attack, ref int _hongbao_count, ref string _army_info, ref bool _defeated, ref int attlefttime, ref int nextarmy)
+        private int attackArmy(ProtocolMgr protocol, ILogger logger, bool is_zongzi, int armyid, int army_type, ref int gold_available, bool buy_box1, bool buy_box2, ref int _daojishi, ref bool _recovering, ref bool _can_attack, ref int _hongbao_count, ref string _army_info, ref bool _defeated, ref int attlefttime, ref int nextarmy, ref int round, ref int times)
         {
             string url = "/root/nian!attNian.action";
             if (is_zongzi)
@@ -3538,7 +3543,7 @@ namespace com.lover.astd.common.logic
                 {
                     armyname = "首领部队";
                 }
-                string text2 = string.Format("攻打[{0}]位置[{1}], 获得红包[{2}]个{3}{4}", armyid, armyname, addhongbao, (decreasehp > 0) ? string.Format(", 共计掉血{0}", decreasehp) : "", (totaladdhp > 0) ? string.Format(", 粽子回血{0}", totaladdhp) : "");
+                string text2 = string.Format("第{0}轮 第{1}次, 攻打[{2}]位置[{3}], 获得红包[{4}]个{5}{6}", round, times, armyid, armyname, addhongbao, (decreasehp > 0) ? string.Format(", 共计掉血{0}", decreasehp) : "", (totaladdhp > 0) ? string.Format(", 粽子回血{0}", totaladdhp) : "");
                 base.logInfo(logger, text2);
                 result = 0;
             }

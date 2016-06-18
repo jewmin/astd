@@ -16,7 +16,6 @@ namespace com.lover.astd.common.logicexe.activities
 		public override long execute()
 		{
 			Dictionary<string, string> config = base.getConfig();
-			long result;
 			if (!config.ContainsKey("enabled") || !config["enabled"].ToLower().Equals("true"))
 			{
 				return base.an_hour_later();
