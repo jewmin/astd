@@ -1504,7 +1504,7 @@ namespace com.lover.astd.common.logic
                     {
                         use_flag = true;
                     }
-                    else if (user._attack_inspiredEffect <= (float)current.level)
+                    else if (user._attack_inspiredEffect < (float)current.level)
                     {
                         use_flag = true;
                     }

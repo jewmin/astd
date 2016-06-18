@@ -709,31 +709,32 @@ namespace com.lover.astd.common.logicexe.battle
                 {
                     battleManager.getJailInfo(this._proto, this._logger, this._user, do_jail_tech, base.getGoldAvailable());
                 }
-                //获取战绩信息
-                battleManager.getBattleScoreInfo(this._proto, this._logger, this._user);
-                //领取战绩奖励
-                for (int i = 0; i < this._user._attack_battleScore_awardGot.Length && this._user._attack_battleScore_awardGot[i] != 0; i++)
-                {
-                    if (this._user._attack_battleScore_awardGot[i] == 1)
-                    {
-                        battleManager.getBattleScoreAward(this._proto, this._logger, i + 1);
-                    }
-                }
-                //领取排名奖励
-                if (this._user._attack_last_awardGot == 1)
-                {
-                    battleManager.getRankAward(_proto, _logger);
-                }
-                //领取战绩宝箱
-                if (this._user._attack_battleScore_box > 0)
-                {
-                    battleManager.openScoreBox(this._proto, this._logger, this._user._attack_battleScore_box);
-                }
                 this._next_misc_exetime = this._factory.TmrMgr.TimeStamp + misc_exetime;
             }
             else
             {
                 misc_exetime = this._next_misc_exetime - this._factory.TmrMgr.TimeStamp;
+            }
+
+            //获取战绩信息
+            battleManager.getBattleScoreInfo(this._proto, this._logger, this._user);
+            //领取战绩奖励
+            for (int i = 0; i < this._user._attack_battleScore_awardGot.Length && this._user._attack_battleScore_awardGot[i] != 0; i++)
+            {
+                if (this._user._attack_battleScore_awardGot[i] == 1)
+                {
+                    battleManager.getBattleScoreAward(this._proto, this._logger, i + 1);
+                }
+            }
+            //领取排名奖励
+            if (this._user._attack_last_awardGot == 1)
+            {
+                battleManager.getRankAward(_proto, _logger);
+            }
+            //领取战绩宝箱
+            if (this._user._attack_battleScore_box > 0)
+            {
+                battleManager.openScoreBox(this._proto, this._logger, this._user._attack_battleScore_box);
             }
 
             //搜索间谍
