@@ -56,7 +56,7 @@ namespace com.lover.astd.common.logicexe.activities
                 {
                     if (!this._isRunningServer)
                     {
-                        time = base.next_hour();
+                        time = base.next_halfhour();
                     }
                 }
                 else if (num2 == 10)
@@ -65,7 +65,7 @@ namespace com.lover.astd.common.logicexe.activities
                 }
                 else
                 {
-                    time = base.next_hour();
+                    time = base.next_halfhour();
                 }
             }
             if (this._user.isActivityRunning(ActivityType.KfPvp))
@@ -76,7 +76,7 @@ namespace com.lover.astd.common.logicexe.activities
                 {
                     if (!this._isRunningServer)
                     {
-                        time2 = base.next_hour();
+                        time2 = base.next_halfhour();
                     }
                 }
                 else if (num3 == 10)
@@ -85,7 +85,7 @@ namespace com.lover.astd.common.logicexe.activities
                 }
                 else
                 {
-                    time2 = base.next_hour();
+                    time2 = base.next_halfhour();
                 }
                 int num6 = activityManager.kfpvp_getMatchDetail(this._proto, this._logger);
                 if (num6 > 0)
@@ -96,7 +96,7 @@ namespace com.lover.astd.common.logicexe.activities
                 {
                     if (!this._isRunningServer)
                     {
-                        time4 = base.next_hour();
+                        time4 = base.next_halfhour();
                     }
                 }
                 else if (num6 == -2)
@@ -105,7 +105,7 @@ namespace com.lover.astd.common.logicexe.activities
                 }
                 else
                 {
-                    time4 = base.next_hour();
+                    time4 = base.next_halfhour();
                 }
             }
             if (this._user.isActivityRunning(ActivityType.PlayerCompeteEvent))
@@ -115,7 +115,7 @@ namespace com.lover.astd.common.logicexe.activities
                 {
                     if (!this._isRunningServer)
                     {
-                        time3 = base.next_hour();
+                        time3 = base.next_halfhour();
                     }
                 }
                 else if (num4 == 10)
@@ -125,7 +125,7 @@ namespace com.lover.astd.common.logicexe.activities
                 }
                 else
                 {
-                    time3 = base.next_hour();
+                    time3 = base.next_halfhour();
                 }
             }
             return base.smallest_time(new List<long> { time, time2, time3, time4 });

@@ -2741,7 +2741,10 @@ namespace com.lover.astd.common.logic
                 {
                     kfpvp_inspire(protocol, logger, 1);
                     base.logInfo(logger, string.Format("跨服竞技场第{0}轮第{1}场，剩余免费鼓舞次数{2}", roundid, matchid, freeinspire - 1), Color.Green);
-                    return cd + 10000;
+                }
+                if (cd > 0)
+                {
+                    return cd + 5000;
                 }
                 return 0;
             }
