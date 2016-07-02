@@ -9,10 +9,12 @@ namespace com.lover.astd.common
 
 		void logError(string text);
 
-		void log(string text, Color color);
+        void log(string text, Color color);
 
 		void logSingle(string text);
 
 		void logSurprise(string text);
+
+        void logInfo(string text);
 	}
 }

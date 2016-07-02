@@ -42,6 +42,7 @@ using com.lover.astd.common.logicexe.secretary;
 using com.lover.astd.common.logicexe.economy;
 using com.lover.astd.common.logicexe.activities;
 using System.Timers;
+using LuaInterface;
 
 namespace com.lover.astd.game.ui
 {
@@ -94,13 +95,21 @@ namespace com.lover.astd.game.ui
             {
                 
             }
+            
+            public void logInfo(string text)
+            {
+                _frm.logTempSafe(text, LogLevel.Info, Color.DodgerBlue);
+            }
         }
 
-        private string _initialUrl = GlobalConfig.HomeUrl + "/astd/update";
+        //private string _initialUrl = GlobalConfig.HomeUrl + "/astd/update";
+        private string _initialUrl = GlobalConfig.HomeUrl;
 
         protected LogHelper _logger;
 
         private ServiceFactory _factory;
+
+        private LuaMgr lua_mgr_;
 
         private LoginMgr _loginMgr;
 
@@ -381,7 +390,7 @@ namespace com.lover.astd.game.ui
             lbl_tempStatus.Text = _tempExe.getStatus();
             ILogger logger = new TempLogger(this);
             ProtocolMgr proto = new ProtocolMgr(_gameUser, logger, this, _gameurl, _jsessionid, _factory);
-            _tempExe.setVariables(proto, logger, this, _gameUser, _account.GameConf, _factory);
+            _tempExe.setVariables(proto, logger, this, _gameUser, _account.GameConf, _factory, lua_mgr_);
             _tempExe.setOtherConf(_account.OtherConf);
             _tempExe.init_data();
             startTempServer();
@@ -741,7 +750,8 @@ namespace com.lover.astd.game.ui
                         _account.OtherConf.loadSettings();
                     }
                     buildServers();
-                    _exeMgr.setExeVariables(protocolMgr, this, this, _gameUser, _account.GameConf, _account.OtherConf, _factory);
+                    lua_mgr_ = new LuaMgr(protocolMgr, this, _factory, _account.GameConf, _account.OtherConf, _gameUser);
+                    _exeMgr.setExeVariables(protocolMgr, this, this, _gameUser, _account.GameConf, _account.OtherConf, _factory, lua_mgr_);
                     if (_logger == null)
                     {
                         _logger = new LogHelper(EnumString.getString(_account.Server_type), _account.ServerId, _gameUser.Username, "");
@@ -1111,6 +1121,11 @@ namespace com.lover.astd.game.ui
         public void logSurprise(string text)
         {
             logSurpriseSafe(text, Color.Black);
+        }
+
+        public void logInfo(string text)
+        {
+            LogSafe(text, LogLevel.Info, Color.DodgerBlue);
         }
 
         public void init_completed()
@@ -1635,8 +1650,7 @@ namespace com.lover.astd.game.ui
         private void menu_test_Click(object sender, EventArgs e)
         {
             ProtocolMgr protocolMgr = new ProtocolMgr(_gameUser, this, this, _gameurl, _jsessionid, _factory);
-            int map_count = 0;
-            _factory.getMiscManager().handleNewTradeInfo(protocolMgr, this, _gameUser, "7,9,12", 3, 1000, 1000, out map_count);
+            object[] result = lua_mgr_.CallFunction("movable_execute");
         }
 
         private void menu_default_Click(object sender, EventArgs e)
@@ -2002,10 +2016,10 @@ namespace com.lover.astd.game.ui
             Text = GlobalConfig.Version;
             gameBrowser.Navigate(_initialUrl);
             log(string.Format("browser.navigate({0})", _initialUrl), Color.Green);
-            if (!GlobalConfig.isDebug)
-            {
-                menu_test.Visible = false;
-            }
+            //if (!GlobalConfig.isDebug)
+            //{
+            //    menu_test.Visible = false;
+            //}
             if (_accountFromArgs && !UserSessionMgr.instance.isSf)
             {
                 menu_login.Visible = false;
@@ -2084,6 +2098,11 @@ namespace com.lover.astd.game.ui
         private void ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             closeMe();
+        }
+
+        private void menu_lua_Click(object sender, EventArgs e)
+        {
+            lua_mgr_.CreateVM();
         }
     }
 }

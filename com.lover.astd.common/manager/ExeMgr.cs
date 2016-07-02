@@ -4,6 +4,7 @@ using com.lover.astd.common.model;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using LuaInterface;
 
 namespace com.lover.astd.common.manager
 {
@@ -26,6 +27,8 @@ namespace com.lover.astd.common.manager
 		private ServiceFactory _factory;
 
 		private ProtocolMgr _proto;
+
+        private LuaMgr _lua;
 
 		private ILogger _logger;
 
@@ -112,10 +115,11 @@ namespace com.lover.astd.common.manager
             this.clear_runtime();
         }
 
-		public void setExeVariables(ProtocolMgr proto, ILogger logger, IServer server, User user, GameConfig conf, OtherConfig otherConf, ServiceFactory factory)
+		public void setExeVariables(ProtocolMgr proto, ILogger logger, IServer server, User user, GameConfig conf, OtherConfig otherConf, ServiceFactory factory, LuaMgr lua)
 		{
 			_factory = factory;
 			_proto = proto;
+            _lua = lua;
 			_logger = logger;
             _otherConf = otherConf;
             for (int i = 0; i < _exes.Count; i++)
@@ -123,7 +127,7 @@ namespace com.lover.astd.common.manager
                 IExecute exe = _exes[i];
                 if (exe != null)
                 {
-                    exe.setVariables(proto, logger, server, user, conf, factory);
+                    exe.setVariables(proto, logger, server, user, conf, factory, lua);
                     exe.setOtherConf(_otherConf);
                 }
             }

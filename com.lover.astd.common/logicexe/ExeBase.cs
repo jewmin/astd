@@ -4,6 +4,7 @@ using com.lover.astd.common.model;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using com.lover.astd.common.model.enumer;
 
 namespace com.lover.astd.common.logicexe
 {
@@ -18,6 +19,8 @@ namespace com.lover.astd.common.logicexe
 		protected ILogger _logger;
 
 		protected ProtocolMgr _proto;
+
+        protected LuaMgr _lua;
 
 		protected IServer _server;
 
@@ -92,7 +95,7 @@ namespace com.lover.astd.common.logicexe
 			this._user.addUiToQueue(this._name);
 		}
 
-		public void setVariables(ProtocolMgr proto, ILogger logger, IServer server, User u, GameConfig conf, ServiceFactory factory)
+		public void setVariables(ProtocolMgr proto, ILogger logger, IServer server, User u, GameConfig conf, ServiceFactory factory, LuaMgr lua)
 		{
 			this._proto = proto;
 			this._logger = logger;
@@ -100,6 +103,7 @@ namespace com.lover.astd.common.logicexe
 			this._user = u;
 			this._conf = conf;
 			this._factory = factory;
+            this._lua = lua;
 		}
 
 		public void refreshConfig(GameConfig conf)
@@ -351,6 +355,26 @@ namespace com.lover.astd.common.logicexe
         }
 
         /// <summary>
+        /// 第二天早上8点
+        /// </summary>
+        /// <returns></returns>
+        protected long next_day_eight()
+        {
+            DateTime dateTimeNow = this._factory.TmrMgr.DateTimeNow;
+            int hour;
+            if (dateTimeNow.Hour < 8)
+            {
+                hour = 8 - dateTimeNow.Hour - 1;
+            }
+            else
+            {
+                hour = 24 + 8 - dateTimeNow.Hour - 1;
+            }
+            int minute = 60 - dateTimeNow.Minute;
+            return (long)((hour * 3600 + (minute + 30) * 60) * 1000);
+        }
+
+        /// <summary>
         /// 比较时间
         /// </summary>
         /// <param name="time1"></param>
@@ -496,6 +520,49 @@ namespace com.lover.astd.common.logicexe
         public void setOtherConf(OtherConfig conf)
         {
             _otherConf = conf;
+        }
+
+        public long getTimeByExeCode(ExeCode code)
+        {
+            switch (code)
+            {
+                case ExeCode.instant:
+                    return instant();
+
+                case ExeCode.immediate:
+                    return immediate();
+
+                case ExeCode.one_minute:
+                    return 60000;
+
+                case ExeCode.next_dash:
+                    return next_dash();
+
+                case ExeCode.next_halfhour:
+                    return next_halfhour();
+
+                case ExeCode.next_hour:
+                    return next_hour();
+
+                case ExeCode.an_hour_later:
+                    return an_hour_later();
+
+                case ExeCode.next_boat:
+                    return next_boat();
+
+                case ExeCode.next_dinner:
+                    return next_dinner();
+
+                case ExeCode.next_gongjian_time:
+                    return next_gongjian_time();
+
+                case ExeCode.next_day:
+                    return next_day();
+
+                case ExeCode.next_day_eight:
+                    return next_day_eight();
+            }
+            return next_hour();
         }
     }
 }

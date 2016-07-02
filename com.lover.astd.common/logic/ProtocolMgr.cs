@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Xml;
+using LuaInterface;
 
 namespace com.lover.astd.common.logic
 {

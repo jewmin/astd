@@ -128,9 +128,8 @@ namespace com.lover.common
 		public static List<Point> getAStarPath(int[,] grids, Point start, Point target)
 		{
 			List<Point> list = new List<Point>();
-			bool flag = grids[target.X, target.Y] == -1;
 			List<Point> result;
-			if (flag)
+			if (grids[target.X, target.Y] == -1)
 			{
 				result = list;
 			}
@@ -154,8 +153,7 @@ namespace com.lover.common
 				list5.Add(new Point(start.X, start.Y));
 				while (!flag2)
 				{
-					bool flag3 = point.X == target.X && point.Y == target.Y;
-					if (flag3)
+					if (point.X == target.X && point.Y == target.Y)
 					{
 						flag2 = true;
 						break;

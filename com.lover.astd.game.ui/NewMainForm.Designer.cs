@@ -226,6 +226,7 @@ namespace com.lover.astd.game.ui
             this.btn_sel_resCampaign = new System.Windows.Forms.Button();
             this.chk_res_campaign_enable = new System.Windows.Forms.CheckBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.chk_big_hero_tufei_enable = new System.Windows.Forms.CheckBox();
             this.chk_hero_giftevent = new System.Windows.Forms.CheckBox();
             this.chk_hero_nocd = new System.Windows.Forms.CheckBox();
             this.dg_heros = new System.Windows.Forms.DataGridView();
@@ -460,7 +461,7 @@ namespace com.lover.astd.game.ui
             this.lbl_playerinfo = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lbl_time = new System.Windows.Forms.Label();
-            this.chk_big_hero_tufei_enable = new System.Windows.Forms.CheckBox();
+            this.menu_lua = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_6)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -582,7 +583,8 @@ namespace com.lover.astd.game.ui
             this.menu_exit,
             this.menu_test,
             this.menu_more,
-            this.menu_about});
+            this.menu_about,
+            this.menu_lua});
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.Name = "mainMenu";
             this.mainMenu.Size = new System.Drawing.Size(1064, 25);
@@ -2798,6 +2800,16 @@ namespace com.lover.astd.game.ui
             this.groupBox6.TabIndex = 5;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "武将管理";
+            // 
+            // chk_big_hero_tufei_enable
+            // 
+            this.chk_big_hero_tufei_enable.AutoSize = true;
+            this.chk_big_hero_tufei_enable.Location = new System.Drawing.Point(77, 39);
+            this.chk_big_hero_tufei_enable.Name = "chk_big_hero_tufei_enable";
+            this.chk_big_hero_tufei_enable.Size = new System.Drawing.Size(96, 16);
+            this.chk_big_hero_tufei_enable.TabIndex = 20;
+            this.chk_big_hero_tufei_enable.Text = "开启大将突飞";
+            this.chk_big_hero_tufei_enable.UseVisualStyleBackColor = true;
             // 
             // chk_hero_giftevent
             // 
@@ -5584,15 +5596,12 @@ namespace com.lover.astd.game.ui
             this.lbl_time.Size = new System.Drawing.Size(0, 12);
             this.lbl_time.TabIndex = 8;
             // 
-            // chk_big_hero_tufei_enable
+            // menu_lua
             // 
-            this.chk_big_hero_tufei_enable.AutoSize = true;
-            this.chk_big_hero_tufei_enable.Location = new System.Drawing.Point(77, 39);
-            this.chk_big_hero_tufei_enable.Name = "chk_big_hero_tufei_enable";
-            this.chk_big_hero_tufei_enable.Size = new System.Drawing.Size(96, 16);
-            this.chk_big_hero_tufei_enable.TabIndex = 20;
-            this.chk_big_hero_tufei_enable.Text = "开启大将突飞";
-            this.chk_big_hero_tufei_enable.UseVisualStyleBackColor = true;
+            this.menu_lua.Name = "menu_lua";
+            this.menu_lua.Size = new System.Drawing.Size(61, 21);
+            this.menu_lua.Text = "刷新lua";
+            this.menu_lua.Click += new System.EventHandler(this.menu_lua_Click);
             // 
             // NewMainForm
             // 
@@ -6185,6 +6194,7 @@ namespace com.lover.astd.game.ui
         public System.Windows.Forms.NumericUpDown nUD_qm_drink_coin;
         private System.Windows.Forms.Label label72;
         public System.Windows.Forms.CheckBox chk_big_hero_tufei_enable;
+        private System.Windows.Forms.ToolStripMenuItem menu_lua;
 
     }
 }

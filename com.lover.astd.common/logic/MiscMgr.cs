@@ -1827,6 +1827,12 @@ namespace com.lover.astd.common.logic
                 {
                     user._can_buy_active_count = 0;
                 }
+                user._is_refine_bintie = false;
+                XmlNode xmlNode9 = cmdResult.SelectSingleNode("/results/player/refinebintie");
+                if (xmlNode9 != null)
+                {
+                    user._is_refine_bintie = (xmlNode9.InnerText == "1");
+                }
             }
         }
 
@@ -4390,9 +4396,31 @@ namespace com.lover.astd.common.logic
             }
         }
 
-        public int handleNewTradeInfo(ProtocolMgr protocol, ILogger logger, User user, string visit_merchants, int max_fail_count, int silver_available, int gold_available, out int map_count)
+        public void openNewTradeBox(ProtocolMgr protocol, ILogger logger, out int boxnum)
+        {
+            boxnum = 0;
+            string url = "/root/caravan!openNewTradeBox.action";
+            ServerResult xml = protocol.getXml(url, "打开通商宝藏宝箱");
+            if (xml != null && xml.CmdSucceed)
+            {
+                XmlDocument cmdResult = xml.CmdResult;
+                XmlNode xmlNode = cmdResult.SelectSingleNode("/results/boxreward/baoshi");
+                if (xmlNode != null)
+                {
+                    logInfo(logger, string.Format("打开通商宝藏宝箱，宝石+{0}", xmlNode.InnerText));
+                }
+                xmlNode = cmdResult.SelectSingleNode("/results/boxnum");
+                if (xmlNode != null)
+                {
+                    int.TryParse(xmlNode.InnerText, out boxnum);
+                }
+            }
+        }
+
+        public int handleNewTradeInfo(ProtocolMgr protocol, ILogger logger, User user, string visit_merchants, int max_fail_count, int silver_available, int gold_available, out int map_count, out int boxnum)
         {
             map_count = 0;
+            boxnum = 0;
             string url = "/root/caravan!getNewTrade.action";
             ServerResult xml = protocol.getXml(url, "获取新通商信息");
             if (xml == null)
@@ -4417,6 +4445,11 @@ namespace com.lover.astd.common.logic
                 if (tradefreindXmlNode != null)
                 {
                     int.TryParse(tradefreindXmlNode.InnerText, out tradefreind);
+                }
+                XmlNode boxnumXmlNode = cmdResult.SelectSingleNode("/results/boxinfo/boxnum");
+                if (boxnumXmlNode != null)
+                {
+                    int.TryParse(boxnumXmlNode.InnerText, out boxnum);
                 }
                 XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/newtrade");
                 int[] visitStateArray = new int[12];

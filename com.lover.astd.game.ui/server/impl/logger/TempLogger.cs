@@ -43,5 +43,10 @@ namespace com.lover.astd.game.ui.server.impl.logger
 		{
 			throw new NotImplementedException();
 		}
-	}
+
+        public void logInfo(string text)
+        {
+            _partner.LogTemp(text, LogLevel.Info, Color.DodgerBlue);
+        }
+    }
 }

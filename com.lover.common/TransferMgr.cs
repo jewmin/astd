@@ -125,8 +125,7 @@ namespace com.lover.common
 			HttpResult result;
 			try
 			{
-				bool flag = !url.StartsWith("http://") && !url.StartsWith("https://");
-				if (flag)
+				if (!url.StartsWith("http://") && !url.StartsWith("https://"))
 				{
 					url = "http://" + url;
 				}
@@ -135,13 +134,11 @@ namespace com.lover.common
 				httpSocket._proxy_port = TransferMgr._proxy_port;
 				httpSocket.Method = "GET";
 				httpSocket.Url = url;
-				bool flag2 = referer != null && referer != "";
-				if (flag2)
+				if (referer != null && referer != "")
 				{
 					httpSocket.Referer = referer;
 				}
-				bool flag3 = headers != null && headers.Count > 0;
-				if (flag3)
+				if (headers != null && headers.Count > 0)
 				{
 					IEnumerator<string> enumerator = headers.Keys.GetEnumerator();
 					while (enumerator.MoveNext())
@@ -152,8 +149,7 @@ namespace com.lover.common
 				}
 				httpSocket.setCookies(cookies);
 				HttpResult httpResult = httpSocket.execute();
-				bool flag4 = cookies != null;
-				if (flag4)
+				if (cookies != null)
 				{
 					List<Cookie> cookies2 = httpResult.getCookies();
 					CommonUtils.updateCookies(ref cookies, ref cookies2);

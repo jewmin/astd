@@ -46,10 +46,9 @@ namespace com.lover.common
             if (this._dragging)
 			{
 				Rectangle r = new Rectangle(e.X, e.Y, 1, 1);
-				bool flag2 = sender is Form;
 				Form form;
 				Rectangle rectangle;
-				if (flag2)
+				if (sender is Form)
 				{
 					form = (sender as Form);
 					rectangle = form.RectangleToScreen(r);
@@ -59,8 +58,7 @@ namespace com.lover.common
 					Control control = sender as Control;
 					rectangle = control.RectangleToScreen(r);
 					form = (control.Parent as Form);
-					bool flag3 = form == null;
-					if (flag3)
+					if (form == null)
 					{
 						return;
 					}

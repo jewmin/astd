@@ -73,33 +73,21 @@ namespace com.lover.common
 		{
 			get
 			{
-				string result;
-				if (this._sock == null)
-				{
-					result = "";
-				}
-				else
-				{
-					IPEndPoint iPEndPoint = this._sock.RemoteEndPoint as IPEndPoint;
-					bool flag2 = iPEndPoint == null;
-					if (flag2)
-					{
-						result = "";
-					}
-					else
-					{
-						bool flag3 = iPEndPoint.Address == null;
-						if (flag3)
-						{
-							result = "";
-						}
-						else
-						{
-							result = iPEndPoint.Address.ToString();
-						}
-					}
-				}
-				return result;
+				if (this._sock == null) return "";
+
+                IPEndPoint iPEndPoint = this._sock.RemoteEndPoint as IPEndPoint;
+                if (iPEndPoint == null)
+                {
+                    return "";
+                }
+                else if (iPEndPoint.Address == null)
+                {
+                    return "";
+                }
+                else
+                {
+                    return iPEndPoint.Address.ToString();
+                }
 			}
 		}
 
@@ -113,8 +101,7 @@ namespace com.lover.common
 		{
 			try
 			{
-				bool flag = this._sock != null && this._sock.Connected;
-				if (flag)
+				if (this._sock != null && this._sock.Connected)
 				{
 					this._sock.Send(Encoding.UTF8.GetBytes(response + "\r\n"));
 				}
@@ -129,8 +116,7 @@ namespace com.lover.common
 		{
 			try
 			{
-				bool flag = this._sock != null;
-				if (flag)
+				if (this._sock != null)
 				{
 					this._sock.Disconnect(true);
 				}

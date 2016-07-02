@@ -13,13 +13,11 @@ namespace com.lover.common
 
 		public static void initManager(string resName, string loc)
 		{
-			bool flag = resName == null || resName == "";
-			if (flag)
+			if (resName == null || resName == "")
 			{
 				throw new Exception("必须指定语言资源名");
 			}
-			bool flag2 = loc == null || loc == "";
-			if (flag2)
+			if (loc == null || loc == "")
 			{
 				loc = "zh_CN";
 			}
@@ -29,26 +27,18 @@ namespace com.lover.common
 
 		public static string getString(string key)
 		{
-			bool flag = LocMgr._resMgr == null;
-			string result;
-			if (flag)
-			{
-				result = "";
-			}
-			else
-			{
-				string text;
-				try
-				{
-					text = LocMgr._resMgr.GetString(key, LocMgr._culture);
-				}
-				catch
-				{
-					text = "";
-				}
-				result = text;
-			}
-			return result;
+            if (LocMgr._resMgr == null) return "";
+
+            string text;
+            try
+            {
+                text = LocMgr._resMgr.GetString(key, LocMgr._culture);
+            }
+            catch
+            {
+                text = "";
+            }
+            return text;
 		}
 	}
 }

@@ -110,6 +110,8 @@ namespace com.lover.astd.common.model
 
 		public bool _is_new_trade;
 
+        public bool _is_refine_bintie;
+
 		public int _max_active = 420;
 
 		public int _can_buy_active_count;

@@ -19,26 +19,23 @@ namespace com.lover.common
 
 		public void log(string text)
 		{
-			bool flag = !this._enable;
-			if (!flag)
-			{
-				FileInfo fileInfo = new FileInfo(this._filename);
-				bool flag2 = !fileInfo.Exists;
-				FileStream fileStream;
-				if (flag2)
-				{
-					fileStream = fileInfo.Create();
-				}
-				else
-				{
-					fileStream = fileInfo.Open(FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
-				}
-				StreamWriter streamWriter = new StreamWriter(fileStream, Encoding.UTF8);
-				DateTime now = DateTime.Now;
-				streamWriter.WriteLine(string.Format("[{0:G}]:{1}", now, text));
-				streamWriter.Close();
-				fileStream.Close();
-			}
+            if (!this._enable) return;
+
+            FileInfo fileInfo = new FileInfo(this._filename);
+            FileStream fileStream;
+            if (!fileInfo.Exists)
+            {
+                fileStream = fileInfo.Create();
+            }
+            else
+            {
+                fileStream = fileInfo.Open(FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
+            }
+            StreamWriter streamWriter = new StreamWriter(fileStream, Encoding.UTF8);
+            DateTime now = DateTime.Now;
+            streamWriter.WriteLine(string.Format("[{0:G}]:{1}", now, text));
+            streamWriter.Close();
+            fileStream.Close();
 		}
 	}
 }

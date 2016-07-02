@@ -42,13 +42,13 @@ namespace com.lover.astd.common.config
 		static GlobalConfig()
 		{
 			GlobalConfig.isManager = false;
-			GlobalConfig.HomeUrl = "http://www.whohelpyou.com";
-			GlobalConfig.Version = "傲视天地小助手v0.6454";
+			GlobalConfig.HomeUrl = "http://bbs.aoshitang.com";
+			GlobalConfig.Version = "傲视天地小助手 lua版";
 			GlobalConfig.isDebug = false;
 			if (GlobalConfig.isManager)
 			{
-				GlobalConfig.HomeUrl = "http://www.whohelpyou.com";
-				GlobalConfig.Version = "傲视天地小助手离线版 v0.2";
+                GlobalConfig.HomeUrl = "http://bbs.aoshitang.com";
+                GlobalConfig.Version = "傲视天地小助手 lua版";
 			}
 		}
 
