@@ -1,4 +1,0 @@
-F:\JC\astd\LuaInterface\bin\Debug\LuaInterface.dll
-F:\JC\astd\LuaInterface\bin\Debug\LuaInterface.pdb
-F:\JC\astd\LuaInterface\obj\Debug\LuaInterface.dll
-F:\JC\astd\LuaInterface\obj\Debug\LuaInterface.pdb
