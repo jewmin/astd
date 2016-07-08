@@ -39,20 +39,12 @@
   <ItemGroup>
     <Reference Include="AxSHDocVw, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\AxSHDocVw.dll</HintPath>
-    </Reference>
-    <Reference Include="LuaInterface">
-      <HintPath>C:\Program Files (x86)\Lua\5.1\clibs\LuaInterface.dll</HintPath>
+      <HintPath>..\libs\AxSHDocVw.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.mshtml, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>bin\Debug\Microsoft.mshtml.dll</HintPath>
-    </Reference>
-    <Reference Include="SHDocVw, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>bin\Debug\SHDocVw.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -61,7 +53,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="weaponcalc">
-      <HintPath>..\aso\bin\Debug\weaponcalc.exe</HintPath>
+      <HintPath>..\libs\weaponcalc.exe</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -215,6 +207,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="lua\astd.lua" />
+    <None Include="lua\exe\movable.lua" />
+    <None Include="lua\module\global.lua" />
+    <None Include="lua\module\refine.lua" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\com.lover.astd.common\com.lover.astd.common.csproj">
@@ -224,6 +220,10 @@
     <ProjectReference Include="..\com.lover.common\com.lover.common.csproj">
       <Project>{7770831E-B63D-4A24-B90D-B4C092FE592A}</Project>
       <Name>com.lover.common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LuaInterface\LuaInterface.csproj">
+      <Project>{9C5EAAC1-5452-40E0-9E39-2C30A5EBC7D8}</Project>
+      <Name>LuaInterface</Name>
     </ProjectReference>
     <ProjectReference Include="..\System.Net.Json\System.Net.Json.csproj">
       <Project>{517CCC3E-5425-4FF3-8707-D972828B6E52}</Project>
@@ -236,34 +236,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="laptop.ico" />
-    <Content Include="协议\决斗.xml" />
-    <Content Include="协议\决斗2.xml" />
-    <Content Include="协议\协议.xml" />
-    <Content Include="协议\地区区域.xml" />
-    <Content Include="协议\天降奇兵.xml" />
-    <Content Include="协议\小秘书.xml" />
-    <Content Include="协议\悬赏.xml" />
-    <Content Include="协议\战绩.xml" />
-    <Content Include="协议\摇钱树.xml" />
-    <Content Include="协议\攻击.xml" />
-    <Content Include="协议\新世界.xml" />
-    <Content Include="协议\武将.xml" />
-    <Content Include="协议\每日登录.xml" />
-    <Content Include="协议\炼化.xml" />
-    <Content Include="协议\玩家信息.xml" />
-    <Content Include="协议\璞玉矿.xml" />
-    <Content Include="协议\监狱.xml" />
-    <Content Include="协议\神灵降福.xml" />
-    <Content Include="协议\祭祀.xml" />
-    <Content Include="协议\精炼.xml" />
-    <Content Include="协议\精炼2.xml" />
-    <Content Include="协议\精炼3.xml" />
-    <Content Include="协议\精炼4.xml" />
-    <Content Include="协议\纺织.xml" />
-    <Content Include="协议\终极探宝.xml" />
-    <Content Include="协议\终极探宝2.xml" />
-    <Content Include="协议\终极探宝3.xml" />
-    <Content Include="协议\通商.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

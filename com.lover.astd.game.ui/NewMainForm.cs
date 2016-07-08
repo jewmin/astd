@@ -390,7 +390,7 @@ namespace com.lover.astd.game.ui
             lbl_tempStatus.Text = _tempExe.getStatus();
             ILogger logger = new TempLogger(this);
             ProtocolMgr proto = new ProtocolMgr(_gameUser, logger, this, _gameurl, _jsessionid, _factory);
-            _tempExe.setVariables(proto, logger, this, _gameUser, _account.GameConf, _factory, lua_mgr_);
+            _tempExe.setVariables(proto, logger, this, _gameUser, _account.GameConf, _factory);
             _tempExe.setOtherConf(_account.OtherConf);
             _tempExe.init_data();
             startTempServer();
@@ -483,7 +483,7 @@ namespace com.lover.astd.game.ui
 
         private void logMeSafe(string logtext)
         {
-            if (logText.InvokeRequired)
+            if (logText.InvokeRequired && !logText.IsDisposed)
             {
                 logText.Invoke(new logMeDelegate(logMe), new object[] { logtext });
                 return;
@@ -493,6 +493,10 @@ namespace com.lover.astd.game.ui
 
         private void logMe(string logtext)
         {
+            if (logText == null || logText.IsDisposed)
+            {
+                return;
+            }
             string text = string.Format("[{0:MM-dd HH:mm:ss}]: {1}", _factory.TmrMgr.DateTimeNow, logtext);
             logText.AppendText(text);
             logText.Select(logText.Text.Length - text.Length, text.Length);
@@ -532,7 +536,7 @@ namespace com.lover.astd.game.ui
             {
                 _logDelegate = new LogDelegate(Log);
             }
-            if (logText.InvokeRequired)
+            if (logText.InvokeRequired && !logText.IsDisposed)
             {
                 if (IsHandleCreated)
                 {
@@ -556,7 +560,7 @@ namespace com.lover.astd.game.ui
             }
             if (level >= LogLevel.Debug)
             {
-                if (logText == null)
+                if (logText == null || logText.IsDisposed)
                 {
                     return;
                 }
@@ -749,14 +753,15 @@ namespace com.lover.astd.game.ui
                         _account.OtherConf = new OtherConfig(EnumString.getString(_account.Server_type), _account.ServerId, _gameUser.Username);
                         _account.OtherConf.loadSettings();
                     }
-                    buildServers();
-                    lua_mgr_ = new LuaMgr(protocolMgr, this, _factory, _account.GameConf, _account.OtherConf, _gameUser);
-                    _exeMgr.setExeVariables(protocolMgr, this, this, _gameUser, _account.GameConf, _account.OtherConf, _factory, lua_mgr_);
                     if (_logger == null)
                     {
                         _logger = new LogHelper(EnumString.getString(_account.Server_type), _account.ServerId, _gameUser.Username, "");
                     }
+                    buildServers();
+                    lua_mgr_ = new LuaMgr(protocolMgr, this, _factory, _account.GameConf, _account.OtherConf, _gameUser);
+                    _exeMgr.setExeVariables(protocolMgr, this, this, _gameUser, _account.GameConf, _account.OtherConf, _factory);
                     _exeMgr.init_data();
+                    lua_mgr_.CreateVM(_exeMgr);
                     init_completed();
                 }
             }
@@ -807,114 +812,6 @@ namespace com.lover.astd.game.ui
 
         private void buildServers()
         {
-            if (GlobalConfig.isDebug)
-            {
-                _settingMgr.addSetting(new CommonServer(this));
-                _settingMgr.addSetting(new BuildingServer(this));
-                _settingMgr.addSetting(new HeroTrainServer(this));
-                _settingMgr.addSetting(new HeroWashServer(this));
-                _settingMgr.addSetting(new SecretaryServer(this));
-                _settingMgr.addSetting(new QhServer(this));
-                _settingMgr.addSetting(new QiFuServer(this));
-                _settingMgr.addSetting(new BaiShenServer(this));
-                _settingMgr.addSetting(new ShenHuoServer(this));
-                _settingMgr.addSetting(new MhServer(this));
-                _settingMgr.addSetting(new MerchantServer(this));
-                _settingMgr.addSetting(new DailyWeaponServer(this));
-                _settingMgr.addSetting(new WeaponServer(this));
-                _settingMgr.addSetting(new StoreServer(this));
-                _settingMgr.addSetting(new PolishServer(this));
-                _settingMgr.addSetting(new DinnerServer(this));
-                _settingMgr.addSetting(new FeteServer(this));
-                _settingMgr.addSetting(new ImposeServer(this));
-                _settingMgr.addSetting(new MarketServer(this));
-                _settingMgr.addSetting(new MovableServer(this));
-                _settingMgr.addSetting(new StockServer(this));
-                _settingMgr.addSetting(new StoneServer(this));
-                _settingMgr.addSetting(new BattleServer(this));
-                _settingMgr.addSetting(new AttackServer(this));
-                _settingMgr.addSetting(new ResCampaignServer(this));
-                _settingMgr.addSetting(new ArchServer(this));
-                _settingMgr.addSetting(new BoatServer(this));
-                _settingMgr.addSetting(new YueBingServer(this));
-                _settingMgr.addSetting(new CrossPlatformCompeteServer(this));
-                _settingMgr.addSetting(new DailyTreasureGameServer(this));
-                _settingMgr.addSetting(new GemFlopServer(this));
-                _settingMgr.addSetting(new SilverFlopServer(this));
-                _settingMgr.addSetting(new JailEventServer(this));
-                _settingMgr.addSetting(new KfBanquetServer(this));
-                _settingMgr.addSetting(new GiftEventServer(this));
-                _settingMgr.addSetting(new PlayerCompeteServer(this));
-                _settingMgr.addSetting(new TreasureGameServer(this));
-                _settingMgr.addSetting(new WorldArmyServer(this));
-                _settingMgr.addSetting(new FestivalEventServer(this));
-                _settingMgr.addSetting(new TroopFeedbackServer(this));
-                _settingMgr.addSetting(new SuperFanpaiServer(this));
-                _settingMgr.addSetting(new TowerServer(this));
-                _settingMgr.addSetting(new TroopTurntableServer(this));
-                _settingMgr.addSetting(new CakeServer(this));
-                _settingMgr.addSetting(new GemDumpServer(this));
-                _settingMgr.addSetting(new NewDayTreasureGameServer(this));
-                _settingMgr.addSetting(new BaoshiStoneServer(this));
-                _settingMgr.addSetting(new WarChariotServer(this));
-                _settingMgr.addSetting(new BGServer(this));
-                _settingMgr.addSetting(new KfRankServer(this));
-                _settingMgr.addSetting(new QingmingServer(this));
-                _exeMgr.addExe(new CommonExe());
-                _exeMgr.addExe(new PingExe());
-                _exeMgr.addExe(new BuildingExe());
-                _exeMgr.addExe(new HeroTrainExe());
-                _exeMgr.addExe(new HeroWashExe());
-                _exeMgr.addExe(new SecretaryExe());
-                _exeMgr.addExe(new MovableExe());
-                _exeMgr.addExe(new QhExe());
-                _exeMgr.addExe(new MhExe());
-                _exeMgr.addExe(new QiFuExe());
-                _exeMgr.addExe(new BaiShenExe());
-                _exeMgr.addExe(new ShenHuoExe());
-                _exeMgr.addExe(new MerchantExe());
-                _exeMgr.addExe(new DailyWeaponExe());
-                _exeMgr.addExe(new WeaponExe());
-                _exeMgr.addExe(new StoreExe());
-                _exeMgr.addExe(new PolishExe());
-                _exeMgr.addExe(new DinnerExe());
-                _exeMgr.addExe(new FeteExe());
-                _exeMgr.addExe(new ImposeExe());
-                _exeMgr.addExe(new MarketExe());
-                _exeMgr.addExe(new StockExe());
-                _exeMgr.addExe(new StoneExe());
-                _exeMgr.addExe(new BattleExe());
-                _exeMgr.addExe(new AttackExe());
-                _exeMgr.addExe(new ResCampaignExe());
-                _exeMgr.addExe(new ArchExe());
-                _exeMgr.addExe(new BoatExe());
-                _exeMgr.addExe(new YueBingExe());
-                _exeMgr.addExe(new CrossplatformCompeteExe());
-                _exeMgr.addExe(new DailyTreasureGameExe());
-                _exeMgr.addExe(new GemFlopExe());
-                _exeMgr.addExe(new SilverFlopExe());
-                _exeMgr.addExe(new JailEventExe());
-                _exeMgr.addExe(new KfBanquetExe());
-                _exeMgr.addExe(new GiftEventExe());
-                _exeMgr.addExe(new PlayerCompeteExe());
-                _exeMgr.addExe(new TreasureGameExe());
-                _exeMgr.addExe(new WorldArmyExe());
-                _exeMgr.addExe(new FestivalEventExe());
-                _exeMgr.addExe(new TroopFeedbackExe());
-                _exeMgr.addExe(new SuperFanpaiExe());
-                _exeMgr.addExe(new TowerExe());
-                _exeMgr.addExe(new TroopTurntableExe());
-                _exeMgr.addExe(new CakeExe());
-                _exeMgr.addExe(new GemDumpExe());
-                _exeMgr.addExe(new NewDayTreasureGameExe());
-                _exeMgr.addExe(new BaoshiStoneExe());
-                _exeMgr.addExe(new WarChariotExe());
-                _exeMgr.addExe(new BGExe());
-                _exeMgr.addExe(new KFRankExe());
-                _exeMgr.addExe(new QingmingExe());
-                _exeMgr.addExe(new BigHeroTrainExe());
-                return;
-            }
             _settingMgr.addSetting(new CommonServer(this));
             _settingMgr.addSetting(new BuildingServer(this));
             _settingMgr.addSetting(new HeroTrainServer(this));
@@ -972,7 +869,7 @@ namespace com.lover.astd.game.ui
             _exeMgr.addExe(new HeroTrainExe());
             _exeMgr.addExe(new HeroWashExe());
             _exeMgr.addExe(new SecretaryExe());
-            _exeMgr.addExe(new MovableExe());
+            //_exeMgr.addExe(new MovableExe());
             _exeMgr.addExe(new QhExe());
             _exeMgr.addExe(new MhExe());
             _exeMgr.addExe(new QiFuExe());
@@ -1564,7 +1461,7 @@ namespace com.lover.astd.game.ui
 
         private void menu_about_Click(object sender, EventArgs e)
         {
-            UiUtils.getInstance().info("本程序仅仅是为了个人测试代码架构设计, 如果冒犯了您的利益, 请立即与我联系, QQ群: 171935400");
+            UiUtils.getInstance().info("本程序仅用于内部学习与交流，仅供爱好者测试，请于测试后24小时内自行删除！");
         }
 
         private void menu_protocol_viewer_Click(object sender, EventArgs e)
@@ -1649,8 +1546,8 @@ namespace com.lover.astd.game.ui
 
         private void menu_test_Click(object sender, EventArgs e)
         {
-            ProtocolMgr protocolMgr = new ProtocolMgr(_gameUser, this, this, _gameurl, _jsessionid, _factory);
-            object[] result = lua_mgr_.CallFunction("movable_execute");
+            //ProtocolMgr protocolMgr = new ProtocolMgr(_gameUser, this, this, _gameurl, _jsessionid, _factory);
+            //object[] result = lua_mgr_.CallFunction("movable_execute");
         }
 
         private void menu_default_Click(object sender, EventArgs e)
@@ -2102,7 +1999,8 @@ namespace com.lover.astd.game.ui
 
         private void menu_lua_Click(object sender, EventArgs e)
         {
-            lua_mgr_.CreateVM();
+            menu_stopServer_Click(null, null);
+            lua_mgr_.CreateVM(_exeMgr);
         }
     }
 }

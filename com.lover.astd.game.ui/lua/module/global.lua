@@ -1,5 +1,5 @@
 -- 全局方法
-local global = {}
+global = {}
 
 -- 宝石性价比，返回1级宝石等价金币
 global.getGemPrice = function()
@@ -20,17 +20,15 @@ end
 
 -- 可用金币
 global.getGoldAvailable = function()
-	return global.getAvailable(ConfigStrings.gold_reserve, user.Gold)
+	return global.getAvailable(ConfigStrings.gold_reserve, User().Gold)
 end
 
 -- 可用玉石
 global.getStoneAvailable = function()
-	return global.getAvailable(ConfigStrings.stone_reserve, user.Stone)
+	return global.getAvailable(ConfigStrings.stone_reserve, User().Stone)
 end
 
 -- 可用银币
 global.getSilverAvailable = function()
-	return global.getAvailable(ConfigStrings.silver_reserve, user.Silver)
+	return global.getAvailable(ConfigStrings.silver_reserve, User().Silver)
 end
-
-return global

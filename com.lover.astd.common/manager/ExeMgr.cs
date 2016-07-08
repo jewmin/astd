@@ -28,9 +28,9 @@ namespace com.lover.astd.common.manager
 
 		private ProtocolMgr _proto;
 
-        private LuaMgr _lua;
-
 		private ILogger _logger;
+
+        private IServer _server;
 
 		private List<IExecute> _exes = new List<IExecute>();
 
@@ -102,6 +102,14 @@ namespace com.lover.astd.common.manager
             this._exes.Add(exe);
 		}
 
+        public void removeExe(IExecute exe)
+        {
+            if (exe != null)
+            {
+                this._exes.Remove(exe);
+            }
+        }
+
         public void refreshConfig(GameConfig conf)
         {
             for (int i = 0; i < this._exes.Count; i++)
@@ -115,19 +123,21 @@ namespace com.lover.astd.common.manager
             this.clear_runtime();
         }
 
-		public void setExeVariables(ProtocolMgr proto, ILogger logger, IServer server, User user, GameConfig conf, OtherConfig otherConf, ServiceFactory factory, LuaMgr lua)
+		public void setExeVariables(ProtocolMgr proto, ILogger logger, IServer server, User user, GameConfig conf, OtherConfig otherConf, ServiceFactory factory)
 		{
 			_factory = factory;
 			_proto = proto;
-            _lua = lua;
 			_logger = logger;
+            _server = server;
             _otherConf = otherConf;
+            _user = user;
+            _conf = conf;
             for (int i = 0; i < _exes.Count; i++)
             {
                 IExecute exe = _exes[i];
                 if (exe != null)
                 {
-                    exe.setVariables(proto, logger, server, user, conf, factory, lua);
+                    exe.setVariables(proto, logger, server, user, conf, factory);
                     exe.setOtherConf(_otherConf);
                 }
             }

@@ -6,6 +6,8 @@ using System.IO;
 using com.lover.astd.common.config;
 using com.lover.astd.common.model;
 using System.Drawing;
+using com.lover.astd.common.logicexe;
+using com.lover.astd.common.manager;
 
 namespace com.lover.astd.common.logic
 {
@@ -28,11 +30,11 @@ namespace com.lover.astd.common.logic
             conf_ = conf;
             other_conf_ = other_conf;
             user_ = user;
-            CreateVM();
         }
 
-        public void CreateVM()
+        public void CreateVM(ExeMgr exeMgr)
         {
+            if (lua_ != null) CallFunction("finalization", exeMgr);
             lua_ = new Lua();
             lua_.RegisterFunction("User", this, this.GetType().GetMethod("GetUser"));
             lua_.RegisterFunction("ILogger", this, this.GetType().GetMethod("GetLogger"));
@@ -49,7 +51,9 @@ namespace com.lover.astd.common.logic
             lua_.RegisterFunction("BigHeroManager", factory_, factory_.GetType().GetMethod("getBigHeroManager"));
             lua_.RegisterFunction("HeroManager", factory_, factory_.GetType().GetMethod("getHeroManager"));
             lua_.RegisterFunction("L", this, this.GetType().GetMethod("UTF8toUnicode"));
+            lua_.RegisterFunction("CreateLuaExe", this, this.GetType().GetMethod("CreateLuaExe"));
             lua_.DoFile(Directory.GetCurrentDirectory() + lua_file_);
+            CallFunction("initialization", exeMgr);
             logger_.log("加载lua虚拟机", Color.Violet);
         }
 
@@ -68,23 +72,30 @@ namespace com.lover.astd.common.logic
             return logger_;
         }
 
+        public string UTF8toUnicode(string utf8_string)
+        {
+            byte[] utf8_bytes = Encoding.Default.GetBytes(utf8_string);
+            byte[] unicode_bytes = Encoding.Convert(Encoding.UTF8, Encoding.Default, utf8_bytes, 0, utf8_bytes.Length);
+            string unicode_string = Encoding.Default.GetString(unicode_bytes, 0, unicode_bytes.Length);
+            return unicode_string;
+        }
+
+        public LuaExeBase CreateLuaExe(string name, string readable, int id)
+        {
+            LuaExeBase lua_exe = new LuaExeBase(this);
+            lua_exe.setName(name);
+            lua_exe.setReadableName(readable);
+            lua_exe.setLuaId(id);
+            return lua_exe;
+        }
+
         public object[] CallFunction(string func, params object[] args)
         {
-            if (lua_ == null)
-            {
-                logger_.logError(string.Format("call lua function ({0}) error: Lua is null", func));
-                return null;
-            }
-
-            LuaFunction lf = lua_.GetFunction(func);
-            if (lf == null)
-            {
-                logger_.logError(string.Format("call lua function ({0}) error: LuaFunction is null", func));
-                return null;
-            }
-
             try
             {
+                if (lua_ == null) throw new Exception("lua_state cannot be null");
+                LuaFunction lf = lua_.GetFunction(func);
+                if (lf == null) throw new Exception(string.Format("lua_function cannot be found"));
                 return lf.Call(args);
             }
             catch (Exception ex)
@@ -92,14 +103,6 @@ namespace com.lover.astd.common.logic
                 logger_.logError(string.Format("call lua function ({0}) error: {1}", func, ex.Message));
                 return null;
             }
-        }
-
-        public string UTF8toUnicode(string utf8_string)
-        {
-            byte[] utf8_bytes = Encoding.Default.GetBytes(utf8_string);
-            byte[] unicode_bytes = Encoding.Convert(Encoding.UTF8, Encoding.Default, utf8_bytes, 0, utf8_bytes.Length);
-            string unicode_string = Encoding.Default.GetString(unicode_bytes, 0, unicode_bytes.Length);
-            return unicode_string;
         }
     }
 }

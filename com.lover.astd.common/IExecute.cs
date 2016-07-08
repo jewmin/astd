@@ -23,7 +23,7 @@ namespace com.lover.astd.common
 
 		long getNextExeTime();
 
-		void setVariables(ProtocolMgr proto, ILogger logger, IServer server, User u, GameConfig conf, ServiceFactory factory, LuaMgr lua);
+        void setVariables(ProtocolMgr proto, ILogger logger, IServer server, User u, GameConfig conf, ServiceFactory factory);
 
         void setOtherConf(OtherConfig conf);
 

@@ -1,18 +1,19 @@
--- °ÁÊÓÌìµØÍâ¹Ò½Å±¾
--- User()
--- ILogger()
--- GameConfig(string name)
--- OtherConfig(string name)
--- ProtocolMgr()
--- MiscManager()
--- BattleManager()
--- ActivityManager()
--- BuildingManager()
--- TroopManager()
--- EquipManager()
--- CampaignManager()
--- BigHeroManager()
--- HeroManager()
+-- °ÁÊÓÌìµØ
+-- User() Íæ¼Ò
+-- ILogger() ÈÕÖ¾
+-- GameConfig(string name) ÓÎÏ·ÅäÖÃ
+-- OtherConfig(string name) ºÚÃûµ¥ÅäÖÃ
+-- ProtocolMgr() Ğ­Òé
+-- MiscManager() ÔÓÆßÔÓ°Ë
+-- BattleManager() Õ½¶·
+-- ActivityManager() »î¶¯
+-- BuildingManager() ½¨Öş
+-- TroopManager() ±øÁ¦
+-- EquipManager() ×°±¸
+-- CampaignManager() Õ½ÒÛ
+-- BigHeroManager() ´ó½«
+-- HeroManager() Îä½«
+-- CreateLuaExe(string name, string readable, int id) ´´½¨exe
 
 luanet.load_assembly("System.Xml")
 luanet.load_assembly("mscorlib")
@@ -22,25 +23,57 @@ ConfigStrings = luanet.import_type("com.lover.astd.common.ConfigStrings") -- ÅäÖ
 ActivityType = luanet.import_type("com.lover.astd.common.model.enumer.ActivityType") -- »î¶¯ÀàĞÍ
 ExeCode = luanet.import_type("com.lover.astd.common.model.enumer.ExeCode") -- ½á¹ûÂë
 
-user = User() -- Íæ¼Ò
-logger = ILogger() -- ÈÕÖ¾
-proto_mgr = ProtocolMgr() -- Ğ­Òé¹ÜÀíÆ÷
-misc_mgr = MiscManager() -- ÔÓÆßÔÓ°Ë¹ÜÀíÆ÷
-battle_mgr = BattleManager() -- Õ½¶·¹ÜÀíÆ÷
-activity_mgr = ActivityManager() -- »î¶¯¹ÜÀíÆ÷
-building_mgr = BuildingManager() -- ½¨Öş¹ÜÀíÆ÷
-troop_mgr = TroopManager() -- ±øÁ¦¹ÜÀíÆ÷
-equip_mgr = EquipManager() -- ×°±¸¹ÜÀíÆ÷
-campaign_mgr = CampaignManager() -- Õ½ÒÛ¹ÜÀíÆ÷
-big_hero_mgr = BigHeroManager() -- ´ó½«ÑµÁ·¹ÜÀíÆ÷
-hero_mgr = HeroManager() -- Îä½«ÑµÁ·¹ÜÀíÆ÷
+InitFnTable = {}
+FinaFnTable = {}
 
-global = require("module.global") -- È«¾ÖÄ£¿é
-refine = require("module.refine") -- Á¶ÖÆÄ£¿é
+require("config.luaexeid") -- luaÖ´ĞĞÊÂ¼şId
+require("module.event") -- ÊÂ¼şÄ£¿é
+require("module.global") -- È«¾ÖÄ£¿é
+require("module.refine") -- Á¶ÖÆÄ£¿é
+require("module.factory") -- ¹¤³§Ä£¿é
+require("exe.baijiayan") -- °Ù¼ÒÑç
+require("exe.movable") -- °Ù¼ÒÑç
 
-movable_exe = require("exe.movable") -- ĞĞ¶¯Á¦
-
--- ĞĞ¶¯Á¦
-function movable_execute()
-	return movable_exe.execute()
+-- Ö´ĞĞexecute
+function OnLuaExecute(exeId)
+	-- ILogger():logInfo(string.format("OnLuaExecute(%d)", exeId))
+	local func = EventCallDispatcher.LuaExeExecute[exeId]
+	if func then return func() end
 end
+
+-- Ìí¼Óexe
+function OnAddExe(exeMgr)
+	ILogger():logInfo("OnAddExe")
+	BaijiayanExe.exe:setVariables(exeMgr._proto, exeMgr._logger, exeMgr._server, exeMgr._user, exeMgr._conf, exeMgr._factory)
+	BaijiayanExe.exe:setOtherConf(exeMgr._otherConf);
+	BaijiayanExe.exe:init_data()
+	exeMgr:addExe(BaijiayanExe.exe)
+	MovableExe.exe:setVariables(exeMgr._proto, exeMgr._logger, exeMgr._server, exeMgr._user, exeMgr._conf, exeMgr._factory)
+	MovableExe.exe:setOtherConf(exeMgr._otherConf);
+	MovableExe.exe:init_data()
+	exeMgr:addExe(MovableExe.exe)
+end
+
+-- É¾³ıexe
+function OnDelExe(exeMgr)
+	ILogger():logInfo("OnDelExe")
+	exeMgr:removeExe(BaijiayanExe.exe)
+	exeMgr:removeExe(MovableExe.exe)
+end
+
+-- ³õÊ¼»¯º¯Êı
+function initialization(exeMgr)
+	for i = 1, table.getn(InitFnTable) do
+		InitFnTable[i](exeMgr)
+	end
+end
+
+-- Îö¹¹»¯º¯Êı
+function finalization(exeMgr)
+	for i = 1, table.getn(FinaFnTable) do
+		FinaFnTable[i](exeMgr)
+	end
+end
+
+table.insert(InitFnTable, OnAddExe)
+table.insert(FinaFnTable, OnDelExe)

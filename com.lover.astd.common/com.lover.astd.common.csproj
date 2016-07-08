@@ -31,9 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LuaInterface">
-      <HintPath>C:\Program Files (x86)\Lua\5.1\clibs\LuaInterface.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -88,7 +85,6 @@
     <Compile Include="logicexe\economy\FeteExe.cs" />
     <Compile Include="logicexe\economy\ImposeExe.cs" />
     <Compile Include="logicexe\economy\MarketExe.cs" />
-    <Compile Include="logicexe\economy\MovableExe.cs" />
     <Compile Include="logicexe\economy\StockExe.cs" />
     <Compile Include="logicexe\economy\StoneExe.cs" />
     <Compile Include="logicexe\equip\DailyWeaponExe.cs" />
@@ -103,6 +99,7 @@
     <Compile Include="logicexe\hero\BigHeroTrainExe.cs" />
     <Compile Include="logicexe\hero\HeroTrainExe.cs" />
     <Compile Include="logicexe\hero\HeroWashExe.cs" />
+    <Compile Include="logicexe\LuaExeBase.cs" />
     <Compile Include="logicexe\temp\CampaignExe.cs" />
     <Compile Include="logicexe\temp\CreditWashExe.cs" />
     <Compile Include="logicexe\temp\DumpStoreExe.cs" />
@@ -242,6 +239,10 @@
     <ProjectReference Include="..\com.lover.common\com.lover.common.csproj">
       <Project>{7770831E-B63D-4A24-B90D-B4C092FE592A}</Project>
       <Name>com.lover.common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LuaInterface\LuaInterface.csproj">
+      <Project>{9C5EAAC1-5452-40E0-9E39-2C30A5EBC7D8}</Project>
+      <Name>LuaInterface</Name>
     </ProjectReference>
     <ProjectReference Include="..\System.Net.Json\System.Net.Json.csproj">
       <Project>{517CCC3E-5425-4FF3-8707-D972828B6E52}</Project>

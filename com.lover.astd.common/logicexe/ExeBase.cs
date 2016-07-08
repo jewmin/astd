@@ -20,8 +20,6 @@ namespace com.lover.astd.common.logicexe
 
 		protected ProtocolMgr _proto;
 
-        protected LuaMgr _lua;
-
 		protected IServer _server;
 
 		protected User _user;
@@ -70,22 +68,22 @@ namespace com.lover.astd.common.logicexe
 			return this._nextExeTimeStamp;
 		}
 
-		public void setName(string name)
+		public virtual void setName(string name)
 		{
 			this._name = name;
 		}
 
-		public string getName()
+		public virtual string getName()
 		{
 			return this._name;
 		}
 
-		public void setReadableName(string rname)
+		public virtual void setReadableName(string rname)
 		{
 			this._readable = rname;
 		}
 
-		public string getReadableName()
+		public virtual string getReadableName()
 		{
 			return this._readable;
 		}
@@ -95,7 +93,7 @@ namespace com.lover.astd.common.logicexe
 			this._user.addUiToQueue(this._name);
 		}
 
-		public void setVariables(ProtocolMgr proto, ILogger logger, IServer server, User u, GameConfig conf, ServiceFactory factory, LuaMgr lua)
+		public void setVariables(ProtocolMgr proto, ILogger logger, IServer server, User u, GameConfig conf, ServiceFactory factory)
 		{
 			this._proto = proto;
 			this._logger = logger;
@@ -103,7 +101,6 @@ namespace com.lover.astd.common.logicexe
 			this._user = u;
 			this._conf = conf;
 			this._factory = factory;
-            this._lua = lua;
 		}
 
 		public void refreshConfig(GameConfig conf)

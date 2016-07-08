@@ -9465,7 +9465,7 @@ namespace com.lover.astd.common.logic
             int canget = 0;
             int boxnum = 0;
             int needtoken = 100;
-            int havegetlast = 0;
+            int havegetlast = 1;
             int state = 0;
             XmlDocument cmdResult = xml.CmdResult;
             XmlNode node = cmdResult.SelectSingleNode("/results/message/canready");
@@ -9493,7 +9493,7 @@ namespace com.lover.astd.common.logic
             {
                 int.TryParse(node.InnerText, out needtoken);
             }
-            node = cmdResult.SelectSingleNode("/results/message/havegetlast");
+            node = cmdResult.SelectSingleNode("/results/message/boxinfo/havegetlast");
             if (node != null)
             {
                 int.TryParse(node.InnerText, out havegetlast);
@@ -9506,6 +9506,10 @@ namespace com.lover.astd.common.logic
             if (state == 1)
             {
                 recvTaskReward(protocol, logger);
+            }
+            if (havegetlast == 0)
+            {
+                recvLastReward(protocol, logger);
             }
             if (boxnum > 0)
             {
@@ -9612,7 +9616,26 @@ namespace com.lover.astd.common.logic
             if (xml != null && xml.CmdSucceed)
             {
                 XmlDocument cmdResult = xml.CmdResult;
-                logInfo(logger, "领取对战任务奖励");
+                XmlNode xmlNode = cmdResult.SelectSingleNode("/results/message/boxreward");
+                if (xmlNode != null)
+                {
+                    logInfo(logger, string.Format("领取对战任务奖励, 宝箱+{0}", xmlNode.InnerText));
+                }
+            }
+        }
+
+        public void recvLastReward(ProtocolMgr protocol, ILogger logger)
+        {
+            string url = "/root/kfrank!recvLastReward.action";
+            ServerResult xml = protocol.getXml(url, "领取对战上届排名奖励");
+            if (xml != null && xml.CmdSucceed)
+            {
+                XmlDocument cmdResult = xml.CmdResult;
+                XmlNode xmlNode = cmdResult.SelectSingleNode("/results/message/boxreward");
+                if (xmlNode != null)
+                {
+                    logInfo(logger, string.Format("领取对战上届排名奖励, 宝箱+{0}", xmlNode.InnerText));
+                }
             }
         }
         #endregion
