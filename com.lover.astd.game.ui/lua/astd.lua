@@ -27,10 +27,12 @@ InitFnTable = {}
 FinaFnTable = {}
 
 require("config.luaexeid") -- lua执行事件Id
+require("config.activity") -- 活动配置
 require("module.event") -- 事件模块
 require("module.global") -- 全局模块
 require("module.refine") -- 炼制模块
 require("module.factory") -- 工厂模块
+require("module.activity") -- 活动模块
 require("exe.baijiayan") -- 百家宴
 require("exe.movable") -- 百家宴
 

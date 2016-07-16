@@ -7,7 +7,7 @@ MovableExe.id = LuaExeId.eMovable
 MovableExe.exe = LuaExeFactory.createLuaExe(MovableExe)
 
 MovableExe.execute = function()
-  ILogger():logInfo("MovableExe.execute")
+  -- ILogger():logInfo("MovableExe.execute")
   local conf = GameConfig(ConfigStrings.S_Movable)
 	if not conf.enabled or string.lower(conf.enabled) ~= "true" then
 		return MovableExe.exe:next_hour()
