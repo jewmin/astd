@@ -32,3 +32,16 @@ end
 global.getSilverAvailable = function()
 	return global.getAvailable(ConfigStrings.silver_reserve, User().Silver)
 end
+
+global.split = function(str, separator)
+	local t = {}
+	local i = 0
+	local j = 0
+	while true do
+		j = string.find(str, separator, i + 1)
+		if j == nil then break end
+		table.insert(t, string.sub(str, i + 1, j - 1))
+		i = j
+	end
+	return t
+end
