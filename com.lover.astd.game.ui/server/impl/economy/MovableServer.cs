@@ -50,10 +50,10 @@ namespace com.lover.astd.game.ui.server.impl.economy
 			}
             //保留精炼次数
             _mainForm.num_movable_refine_reserve.Value = num;
-            _mainForm.chk_movable_winter_trade.Checked = (config.ContainsKey("winter_trade") && config["winter_trade"].ToLower().Equals("true"));
-            _mainForm.chk_movable_arch_trade.Checked = (config.ContainsKey("arch_trade") && config["arch_trade"].ToLower().Equals("true"));
-            _mainForm.chk_movable_arch_refill.Checked = (config.ContainsKey("arch_refill") && config["arch_refill"].ToLower().Equals("true"));
-            _mainForm.chk_movable_arch_trade_max.Checked = (config.ContainsKey("arch_trade_max") && config["arch_trade_max"].ToLower().Equals("true"));
+            //_mainForm.chk_movable_winter_trade.Checked = (config.ContainsKey("winter_trade") && config["winter_trade"].ToLower().Equals("true"));
+            //_mainForm.chk_movable_arch_trade.Checked = (config.ContainsKey("arch_trade") && config["arch_trade"].ToLower().Equals("true"));
+            //_mainForm.chk_movable_arch_refill.Checked = (config.ContainsKey("arch_refill") && config["arch_refill"].ToLower().Equals("true"));
+            //_mainForm.chk_movable_arch_trade_max.Checked = (config.ContainsKey("arch_trade_max") && config["arch_trade_max"].ToLower().Equals("true"));
 			//拜访商盟
             if (config.ContainsKey("trade_visit"))
 			{
@@ -111,10 +111,14 @@ namespace com.lover.astd.game.ui.server.impl.economy
 			}
             config.setConfig(this.ServerName, "weave_price", _mainForm.num_movable_weave_price.Value.ToString());
             config.setConfig(this.ServerName, "refine_reserve", _mainForm.num_movable_refine_reserve.Value.ToString());
-            config.setConfig(this.ServerName, "winter_trade", _mainForm.chk_movable_winter_trade.Checked.ToString());
-            config.setConfig(this.ServerName, "arch_trade", _mainForm.chk_movable_arch_trade.Checked.ToString());
-            config.setConfig(this.ServerName, "arch_refill", _mainForm.chk_movable_arch_refill.Checked.ToString());
-            config.setConfig(this.ServerName, "arch_trade_max", _mainForm.chk_movable_arch_trade_max.Checked.ToString());
+            //config.setConfig(this.ServerName, "winter_trade", _mainForm.chk_movable_winter_trade.Checked.ToString());
+            //config.setConfig(this.ServerName, "arch_trade", _mainForm.chk_movable_arch_trade.Checked.ToString());
+            //config.setConfig(this.ServerName, "arch_refill", _mainForm.chk_movable_arch_refill.Checked.ToString());
+            //config.setConfig(this.ServerName, "arch_trade_max", _mainForm.chk_movable_arch_trade_max.Checked.ToString());
+            config.setConfig(this.ServerName, "winter_trade", "false");
+            config.setConfig(this.ServerName, "arch_trade", "false");
+            config.setConfig(this.ServerName, "arch_refill", "false");
+            config.setConfig(this.ServerName, "arch_trade_max", "false");
             config.setConfig(this.ServerName, "trade_visit", _mainForm.txt_movable_visit.Text);
             config.setConfig(this.ServerName, "trade_visit_fail", _mainForm.num_movable_visit_fail.Value.ToString());
             config.setConfig(this.ServerName, "reserve", _mainForm.num_movable_reserve.Value.ToString());

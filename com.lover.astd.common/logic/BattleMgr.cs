@@ -2183,7 +2183,12 @@ namespace com.lover.astd.common.logic
                                     }
                                     find = true;
                                     int worldevent;
-                                    int attackRet = this.attackPlayer(protocol, logger, user, area.areaid, scopeId, city.cityid, out worldevent);
+                                    int seniorslaves;
+                                    int attackRet = this.attackPlayer(protocol, logger, user, area.areaid, scopeId, city.cityid, out worldevent, out seniorslaves);
+                                    if (seniorslaves == 1)
+                                    {
+                                        _factory.getMiscManager().getSeniorJailInfo(protocol, logger);
+                                    }
                                     if (worldevent == 2)
                                     {
                                         _factory.getMiscManager().handleTradeFriend(protocol, logger, user);
@@ -2342,12 +2347,14 @@ namespace com.lover.astd.common.logic
         /// <param name="scopeId"></param>
         /// <param name="cityId"></param>
         /// <returns></returns>
-		public int attackPlayer(ProtocolMgr protocol, ILogger logger, User user, int areaId, int scopeId, int cityId, out int worldevent)
+        public int attackPlayer(ProtocolMgr protocol, ILogger logger, User user, int areaId, int scopeId, int cityId, out int worldevent, out int seniorslaves)
 		{
             worldevent = 0;
+            seniorslaves = 0;
 			string url = "/root/world!attackOtherAreaCity.action";
 			string data = string.Format("areaId={0}&scopeId={1}&cityId={2}", areaId, scopeId, cityId);
 			ServerResult serverResult = protocol.postXml(url, data, "攻击玩家");
+            //logger.logInfo("攻击结果：" + serverResult.getDebugInfo());
 			if (serverResult == null)
 			{
 				return 1;
@@ -2387,6 +2394,11 @@ namespace com.lover.astd.common.logic
             {
                 bool winside = false;
                 XmlDocument cmdResult = serverResult.CmdResult;
+                XmlNode seniorslavesXmlNode = cmdResult.SelectSingleNode("/results/seniorslaves");
+                if (seniorslavesXmlNode != null)
+                {
+                    int.TryParse(seniorslavesXmlNode.InnerText, out seniorslaves);
+                }
                 XmlNode worldeventXmlNode = cmdResult.SelectSingleNode("/results/worldevent");
                 if (worldeventXmlNode != null)
                 {
@@ -4141,8 +4153,9 @@ namespace com.lover.astd.common.logic
 
                             if (city.myspy > 0)
                             {
-                                int worldevent = 0;
-                                int attackRet = this.attackPlayer(protocol, logger, user, self_area.areaid, scopeId, city.cityid, out worldevent);
+                                int worldevent;
+                                int seniorslaves;
+                                int attackRet = this.attackPlayer(protocol, logger, user, self_area.areaid, scopeId, city.cityid, out worldevent, out seniorslaves);
                                 if (worldevent == 2)
                                 {
                                     _factory.getMiscManager().handleTradeFriend(protocol, logger, user);

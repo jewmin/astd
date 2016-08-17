@@ -487,5 +487,7 @@ namespace com.lover.astd.common
         public const string qm_round_coin = "qm_round_coin";
 
         public const string qm_drink_coin = "qm_drink_coin";
+
+        public const string kfrank_point = "kfrank_point";
 	}
 }

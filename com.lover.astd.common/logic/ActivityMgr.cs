@@ -9452,7 +9452,7 @@ namespace com.lover.astd.common.logic
         #endregion
 
         #region 对战
-        public long getMatchDetail(ProtocolMgr protocol, ILogger logger, User user)
+        public long getMatchDetail(ProtocolMgr protocol, ILogger logger, User user, int point)
         {
             string url = "/root/kfrank!getMatchDetail.action";
             ServerResult xml = protocol.getXml(url, "获取对战信息");
@@ -9467,6 +9467,7 @@ namespace com.lover.astd.common.logic
             int needtoken = 100;
             int havegetlast = 1;
             int state = 0;
+            int score = -1;
             XmlDocument cmdResult = xml.CmdResult;
             XmlNode node = cmdResult.SelectSingleNode("/results/message/canready");
             if (node != null)
@@ -9503,6 +9504,24 @@ namespace com.lover.astd.common.logic
             {
                 int.TryParse(node.InnerText, out state);
             }
+            XmlNodeList nodeList = cmdResult.SelectNodes("/results/message/selfrank/playerinfo");
+            if (nodeList != null)
+            {
+                foreach (XmlNode childnode in nodeList)
+                {
+                    node = childnode.SelectSingleNode("self");
+                    if (node != null)
+                    {
+                        node = childnode.SelectSingleNode("score");
+                        if (node != null)
+                        {
+                            int.TryParse(node.InnerText, out score);
+                        }
+                        break;
+                    }
+                }
+            }
+            logger.logInfo(string.Format("乱世风云榜 - 我的积分:{0}", score));
             if (state == 1)
             {
                 recvTaskReward(protocol, logger);
@@ -9547,6 +9566,10 @@ namespace com.lover.astd.common.logic
                         return next_halfhour();
                     }
                 }
+            }
+            if (score > 0 && score <= point)
+            {
+
             }
             return next_day_eight();
         }

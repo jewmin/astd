@@ -79,7 +79,12 @@ namespace com.lover.astd.common.logicexe.temp
                 run_times--;
                 _factory.getTroopManager().makeSureForce(_proto, _logger, 0.5);
                 int worldevent;
-                battleManager.attackPlayer(_proto, _logger, _user, pkInfo.areaId, pkInfo.scopeid, pkInfo.cityid, out worldevent);
+                int seniorslaves;
+                battleManager.attackPlayer(_proto, _logger, _user, pkInfo.areaId, pkInfo.scopeid, pkInfo.cityid, out worldevent, out seniorslaves);
+                if (seniorslaves == 1)
+                {
+                    miscManager.getSeniorJailInfo(_proto, _logger);
+                }
                 if (worldevent == 2)
                 {
                     miscManager.handleTradeFriend(_proto, _logger, _user);

@@ -251,7 +251,12 @@ namespace com.lover.astd.common.logicexe.battle
             else
             {
                 int worldevent;
-                int attackRet = battleManager.attackPlayer(this._proto, this._logger, this._user, this._user._attack_cityevent_target_areaid, this._user._attack_cityevent_target_scopeid, scopeCity.cityid, out worldevent);
+                int seniorslaves;
+                int attackRet = battleManager.attackPlayer(this._proto, this._logger, this._user, this._user._attack_cityevent_target_areaid, this._user._attack_cityevent_target_scopeid, scopeCity.cityid, out worldevent, out seniorslaves);
+                if (seniorslaves == 1)
+                {
+                    _factory.getMiscManager().getSeniorJailInfo(_proto, _logger);
+                }
                 if (worldevent == 2)
                 {
                     _factory.getMiscManager().handleTradeFriend(_proto, _logger, _user);
@@ -532,7 +537,12 @@ namespace com.lover.astd.common.logicexe.battle
                 run_times--;
                 _factory.getTroopManager().makeSureForce(_proto, _logger, 0.5);
                 int worldevent;
-                battleManager.attackPlayer(_proto, _logger, _user, pkInfo.areaId, pkInfo.scopeid, pkInfo.cityid, out worldevent);
+                int seniorslaves;
+                battleManager.attackPlayer(_proto, _logger, _user, pkInfo.areaId, pkInfo.scopeid, pkInfo.cityid, out worldevent, out seniorslaves);
+                if (seniorslaves == 1)
+                {
+                    miscManager.getSeniorJailInfo(_proto, _logger);
+                }
                 if (worldevent == 2)
                 {
                     miscManager.handleTradeFriend(_proto, _logger, _user);

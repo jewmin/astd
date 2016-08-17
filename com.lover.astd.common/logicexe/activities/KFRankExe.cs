@@ -20,8 +20,13 @@ namespace com.lover.astd.common.logicexe.activities
             {
                 return base.an_hour_later();
             }
+            int kfrank_point = 0;
+            if (config.ContainsKey(ConfigStrings.kfrank_point))
+            {
+                int.TryParse(config[ConfigStrings.kfrank_point], out kfrank_point);
+            }
             ActivityMgr activityManager = this._factory.getActivityManager();
-            return activityManager.getMatchDetail(this._proto, this._logger, this._user);
+            return activityManager.getMatchDetail(this._proto, this._logger, this._user, kfrank_point);
         }
     }
 }

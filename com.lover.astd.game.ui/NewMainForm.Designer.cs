@@ -48,6 +48,7 @@ namespace com.lover.astd.game.ui
             this.menu_reportViewer = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_protocol_viewer = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_about = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu_lua = new System.Windows.Forms.ToolStripMenuItem();
             this.login_worker = new System.ComponentModel.BackgroundWorker();
             this.tip_msg = new System.Windows.Forms.ToolTip(this.components);
             this.num_fete_6 = new System.Windows.Forms.NumericUpDown();
@@ -354,16 +355,11 @@ namespace com.lover.astd.game.ui
             this.label43 = new System.Windows.Forms.Label();
             this.num_movable_weave_count = new System.Windows.Forms.NumericUpDown();
             this.label42 = new System.Windows.Forms.Label();
-            this.label40 = new System.Windows.Forms.Label();
-            this.chk_movable_arch_refill = new System.Windows.Forms.CheckBox();
             this.label38 = new System.Windows.Forms.Label();
             this.num_movable_visit_fail = new System.Windows.Forms.NumericUpDown();
             this.label37 = new System.Windows.Forms.Label();
-            this.chk_movable_arch_trade_max = new System.Windows.Forms.CheckBox();
             this.label32 = new System.Windows.Forms.Label();
             this.num_movable_refine_reserve = new System.Windows.Forms.NumericUpDown();
-            this.chk_movable_arch_trade = new System.Windows.Forms.CheckBox();
-            this.chk_movable_winter_trade = new System.Windows.Forms.CheckBox();
             this.label30 = new System.Windows.Forms.Label();
             this.combo_movable_refine_item = new System.Windows.Forms.ComboBox();
             this.label29 = new System.Windows.Forms.Label();
@@ -461,7 +457,9 @@ namespace com.lover.astd.game.ui
             this.lbl_playerinfo = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lbl_time = new System.Windows.Forms.Label();
-            this.menu_lua = new System.Windows.Forms.ToolStripMenuItem();
+            this.groupBox23 = new System.Windows.Forms.GroupBox();
+            this.label40 = new System.Windows.Forms.Label();
+            this.nUD_kfrank_point = new System.Windows.Forms.NumericUpDown();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_6)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -567,6 +565,8 @@ namespace com.lover.astd.game.ui
             ((System.ComponentModel.ISupportInitialize)(this.num_kf_banquet_buygold)).BeginInit();
             this.logPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.subBrowser)).BeginInit();
+            this.groupBox23.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nUD_kfrank_point)).BeginInit();
             this.SuspendLayout();
             // 
             // mainMenu
@@ -705,6 +705,13 @@ namespace com.lover.astd.game.ui
             this.menu_about.Size = new System.Drawing.Size(44, 21);
             this.menu_about.Text = "关于";
             this.menu_about.Click += new System.EventHandler(this.menu_about_Click);
+            // 
+            // menu_lua
+            // 
+            this.menu_lua.Name = "menu_lua";
+            this.menu_lua.Size = new System.Drawing.Size(61, 21);
+            this.menu_lua.Text = "刷新lua";
+            this.menu_lua.Click += new System.EventHandler(this.menu_lua_Click);
             // 
             // login_worker
             // 
@@ -3576,6 +3583,7 @@ namespace com.lover.astd.game.ui
             // setPage2
             // 
             this.setPage2.BackColor = System.Drawing.Color.DarkSeaGreen;
+            this.setPage2.Controls.Add(this.groupBox23);
             this.setPage2.Controls.Add(this.groupBox22);
             this.setPage2.Controls.Add(this.groupBox21);
             this.setPage2.Controls.Add(this.groupBox20);
@@ -3604,10 +3612,9 @@ namespace com.lover.astd.game.ui
             this.groupBox22.Controls.Add(this.nUD_qm_round_coin);
             this.groupBox22.Controls.Add(this.label71);
             this.groupBox22.Controls.Add(this.chk_qingming);
-            this.groupBox22.Controls.Add(this.chk_kfrank);
-            this.groupBox22.Location = new System.Drawing.Point(545, 538);
+            this.groupBox22.Location = new System.Drawing.Point(545, 333);
             this.groupBox22.Name = "groupBox22";
-            this.groupBox22.Size = new System.Drawing.Size(285, 63);
+            this.groupBox22.Size = new System.Drawing.Size(285, 65);
             this.groupBox22.TabIndex = 58;
             this.groupBox22.TabStop = false;
             // 
@@ -3661,7 +3668,7 @@ namespace com.lover.astd.game.ui
             // chk_kfrank
             // 
             this.chk_kfrank.AutoSize = true;
-            this.chk_kfrank.Location = new System.Drawing.Point(7, 42);
+            this.chk_kfrank.Location = new System.Drawing.Point(6, 20);
             this.chk_kfrank.Name = "chk_kfrank";
             this.chk_kfrank.Size = new System.Drawing.Size(72, 16);
             this.chk_kfrank.TabIndex = 9;
@@ -4113,7 +4120,7 @@ namespace com.lover.astd.game.ui
             this.groupBox13.Controls.Add(this.chk_global_boss_key_alt);
             this.groupBox13.Controls.Add(this.chk_global_boss_key_ctrl);
             this.groupBox13.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.groupBox13.Location = new System.Drawing.Point(545, 466);
+            this.groupBox13.Location = new System.Drawing.Point(545, 535);
             this.groupBox13.Name = "groupBox13";
             this.groupBox13.Size = new System.Drawing.Size(285, 66);
             this.groupBox13.TabIndex = 51;
@@ -4229,17 +4236,12 @@ namespace com.lover.astd.game.ui
             this.groupBox2.Controls.Add(this.label43);
             this.groupBox2.Controls.Add(this.num_movable_weave_count);
             this.groupBox2.Controls.Add(this.label42);
-            this.groupBox2.Controls.Add(this.label40);
-            this.groupBox2.Controls.Add(this.chk_movable_arch_refill);
             this.groupBox2.Controls.Add(this.label38);
             this.groupBox2.Controls.Add(this.num_movable_visit_fail);
             this.groupBox2.Controls.Add(this.label37);
             this.groupBox2.Controls.Add(this.txt_movable_visit);
-            this.groupBox2.Controls.Add(this.chk_movable_arch_trade_max);
             this.groupBox2.Controls.Add(this.label32);
             this.groupBox2.Controls.Add(this.num_movable_refine_reserve);
-            this.groupBox2.Controls.Add(this.chk_movable_arch_trade);
-            this.groupBox2.Controls.Add(this.chk_movable_winter_trade);
             this.groupBox2.Controls.Add(this.label30);
             this.groupBox2.Controls.Add(this.combo_movable_refine_item);
             this.groupBox2.Controls.Add(this.label29);
@@ -4248,7 +4250,7 @@ namespace com.lover.astd.game.ui
             this.groupBox2.Controls.Add(this.chk_movable_enable);
             this.groupBox2.Location = new System.Drawing.Point(545, 154);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(285, 306);
+            this.groupBox2.Size = new System.Drawing.Size(285, 173);
             this.groupBox2.TabIndex = 50;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "行动力";
@@ -4342,26 +4344,6 @@ namespace com.lover.astd.game.ui
             this.label42.TabIndex = 54;
             this.label42.Text = "纺织多少次";
             // 
-            // label40
-            // 
-            this.label40.ForeColor = System.Drawing.Color.Brown;
-            this.label40.Location = new System.Drawing.Point(22, 226);
-            this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(238, 77);
-            this.label40.TabIndex = 53;
-            this.label40.Text = "注意：                                  1. 行动力顺序为顺序执行,前面执行完毕前后面不会执行,因此建议将精炼(4)放在第一位," +
-    "把通商放最后可以避免行动力爆仓     2. 精炼是否金币升级由全局设置的宝石性价比决定";
-            // 
-            // chk_movable_arch_refill
-            // 
-            this.chk_movable_arch_refill.AutoSize = true;
-            this.chk_movable_arch_refill.Location = new System.Drawing.Point(6, 166);
-            this.chk_movable_arch_refill.Name = "chk_movable_arch_refill";
-            this.chk_movable_arch_refill.Size = new System.Drawing.Size(132, 16);
-            this.chk_movable_arch_refill.TabIndex = 49;
-            this.chk_movable_arch_refill.Text = "考古自动补充行动力";
-            this.chk_movable_arch_refill.UseVisualStyleBackColor = true;
-            // 
             // label38
             // 
             this.label38.AutoSize = true;
@@ -4402,16 +4384,6 @@ namespace com.lover.astd.game.ui
             this.label37.TabIndex = 46;
             this.label37.Text = "允许失败次数";
             // 
-            // chk_movable_arch_trade_max
-            // 
-            this.chk_movable_arch_trade_max.AutoSize = true;
-            this.chk_movable_arch_trade_max.Location = new System.Drawing.Point(6, 185);
-            this.chk_movable_arch_trade_max.Name = "chk_movable_arch_trade_max";
-            this.chk_movable_arch_trade_max.Size = new System.Drawing.Size(228, 16);
-            this.chk_movable_arch_trade_max.TabIndex = 43;
-            this.chk_movable_arch_trade_max.Text = "老版通商考古自动升级驿站并极限通商";
-            this.chk_movable_arch_trade_max.UseVisualStyleBackColor = true;
-            // 
             // label32
             // 
             this.label32.AutoSize = true;
@@ -4442,26 +4414,6 @@ namespace com.lover.astd.game.ui
             0,
             0,
             0});
-            // 
-            // chk_movable_arch_trade
-            // 
-            this.chk_movable_arch_trade.AutoSize = true;
-            this.chk_movable_arch_trade.Location = new System.Drawing.Point(6, 149);
-            this.chk_movable_arch_trade.Name = "chk_movable_arch_trade";
-            this.chk_movable_arch_trade.Size = new System.Drawing.Size(96, 16);
-            this.chk_movable_arch_trade.TabIndex = 40;
-            this.chk_movable_arch_trade.Text = "考古优先通商";
-            this.chk_movable_arch_trade.UseVisualStyleBackColor = true;
-            // 
-            // chk_movable_winter_trade
-            // 
-            this.chk_movable_winter_trade.AutoSize = true;
-            this.chk_movable_winter_trade.Location = new System.Drawing.Point(6, 205);
-            this.chk_movable_winter_trade.Name = "chk_movable_winter_trade";
-            this.chk_movable_winter_trade.Size = new System.Drawing.Size(168, 16);
-            this.chk_movable_winter_trade.TabIndex = 39;
-            this.chk_movable_winter_trade.Text = "老版通商冬季自动优先通商";
-            this.chk_movable_winter_trade.UseVisualStyleBackColor = true;
             // 
             // label30
             // 
@@ -5596,12 +5548,42 @@ namespace com.lover.astd.game.ui
             this.lbl_time.Size = new System.Drawing.Size(0, 12);
             this.lbl_time.TabIndex = 8;
             // 
-            // menu_lua
+            // groupBox23
             // 
-            this.menu_lua.Name = "menu_lua";
-            this.menu_lua.Size = new System.Drawing.Size(61, 21);
-            this.menu_lua.Text = "刷新lua";
-            this.menu_lua.Click += new System.EventHandler(this.menu_lua_Click);
+            this.groupBox23.Controls.Add(this.nUD_kfrank_point);
+            this.groupBox23.Controls.Add(this.label40);
+            this.groupBox23.Controls.Add(this.chk_kfrank);
+            this.groupBox23.Location = new System.Drawing.Point(545, 404);
+            this.groupBox23.Name = "groupBox23";
+            this.groupBox23.Size = new System.Drawing.Size(285, 122);
+            this.groupBox23.TabIndex = 59;
+            this.groupBox23.TabStop = false;
+            // 
+            // label40
+            // 
+            this.label40.AutoSize = true;
+            this.label40.Location = new System.Drawing.Point(79, 21);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(137, 12);
+            this.label40.TabIndex = 13;
+            this.label40.Text = "自动同步八卦阵，积分≤";
+            // 
+            // nUD_kfrank_point
+            // 
+            this.nUD_kfrank_point.Location = new System.Drawing.Point(219, 17);
+            this.nUD_kfrank_point.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.nUD_kfrank_point.Name = "nUD_kfrank_point";
+            this.nUD_kfrank_point.Size = new System.Drawing.Size(56, 21);
+            this.nUD_kfrank_point.TabIndex = 13;
+            this.nUD_kfrank_point.Value = new decimal(new int[] {
+            800,
+            0,
+            0,
+            0});
             // 
             // NewMainForm
             // 
@@ -5757,6 +5739,9 @@ namespace com.lover.astd.game.ui
             this.logPage.ResumeLayout(false);
             this.logPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.subBrowser)).EndInit();
+            this.groupBox23.ResumeLayout(false);
+            this.groupBox23.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nUD_kfrank_point)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -6060,17 +6045,12 @@ namespace com.lover.astd.game.ui
         private System.Windows.Forms.Label label43;
         public System.Windows.Forms.NumericUpDown num_movable_weave_count;
         private System.Windows.Forms.Label label42;
-        private System.Windows.Forms.Label label40;
-        public System.Windows.Forms.CheckBox chk_movable_arch_refill;
         private System.Windows.Forms.Label label38;
         public System.Windows.Forms.NumericUpDown num_movable_visit_fail;
         private System.Windows.Forms.Label label37;
         public System.Windows.Forms.TextBox txt_movable_visit;
-        public System.Windows.Forms.CheckBox chk_movable_arch_trade_max;
         private System.Windows.Forms.Label label32;
         public System.Windows.Forms.NumericUpDown num_movable_refine_reserve;
-        public System.Windows.Forms.CheckBox chk_movable_arch_trade;
-        public System.Windows.Forms.CheckBox chk_movable_winter_trade;
         private System.Windows.Forms.Label label30;
         public System.Windows.Forms.ComboBox combo_movable_refine_item;
         private System.Windows.Forms.Label label29;
@@ -6195,6 +6175,9 @@ namespace com.lover.astd.game.ui
         private System.Windows.Forms.Label label72;
         public System.Windows.Forms.CheckBox chk_big_hero_tufei_enable;
         private System.Windows.Forms.ToolStripMenuItem menu_lua;
+        private System.Windows.Forms.GroupBox groupBox23;
+        public System.Windows.Forms.NumericUpDown nUD_kfrank_point;
+        private System.Windows.Forms.Label label40;
 
     }
 }
