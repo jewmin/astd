@@ -35,9 +35,11 @@ require("module.refine") -- 炼制模块
 require("module.factory") -- 工厂模块
 require("module.activity") -- 活动模块
 require("module.equip") -- 装备模块
+require("module.world") -- 世界模块
 require("exe.baijiayan") -- 百家宴
 require("exe.movable") -- 百家宴
 require("exe.equipment") -- 猴子套装强化
+require("exe.world") -- 屠城嘉奖
 
 -- 执行execute
 function OnLuaExecute(exeId)
@@ -53,14 +55,21 @@ function OnAddExe(exeMgr)
 	BaijiayanExe.exe:setOtherConf(exeMgr._otherConf);
 	BaijiayanExe.exe:init_data()
 	exeMgr:addExe(BaijiayanExe.exe)
+
 	MovableExe.exe:setVariables(exeMgr._proto, exeMgr._logger, exeMgr._server, exeMgr._user, exeMgr._conf, exeMgr._factory)
 	MovableExe.exe:setOtherConf(exeMgr._otherConf);
 	MovableExe.exe:init_data()
 	exeMgr:addExe(MovableExe.exe)
+
 	EquipmentExe.exe:setVariables(exeMgr._proto, exeMgr._logger, exeMgr._server, exeMgr._user, exeMgr._conf, exeMgr._factory)
 	EquipmentExe.exe:setOtherConf(exeMgr._otherConf);
 	EquipmentExe.exe:init_data()
 	exeMgr:addExe(EquipmentExe.exe)
+
+	WorldExe.exe:setVariables(exeMgr._proto, exeMgr._logger, exeMgr._server, exeMgr._user, exeMgr._conf, exeMgr._factory)
+	WorldExe.exe:setOtherConf(exeMgr._otherConf);
+	WorldExe.exe:init_data()
+	exeMgr:addExe(WorldExe.exe)
 end
 
 -- 删除exe
@@ -69,6 +78,7 @@ function OnDelExe(exeMgr)
 	exeMgr:removeExe(BaijiayanExe.exe)
 	exeMgr:removeExe(MovableExe.exe)
 	exeMgr:removeExe(EquipmentExe.exe)
+	exeMgr:removeExe(WorldExe.exe)
 end
 
 -- 初始化函数
