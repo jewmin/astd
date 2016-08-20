@@ -346,6 +346,8 @@ namespace com.lover.astd.common
 
 		public const string use_token = "use_token";
 
+        public const string use_token_after_five = "use_token_after_five";
+
 		public const string auto_move = "auto_move";
 
 		public const string not_injail = "not_injail";

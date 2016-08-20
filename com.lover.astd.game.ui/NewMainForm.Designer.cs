@@ -47,6 +47,7 @@ namespace com.lover.astd.game.ui
             this.menu_hideGame = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_reportViewer = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_protocol_viewer = new System.Windows.Forms.ToolStripMenuItem();
+            this.练将计算器ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_about = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_lua = new System.Windows.Forms.ToolStripMenuItem();
             this.login_worker = new System.ComponentModel.BackgroundWorker();
@@ -464,7 +465,7 @@ namespace com.lover.astd.game.ui
             this.lbl_playerinfo = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lbl_time = new System.Windows.Forms.Label();
-            this.练将计算器ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.chk_market_usetokenafter5 = new System.Windows.Forms.CheckBox();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_6)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -704,6 +705,13 @@ namespace com.lover.astd.game.ui
             this.menu_protocol_viewer.Size = new System.Drawing.Size(177, 22);
             this.menu_protocol_viewer.Text = "协议分析器";
             this.menu_protocol_viewer.Click += new System.EventHandler(this.menu_protocol_viewer_Click);
+            // 
+            // 练将计算器ToolStripMenuItem
+            // 
+            this.练将计算器ToolStripMenuItem.Name = "练将计算器ToolStripMenuItem";
+            this.练将计算器ToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.练将计算器ToolStripMenuItem.Text = "练将计算器";
+            this.练将计算器ToolStripMenuItem.Click += new System.EventHandler(this.menu_train_hero_Click);
             // 
             // menu_about
             // 
@@ -1759,6 +1767,7 @@ namespace com.lover.astd.game.ui
             // 
             // groupBox9
             // 
+            this.groupBox9.Controls.Add(this.chk_market_usetokenafter5);
             this.groupBox9.Controls.Add(this.chk_market_usetoken);
             this.groupBox9.Controls.Add(this.chk_market_super);
             this.groupBox9.Controls.Add(this.chk_market_drop_notbuy);
@@ -5651,12 +5660,15 @@ namespace com.lover.astd.game.ui
             this.lbl_time.Size = new System.Drawing.Size(0, 12);
             this.lbl_time.TabIndex = 8;
             // 
-            // 练将计算器ToolStripMenuItem
+            // chk_market_usetokenafter5
             // 
-            this.练将计算器ToolStripMenuItem.Name = "练将计算器ToolStripMenuItem";
-            this.练将计算器ToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
-            this.练将计算器ToolStripMenuItem.Text = "练将计算器";
-            this.练将计算器ToolStripMenuItem.Click += new System.EventHandler(this.menu_train_hero_Click);
+            this.chk_market_usetokenafter5.AutoSize = true;
+            this.chk_market_usetokenafter5.Location = new System.Drawing.Point(113, 223);
+            this.chk_market_usetokenafter5.Name = "chk_market_usetokenafter5";
+            this.chk_market_usetokenafter5.Size = new System.Drawing.Size(90, 16);
+            this.chk_market_usetokenafter5.TabIndex = 39;
+            this.chk_market_usetokenafter5.Text = "5点前不进货";
+            this.chk_market_usetokenafter5.UseVisualStyleBackColor = true;
             // 
             // NewMainForm
             // 
@@ -6256,6 +6268,7 @@ namespace com.lover.astd.game.ui
         public System.Windows.Forms.ComboBox combo_kfrank_def_formation;
         public System.Windows.Forms.ComboBox combo_kfrank_ack_formation;
         private System.Windows.Forms.ToolStripMenuItem 练将计算器ToolStripMenuItem;
+        public System.Windows.Forms.CheckBox chk_market_usetokenafter5;
 
     }
 }

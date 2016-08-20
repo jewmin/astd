@@ -21,6 +21,7 @@ namespace com.lover.astd.game.ui.server.impl.economy
             _mainForm.chk_market_drop_notbuy.Checked = (config.ContainsKey("drop_notbuy") && config["drop_notbuy"].ToLower().Equals("true"));
             _mainForm.chk_market_super.Checked = (config.ContainsKey("super_supply") && config["super_supply"].ToLower().Equals("true"));
             _mainForm.chk_market_usetoken.Checked = (config.ContainsKey("use_token") && config["use_token"].ToLower().Equals("true"));
+            _mainForm.chk_market_usetokenafter5.Checked = (config.ContainsKey("use_token_after_five") && config["use_token_after_five"].ToLower().Equals("true"));
 			if (config.ContainsKey("items"))
 			{
 				string[] arg_1D4_0 = config["items"].Split(new char[]
@@ -117,6 +118,7 @@ namespace com.lover.astd.game.ui.server.impl.economy
             expr_0D.setConfig(this.ServerName, "drop_notbuy", _mainForm.chk_market_drop_notbuy.Checked.ToString());
             expr_0D.setConfig(this.ServerName, "super_supply", _mainForm.chk_market_super.Checked.ToString());
             expr_0D.setConfig(this.ServerName, "use_token", _mainForm.chk_market_usetoken.Checked.ToString());
+            expr_0D.setConfig(this.ServerName, "use_token_after_five", _mainForm.chk_market_usetokenafter5.Checked.ToString());
 			string text = "";
             if (_mainForm.chk_market_gem.Checked)
 			{
@@ -157,6 +159,7 @@ namespace com.lover.astd.game.ui.server.impl.economy
 			expr_06.setConfig(this.ServerName, "drop_notbuy", "false");
 			expr_06.setConfig(this.ServerName, "super_supply", "true");
 			expr_06.setConfig(this.ServerName, "use_token", "true");
+            expr_06.setConfig(this.ServerName, "use_token_after_five", "true");
 			expr_06.setConfig(this.ServerName, "items", "宝石:1:false,玉石:2:false,purpleweapon:2:false,强攻令:1:true");
 			this.renderSettings();
 		}

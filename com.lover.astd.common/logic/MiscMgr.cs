@@ -3013,30 +3013,20 @@ namespace com.lover.astd.common.logic
             }
         }
 
-        public int handleMarketInfo(ProtocolMgr protocol, ILogger logger, string configstr, bool _notbuy_if_fail, bool drop_notbuy, bool buy_super, int silver_available, int gold_available, bool use_token)
+        public int handleMarketInfo(ProtocolMgr protocol, ILogger logger, string configstr, bool _notbuy_if_fail, bool drop_notbuy, bool buy_super, int silver_available, int gold_available, bool use_token, bool use_token_after_five)
         {
             List<MiscMgr.MarketConfig> list = new List<MiscMgr.MarketConfig>();
-            string[] array = configstr.Split(new char[]
-			{
-				','
-			});
-            string[] array2 = array;
-            int num;
-            for (int i = 0; i < array2.Length; i = num + 1)
+            string[] array = configstr.Split(new char[] { ',' });
+            for (int i = 0; i < array.Length; i++)
             {
-                string text = array2[i];
-                string[] array3 = text.Split(new char[]
-				{
-					':'
-				});
-                bool flag = array3.Length >= 3;
-                if (flag)
+                string text = array[i];
+                string[] array3 = text.Split(new char[] { ':' });
+                if (array3.Length >= 3)
                 {
                     MiscMgr.MarketConfig marketConfig = new MiscMgr.MarketConfig();
                     marketConfig.item_type = array3[0];
                     int min_quality = -1;
-                    bool flag2 = !int.TryParse(array3[1], out min_quality);
-                    if (flag2)
+                    if (!int.TryParse(array3[1], out min_quality))
                     {
                         min_quality = 5;
                     }
@@ -3044,248 +3034,171 @@ namespace com.lover.astd.common.logic
                     marketConfig.use_gold = array3[2].ToLower().Equals("true");
                     list.Add(marketConfig);
                 }
-                num = i;
             }
             string url = "/root/market!getPlayerSupperMarket.action";
             ServerResult xml = protocol.getXml(url, "获取集市信息");
-            bool flag3 = xml == null;
-            int result;
-            if (flag3)
+            if (xml == null)
             {
-                result = 1;
+                return 1;
             }
-            else
+            else if (!xml.CmdSucceed)
             {
-                bool flag4 = !xml.CmdSucceed;
-                if (flag4)
+                return 10;
+            }
+            XmlDocument cmdResult = xml.CmdResult;
+            List<MiscMgr.MarketItem> list2 = new List<MiscMgr.MarketItem>();
+            List<MiscMgr.MarketItem> list3 = new List<MiscMgr.MarketItem>();
+            bool state = false;
+            XmlNode xmlNode = cmdResult.SelectSingleNode("/results/special/state");
+            if (xmlNode != null)
+            {
+                state = (xmlNode.InnerText == "1");
+            }
+            if ((state & buy_super) && silver_available >= 30000000)
+            {
+                this.buySpecialItem(protocol, logger);
+            }
+            XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/suppermarketdto");
+            foreach (XmlNode xmlNode2 in xmlNodeList)
+            {
+                XmlNodeList childNodes = xmlNode2.ChildNodes;
+                MiscMgr.MarketItem marketItem = new MiscMgr.MarketItem();
+                foreach (XmlNode xmlNode3 in childNodes)
                 {
-                    result = 10;
+                    if (xmlNode3.Name == "id")
+                    {
+                        marketItem.id = int.Parse(xmlNode3.InnerText);
+                    }
+                    else if (xmlNode3.Name == "price")
+                    {
+                        string[] array4 = xmlNode3.InnerText.Split(new char[] { ':' });
+                        marketItem.restype = array4[1];
+                        marketItem.resnum = int.Parse(array4[2]);
+                    }
+                    else if (xmlNode3.Name == "name")
+                    {
+                        marketItem.itemname = xmlNode3.InnerText;
+                    }
+                    else if (xmlNode3.Name == "num")
+                    {
+                        marketItem.num = int.Parse(xmlNode3.InnerText);
+                    }
+                    else if (xmlNode3.Name == "quality")
+                    {
+                        marketItem.quality = int.Parse(xmlNode3.InnerText);
+                    }
+                    else if (xmlNode3.Name == "type")
+                    {
+                        marketItem.type = int.Parse(xmlNode3.InnerText);
+                    }
+                    else if (xmlNode3.Name == "baoshinum")
+                    {
+                        marketItem.gem_num = int.Parse(xmlNode3.InnerText);
+                    }
+                    else if (xmlNode3.Name == "discountnum")
+                    {
+                        marketItem.discount_num = int.Parse(xmlNode3.InnerText);
+                    }
+                }
+                int num2 = this.ifBuyItem(marketItem, list, silver_available, gold_available);
+                if (num2 == 0)
+                {
+                    list2.Add(marketItem);
+                }
+                else if (num2 == 1)
+                {
+                    list3.Add(marketItem);
+                }
+            }
+            int count = xmlNodeList.Count;
+            bool supplementnum = false;
+            XmlNode xmlNode4 = cmdResult.SelectSingleNode("/results/supplementnum");
+            if (xmlNode4 != null)
+            {
+                supplementnum = (xmlNode4.InnerText != "0");
+            }
+            if ((use_token & supplementnum) && count < 20)
+            {
+                DateTime dateTimeNow = this._factory.TmrMgr.DateTimeNow;
+                if (!use_token_after_five || dateTimeNow.Hour > 5)
+                {
+                    this.getDailyExtraItems(protocol, logger);
+                }
+            }
+            XmlNode xmlNode5 = cmdResult.SelectSingleNode("/results/giftdto");
+            if (xmlNode5 != null)
+            {
+                XmlNodeList childNodes2 = xmlNode5.ChildNodes;
+                MiscMgr.MarketItem marketItem2 = new MiscMgr.MarketItem();
+                foreach (XmlNode xmlNode6 in childNodes2)
+                {
+                    if (xmlNode6.Name == "id")
+                    {
+                        marketItem2.id = int.Parse(xmlNode6.InnerText);
+                    }
+                    else if (xmlNode6.Name == "name")
+                    {
+                        marketItem2.itemname = xmlNode6.InnerText;
+                    }
+                    else if (xmlNode6.Name == "num")
+                    {
+                        marketItem2.num = int.Parse(xmlNode6.InnerText);
+                    }
+                    else if (xmlNode6.Name == "type")
+                    {
+                        marketItem2.type = int.Parse(xmlNode6.InnerText);
+                    }
+                    else if (xmlNode6.Name == "baoshinum")
+                    {
+                        marketItem2.gem_num = int.Parse(xmlNode6.InnerText);
+                    }
+                }
+                this.getGiftItem(protocol, logger, marketItem2);
+            }
+            if (drop_notbuy)
+            {
+                for (int j = 0; j < list3.Count; j++)
+                {
+                    this.dropItem(protocol, logger, list3[j]);
+                }
+            }
+            if (list2.Count == 0)
+            {
+                return 2;
+            }
+            else if (list2.Count > 0)
+            {
+                MiscMgr.MarketItem marketItem3 = list2[0];
+                int num3 = 0;
+                for (int i = 0; i < 3 && marketItem3.discount_num <= 3 && marketItem3.discount_num >= 0; i++)
+                {
+                    num3 = this.discountItem(protocol, logger, marketItem3);
+                    if (num3 != 0)
+                    {
+                        break;
+                    }
+                }
+                if (_notbuy_if_fail)
+                {
+                    if (num3 == 0)
+                    {
+                        int num5 = this.buyItem(protocol, logger, marketItem3);
+                        if (num5 > 0)
+                        {
+                            return num5;
+                        }
+                    }
                 }
                 else
                 {
-                    XmlDocument cmdResult = xml.CmdResult;
-                    List<MiscMgr.MarketItem> list2 = new List<MiscMgr.MarketItem>();
-                    List<MiscMgr.MarketItem> list3 = new List<MiscMgr.MarketItem>();
-                    bool flag5 = false;
-                    XmlNode xmlNode = cmdResult.SelectSingleNode("/results/special/state");
-                    bool flag6 = xmlNode != null;
-                    if (flag6)
+                    int num6 = this.buyItem(protocol, logger, marketItem3);
+                    if (num6 > 0)
                     {
-                        flag5 = (xmlNode.InnerText == "1");
-                    }
-                    bool flag7 = (flag5 & buy_super) && silver_available >= 30000000;
-                    if (flag7)
-                    {
-                        this.buySpecialItem(protocol, logger);
-                    }
-                    XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/suppermarketdto");
-                    foreach (XmlNode xmlNode2 in xmlNodeList)
-                    {
-                        XmlNodeList childNodes = xmlNode2.ChildNodes;
-                        MiscMgr.MarketItem marketItem = new MiscMgr.MarketItem();
-                        foreach (XmlNode xmlNode3 in childNodes)
-                        {
-                            bool flag8 = xmlNode3.Name == "id";
-                            if (flag8)
-                            {
-                                marketItem.id = int.Parse(xmlNode3.InnerText);
-                            }
-                            else
-                            {
-                                bool flag9 = xmlNode3.Name == "price";
-                                if (flag9)
-                                {
-                                    string[] array4 = xmlNode3.InnerText.Split(new char[]
-									{
-										':'
-									});
-                                    marketItem.restype = array4[1];
-                                    marketItem.resnum = int.Parse(array4[2]);
-                                }
-                                else
-                                {
-                                    bool flag10 = xmlNode3.Name == "name";
-                                    if (flag10)
-                                    {
-                                        marketItem.itemname = xmlNode3.InnerText;
-                                    }
-                                    else
-                                    {
-                                        bool flag11 = xmlNode3.Name == "num";
-                                        if (flag11)
-                                        {
-                                            marketItem.num = int.Parse(xmlNode3.InnerText);
-                                        }
-                                        else
-                                        {
-                                            bool flag12 = xmlNode3.Name == "quality";
-                                            if (flag12)
-                                            {
-                                                marketItem.quality = int.Parse(xmlNode3.InnerText);
-                                            }
-                                            else
-                                            {
-                                                bool flag13 = xmlNode3.Name == "type";
-                                                if (flag13)
-                                                {
-                                                    marketItem.type = int.Parse(xmlNode3.InnerText);
-                                                }
-                                                else
-                                                {
-                                                    bool flag14 = xmlNode3.Name == "baoshinum";
-                                                    if (flag14)
-                                                    {
-                                                        marketItem.gem_num = int.Parse(xmlNode3.InnerText);
-                                                    }
-                                                    else
-                                                    {
-                                                        bool flag15 = xmlNode3.Name == "discountnum";
-                                                        if (flag15)
-                                                        {
-                                                            marketItem.discount_num = int.Parse(xmlNode3.InnerText);
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        int num2 = this.ifBuyItem(marketItem, list, silver_available, gold_available);
-                        bool flag16 = num2 == 0;
-                        if (flag16)
-                        {
-                            list2.Add(marketItem);
-                        }
-                        else
-                        {
-                            bool flag17 = num2 == 1;
-                            if (flag17)
-                            {
-                                list3.Add(marketItem);
-                            }
-                        }
-                    }
-                    int count = xmlNodeList.Count;
-                    bool flag18 = false;
-                    XmlNode xmlNode4 = cmdResult.SelectSingleNode("/results/supplementnum");
-                    bool flag19 = xmlNode4 != null;
-                    if (flag19)
-                    {
-                        flag18 = (xmlNode4.InnerText != "0");
-                    }
-                    bool flag20 = (use_token & flag18) && count < 20;
-                    if (flag20)
-                    {
-                        this.getDailyExtraItems(protocol, logger);
-                    }
-                    XmlNode xmlNode5 = cmdResult.SelectSingleNode("/results/giftdto");
-                    bool flag21 = xmlNode5 != null;
-                    if (flag21)
-                    {
-                        XmlNodeList childNodes2 = xmlNode5.ChildNodes;
-                        MiscMgr.MarketItem marketItem2 = new MiscMgr.MarketItem();
-                        foreach (XmlNode xmlNode6 in childNodes2)
-                        {
-                            bool flag22 = xmlNode6.Name == "id";
-                            if (flag22)
-                            {
-                                marketItem2.id = int.Parse(xmlNode6.InnerText);
-                            }
-                            else
-                            {
-                                bool flag23 = xmlNode6.Name == "name";
-                                if (flag23)
-                                {
-                                    marketItem2.itemname = xmlNode6.InnerText;
-                                }
-                                else
-                                {
-                                    bool flag24 = xmlNode6.Name == "num";
-                                    if (flag24)
-                                    {
-                                        marketItem2.num = int.Parse(xmlNode6.InnerText);
-                                    }
-                                    else
-                                    {
-                                        bool flag25 = xmlNode6.Name == "type";
-                                        if (flag25)
-                                        {
-                                            marketItem2.type = int.Parse(xmlNode6.InnerText);
-                                        }
-                                        else
-                                        {
-                                            bool flag26 = xmlNode6.Name == "baoshinum";
-                                            if (flag26)
-                                            {
-                                                marketItem2.gem_num = int.Parse(xmlNode6.InnerText);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        this.getGiftItem(protocol, logger, marketItem2);
-                    }
-                    if (drop_notbuy)
-                    {
-                        int j = 0;
-                        int count2 = list3.Count;
-                        while (j < count2)
-                        {
-                            this.dropItem(protocol, logger, list3[j]);
-                            num = j;
-                            j = num + 1;
-                        }
-                    }
-                    bool flag27 = list2.Count == 0;
-                    if (flag27)
-                    {
-                        result = 2;
-                    }
-                    else
-                    {
-                        bool flag28 = list2.Count > 0;
-                        if (flag28)
-                        {
-                            MiscMgr.MarketItem marketItem3 = list2[0];
-                            int num3 = 0;
-                            for (int i = 0; i < 3 && marketItem3.discount_num <= 3 && marketItem3.discount_num >= 0; i++)
-                            {
-                                num3 = this.discountItem(protocol, logger, marketItem3);
-                                if (num3 != 0)
-                                {
-                                    break;
-                                }
-                            }
-                            if (_notbuy_if_fail)
-                            {
-                                if (num3 == 0)
-                                {
-                                    int num5 = this.buyItem(protocol, logger, marketItem3);
-                                    if (num5 > 0)
-                                    {
-                                        result = num5;
-                                        return result;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                int num6 = this.buyItem(protocol, logger, marketItem3);
-                                if (num6 > 0)
-                                {
-                                    result = num6;
-                                    return result;
-                                }
-                            }
-                        }
-                        result = 0;
+                        return num6;
                     }
                 }
             }
-            return result;
+            return 0;
         }
 
         private int ifBuyItem(MiscMgr.MarketItem item, List<MiscMgr.MarketConfig> itemConfs, int silver_available, int gold_available)
