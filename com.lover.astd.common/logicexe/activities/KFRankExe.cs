@@ -25,8 +25,18 @@ namespace com.lover.astd.common.logicexe.activities
             {
                 int.TryParse(config[ConfigStrings.kfrank_point], out kfrank_point);
             }
+            string ack_formation = "不变阵";
+            if (config.ContainsKey(ConfigStrings.kfrank_ack_formation))
+            {
+                ack_formation = config[ConfigStrings.kfrank_ack_formation];
+            }
+            string def_formation = "不变阵";
+            if (config.ContainsKey(ConfigStrings.kfrank_def_formation))
+            {
+                def_formation = config[ConfigStrings.kfrank_def_formation];
+            }
             ActivityMgr activityManager = this._factory.getActivityManager();
-            return activityManager.getMatchDetail(this._proto, this._logger, this._user, kfrank_point);
+            return activityManager.getMatchDetail(this._proto, this._logger, this._user, kfrank_point, ack_formation, def_formation);
         }
     }
 }

@@ -106,6 +106,7 @@
     <Compile Include="logicexe\temp\EquipMeltExe.cs" />
     <Compile Include="logicexe\temp\HongbaoExe.cs" />
     <Compile Include="logicexe\temp\JuedouExe.cs" />
+    <Compile Include="logicexe\temp\OpenAllTrainerExe.cs" />
     <Compile Include="logicexe\temp\RawStoneExe.cs" />
     <Compile Include="logicexe\temp\TempExeBase.cs" />
     <Compile Include="logicexe\temp\TicketExchangeExe.cs" />
@@ -135,6 +136,7 @@
     <Compile Include="manager\TimeMgr.cs" />
     <Compile Include="manager\WeaponHelper.cs" />
     <Compile Include="model\AccountData.cs" />
+    <Compile Include="model\activity\TaskInfo.cs" />
     <Compile Include="model\AsObject.cs" />
     <Compile Include="model\attack\AreaInfo.cs" />
     <Compile Include="model\attack\PkInfo.cs" />

@@ -489,5 +489,9 @@ namespace com.lover.astd.common
         public const string qm_drink_coin = "qm_drink_coin";
 
         public const string kfrank_point = "kfrank_point";
+
+        public const string kfrank_ack_formation = "kfrank_ack_formation";
+
+        public const string kfrank_def_formation = "kfrank_def_formation";
 	}
 }

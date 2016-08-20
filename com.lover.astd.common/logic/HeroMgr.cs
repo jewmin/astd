@@ -776,6 +776,25 @@ namespace com.lover.astd.common.logic
             }
 		}
 
+        public bool openAllTrainer(ProtocolMgr proto, ILogger logger)
+        {
+            string url = "/root/trainer!openAllTrainer.action";
+            ServerResult xml = proto.postXml(url, "gold=0", "训练师全开");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return false;
+            }
+            XmlDocument cmdResult = xml.CmdResult;
+            int totalcost = 0;
+            XmlNode node = cmdResult.SelectSingleNode("/results/trainers/totalcost");
+            if (node != null)
+            {
+                int.TryParse(node.InnerText, out totalcost);
+            }
+            logger.logInfo(string.Format("花费{0}银币，训练师全开", totalcost));
+            return true;
+        }
+
 		public bool removeTrainCd(ProtocolMgr proto, ILogger logger)
 		{
 			string url = "/root/general!cdRecoverConfirm.action";

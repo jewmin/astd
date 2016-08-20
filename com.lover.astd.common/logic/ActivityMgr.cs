@@ -9452,7 +9452,7 @@ namespace com.lover.astd.common.logic
         #endregion
 
         #region 对战
-        public long getMatchDetail(ProtocolMgr protocol, ILogger logger, User user, int point)
+        public long getMatchDetail(ProtocolMgr protocol, ILogger logger, User user, int point, string ack_formation, string def_formation)
         {
             string url = "/root/kfrank!getMatchDetail.action";
             ServerResult xml = protocol.getXml(url, "获取对战信息");
@@ -9460,13 +9460,16 @@ namespace com.lover.astd.common.logic
             {
                 return next_hour();
             }
+            //logInfo(logger, "对战信息：" + xml.getDebugInfo());
             int canready = 0;
             int status = 0;
             int canget = 0;
             int boxnum = 0;
             int needtoken = 100;
             int havegetlast = 1;
-            int state = 0;
+            int nextbattlecd = 3000;
+            int globalstate = 0;
+            TaskInfo taskInfo = new TaskInfo();
             int score = -1;
             XmlDocument cmdResult = xml.CmdResult;
             XmlNode node = cmdResult.SelectSingleNode("/results/message/canready");
@@ -9499,10 +9502,20 @@ namespace com.lover.astd.common.logic
             {
                 int.TryParse(node.InnerText, out havegetlast);
             }
-            node = cmdResult.SelectSingleNode("/results/message/taskinfo/state");
-            if (node != null && node.HasChildNodes)
+            node = cmdResult.SelectSingleNode("/results/message/nextbattlecd");
+            if (node != null)
             {
-                int.TryParse(node.InnerText, out state);
+                int.TryParse(node.InnerText, out nextbattlecd);
+            }
+            node = cmdResult.SelectSingleNode("/results/message/globalstate");
+            if (node != null)
+            {
+                int.TryParse(node.InnerText, out globalstate);
+            }
+            node = cmdResult.SelectSingleNode("/results/message/taskinfo");
+            if (node != null)
+            {
+                taskInfo.handleXmlNode(node);
             }
             XmlNodeList nodeList = cmdResult.SelectNodes("/results/message/selfrank/playerinfo");
             if (nodeList != null)
@@ -9522,28 +9535,46 @@ namespace com.lover.astd.common.logic
                 }
             }
             logger.logInfo(string.Format("乱世风云榜 - 我的积分:{0}", score));
-            if (state == 1)
+            //有任务奖励
+            if (taskInfo.state_ == 1)
             {
                 recvTaskReward(protocol, logger);
             }
+            //有上届排行奖励
             if (havegetlast == 0)
             {
                 recvLastReward(protocol, logger);
             }
-            if (boxnum > 0)
+            //刷新任务
+            for (int i = 0; i < 20 && !taskInfo.isLianShengChuanQi(); i++)
             {
-                while (boxnum > 0)
-                {
-                    boxnum--;
-                    openBox(protocol, logger);
-                }
+                changeTask(protocol, logger, ref taskInfo);
             }
+            //开宝箱
+            for (int i = boxnum; i > 0; i--)
+            {
+                openBox(protocol, logger);
+            }
+            //准备就绪
             if (canready == 1)
             {
+                string myformation = _factory.getBattleManager().getFormation(protocol, logger);
+                string formation = ack_formation;
+                if (canget == 0)
+                {
+                    formation = def_formation;
+                }
+                _factory.getBattleManager().changeFormation(protocol, logger, formation);
+                syncData(protocol, logger);
                 ready(protocol, logger);
-                return 3000;
+                _factory.getBattleManager().changeFormation(protocol, logger, myformation);
+                return nextbattlecd;
             }
-            if (status == 2)
+            if (globalstate == 2)
+            {
+                return next_day_eight();
+            }
+            else if (status == 2)
             {
                 return 60000;
             }
@@ -9553,6 +9584,7 @@ namespace com.lover.astd.common.logic
             }
             else
             {
+                //每天对战5场，且对战军令消耗小于等于20
                 if (canget == 1 && needtoken <= 20)
                 {
                     if (user.Token >= needtoken)
@@ -9567,9 +9599,19 @@ namespace com.lover.astd.common.logic
                     }
                 }
             }
-            if (score > 0 && score <= point)
+            //对战积分<=point，且对战军令消耗小于等于10
+            if (score >= point && needtoken <= 10)
             {
-
+                if (user.Token >= needtoken)
+                {
+                    startMatch(protocol, logger, needtoken, user.Token);
+                    return 3000;
+                }
+                else
+                {
+                    logInfo(logger, string.Format("军令不足，当前{0}军令，需要{1}军令", user.Token, needtoken));
+                    return next_halfhour();
+                }
             }
             return next_day_eight();
         }
@@ -9661,6 +9703,39 @@ namespace com.lover.astd.common.logic
                 }
             }
         }
+
+        public bool syncData(ProtocolMgr protocol, ILogger logger)
+        {
+            string url = "/root/kfrank!syncData.action";
+            ServerResult xml = protocol.getXml(url, "同步对战阵型");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                logInfo(logger, "同步对战阵型失败");
+                return false;
+            }
+            else
+            {
+                logInfo(logger, "同步对战阵型成功");
+                return true;
+            }
+        }
+
+        public void changeTask(ProtocolMgr protocol, ILogger logger, ref TaskInfo taskInfo)
+        {
+            string url = "/root/kfrank!changeTask.action";
+            ServerResult xml = protocol.getXml(url, "刷新对战任务");
+            if (xml != null && xml.CmdSucceed)
+            {
+                XmlDocument cmdResult = xml.CmdResult;
+                XmlNode node = cmdResult.SelectSingleNode("/results/message/taskinfo");
+                if (node != null)
+                {
+                    taskInfo.handleXmlNode(node);
+                    logInfo(logger, string.Format("刷新对战任务，获得新任务【{0} - {1}】", taskInfo.name_, taskInfo.intro_));
+                }
+            }
+        }
+
         #endregion
 
         #region 清明煮酒

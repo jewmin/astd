@@ -37,6 +37,8 @@ namespace com.lover.astd.game.ui
 
         private bool _trainer4;
 
+        private NewMainForm _frm;
+
         private string getTrainInfo(long exp)
         {
             long useTufei = exp / _expPerTufei + 1;
@@ -160,9 +162,10 @@ namespace com.lover.astd.game.ui
             return 0;
         }
 
-        public NewTrainHeroCalc()
+        public NewTrainHeroCalc(NewMainForm frm)
         {
             InitializeComponent();
+            _frm = frm;
             combo_trainLevel.SelectedIndex = 0;
         }
 
@@ -190,6 +193,15 @@ namespace com.lover.astd.game.ui
                 exp = getTotalExpToStar(_curLevel, _curReTrainLevel, _targetLevel, _starPerReTrain);
             }
             txt_result.Text = getTrainInfo(exp);
+        }
+
+        private void btn_open_all_trainer_Click(object sender, EventArgs e)
+        {
+            int trainer_times = (int)num_open_all_trainer_times.Value;
+            Dictionary<string, string> dictionary = new Dictionary<string, string>();
+            dictionary.Add("open_trainer_times", trainer_times.ToString());
+            _frm.addTempServer("open_all_trainer", dictionary);
+            Close();
         }
     }
 }

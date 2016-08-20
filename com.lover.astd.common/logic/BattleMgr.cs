@@ -446,45 +446,36 @@ namespace com.lover.astd.common.logic
 
 		public bool changeFormation(ProtocolMgr protocol, ILogger logger, string formation)
 		{
-			string url = "/root/general!saveDefaultFormation.action";
-			int num = 0;
-			int i = 0;
-			int num2 = this._formations.Length;
-			while (i < num2)
-			{
-				bool flag = this._formations[i].Equals(formation);
-				if (flag)
-				{
-					num = i;
-					break;
-				}
-				int num3 = i;
-				i = num3 + 1;
-			}
-			bool flag2 = num == 0;
-			bool result;
-			if (flag2)
-			{
-				result = true;
-			}
-			else
-			{
-				num *= 20;
-				string data = "formationId=" + num;
-				string text = "变换阵型为" + formation;
-				ServerResult serverResult = protocol.postXml(url, data, text);
-				bool flag3 = serverResult == null || !serverResult.CmdSucceed;
-				if (flag3)
-				{
-					result = false;
-				}
-				else
-				{
-					base.logInfo(logger, text);
-					result = true;
-				}
-			}
-			return result;
+            int formationId = 0;
+            for (int i = 0; i < this._formations.Length; i++)
+            {
+                if (this._formations[i].Equals(formation))
+                {
+                    formationId = i;
+                    break;
+                }
+            }
+            if (formationId == 0)
+            {
+                return true;
+            }
+            else
+            {
+                formationId *= 20;
+                string url = "/root/general!saveDefaultFormation.action";
+                string data = string.Format("formationId={0}", formationId);
+                string text = string.Format("变换阵型为{0}", formation);
+                ServerResult xml = protocol.postXml(url, data, text);
+                if (xml == null || !xml.CmdSucceed)
+                {
+                    return false;
+                }
+                else
+                {
+                    logInfo(logger, text);
+                    return true;
+                }
+            }
 		}
 
 		public List<int> getAllPowerList(ProtocolMgr protocol, ILogger logger, User user, List<int> nowPowerIds)

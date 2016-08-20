@@ -382,6 +382,10 @@ namespace com.lover.astd.game.ui
             {
                 _tempExe = new HongbaoExe();
             }
+            else if (type.Equals("open_all_trainer"))
+            {
+                _tempExe = new OpenAllTrainerExe();
+            }
             if (_tempExe == null)
             {
                 return;
@@ -2001,6 +2005,18 @@ namespace com.lover.astd.game.ui
         {
             menu_stopServer_Click(null, null);
             lua_mgr_.CreateVM(_exeMgr);
+        }
+
+        private void menu_train_hero_Click(object sender, EventArgs e)
+        {
+            if (_gameurl == null || _gameurl == "" || _jsessionid == null || _jsessionid == "")
+            {
+                UiUtils.getInstance().info("请先登录");
+                return;
+            }
+            NewTrainHeroCalc trainHeroCalc = new NewTrainHeroCalc(this);
+            trainHeroCalc.Show();
+            trainHeroCalc.BringToFront();
         }
     }
 }

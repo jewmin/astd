@@ -294,13 +294,20 @@ namespace com.lover.astd.game.ui
             this.num_force_impose_gold = new System.Windows.Forms.NumericUpDown();
             this.chk_impose_enable = new System.Windows.Forms.CheckBox();
             this.setPage2 = new System.Windows.Forms.TabPage();
+            this.groupBox23 = new System.Windows.Forms.GroupBox();
+            this.label74 = new System.Windows.Forms.Label();
+            this.label73 = new System.Windows.Forms.Label();
+            this.combo_kfrank_def_formation = new System.Windows.Forms.ComboBox();
+            this.combo_kfrank_ack_formation = new System.Windows.Forms.ComboBox();
+            this.nUD_kfrank_point = new System.Windows.Forms.NumericUpDown();
+            this.label40 = new System.Windows.Forms.Label();
+            this.chk_kfrank = new System.Windows.Forms.CheckBox();
             this.groupBox22 = new System.Windows.Forms.GroupBox();
             this.nUD_qm_drink_coin = new System.Windows.Forms.NumericUpDown();
             this.label72 = new System.Windows.Forms.Label();
             this.nUD_qm_round_coin = new System.Windows.Forms.NumericUpDown();
             this.label71 = new System.Windows.Forms.Label();
             this.chk_qingming = new System.Windows.Forms.CheckBox();
-            this.chk_kfrank = new System.Windows.Forms.CheckBox();
             this.groupBox21 = new System.Windows.Forms.GroupBox();
             this.nUD_BGActivity_coin = new System.Windows.Forms.NumericUpDown();
             this.label70 = new System.Windows.Forms.Label();
@@ -457,9 +464,7 @@ namespace com.lover.astd.game.ui
             this.lbl_playerinfo = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lbl_time = new System.Windows.Forms.Label();
-            this.groupBox23 = new System.Windows.Forms.GroupBox();
-            this.label40 = new System.Windows.Forms.Label();
-            this.nUD_kfrank_point = new System.Windows.Forms.NumericUpDown();
+            this.练将计算器ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_6)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -527,6 +532,8 @@ namespace com.lover.astd.game.ui
             ((System.ComponentModel.ISupportInitialize)(this.num_impose_reserve)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_force_impose_gold)).BeginInit();
             this.setPage2.SuspendLayout();
+            this.groupBox23.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nUD_kfrank_point)).BeginInit();
             this.groupBox22.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nUD_qm_drink_coin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nUD_qm_round_coin)).BeginInit();
@@ -565,8 +572,6 @@ namespace com.lover.astd.game.ui
             ((System.ComponentModel.ISupportInitialize)(this.num_kf_banquet_buygold)).BeginInit();
             this.logPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.subBrowser)).BeginInit();
-            this.groupBox23.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nUD_kfrank_point)).BeginInit();
             this.SuspendLayout();
             // 
             // mainMenu
@@ -666,7 +671,8 @@ namespace com.lover.astd.game.ui
             this.menu_default,
             this.menu_hideGame,
             this.menu_reportViewer,
-            this.menu_protocol_viewer});
+            this.menu_protocol_viewer,
+            this.练将计算器ToolStripMenuItem});
             this.menu_more.Name = "menu_more";
             this.menu_more.Size = new System.Drawing.Size(53, 21);
             this.menu_more.Text = "更多...";
@@ -3605,6 +3611,113 @@ namespace com.lover.astd.game.ui
             this.setPage2.TabIndex = 3;
             this.setPage2.Text = "设置2";
             // 
+            // groupBox23
+            // 
+            this.groupBox23.Controls.Add(this.label74);
+            this.groupBox23.Controls.Add(this.label73);
+            this.groupBox23.Controls.Add(this.combo_kfrank_def_formation);
+            this.groupBox23.Controls.Add(this.combo_kfrank_ack_formation);
+            this.groupBox23.Controls.Add(this.nUD_kfrank_point);
+            this.groupBox23.Controls.Add(this.label40);
+            this.groupBox23.Controls.Add(this.chk_kfrank);
+            this.groupBox23.Location = new System.Drawing.Point(545, 404);
+            this.groupBox23.Name = "groupBox23";
+            this.groupBox23.Size = new System.Drawing.Size(285, 122);
+            this.groupBox23.TabIndex = 59;
+            this.groupBox23.TabStop = false;
+            // 
+            // label74
+            // 
+            this.label74.AutoSize = true;
+            this.label74.Location = new System.Drawing.Point(124, 47);
+            this.label74.Name = "label74";
+            this.label74.Size = new System.Drawing.Size(65, 12);
+            this.label74.TabIndex = 32;
+            this.label74.Text = "防守阵型：";
+            // 
+            // label73
+            // 
+            this.label73.AutoSize = true;
+            this.label73.Location = new System.Drawing.Point(124, 21);
+            this.label73.Name = "label73";
+            this.label73.Size = new System.Drawing.Size(65, 12);
+            this.label73.TabIndex = 31;
+            this.label73.Text = "攻击阵型：";
+            // 
+            // combo_kfrank_def_formation
+            // 
+            this.combo_kfrank_def_formation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.combo_kfrank_def_formation.FormattingEnabled = true;
+            this.combo_kfrank_def_formation.Items.AddRange(new object[] {
+            "不变阵",
+            "格挡阵",
+            "长蛇阵",
+            "锋矢阵",
+            "偃月阵",
+            "锥形阵",
+            "八卦阵",
+            "七星阵",
+            "雁行阵"});
+            this.combo_kfrank_def_formation.Location = new System.Drawing.Point(194, 43);
+            this.combo_kfrank_def_formation.Name = "combo_kfrank_def_formation";
+            this.combo_kfrank_def_formation.Size = new System.Drawing.Size(81, 20);
+            this.combo_kfrank_def_formation.TabIndex = 30;
+            // 
+            // combo_kfrank_ack_formation
+            // 
+            this.combo_kfrank_ack_formation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.combo_kfrank_ack_formation.FormattingEnabled = true;
+            this.combo_kfrank_ack_formation.Items.AddRange(new object[] {
+            "不变阵",
+            "格挡阵",
+            "长蛇阵",
+            "锋矢阵",
+            "偃月阵",
+            "锥形阵",
+            "八卦阵",
+            "七星阵",
+            "雁行阵"});
+            this.combo_kfrank_ack_formation.Location = new System.Drawing.Point(193, 17);
+            this.combo_kfrank_ack_formation.Name = "combo_kfrank_ack_formation";
+            this.combo_kfrank_ack_formation.Size = new System.Drawing.Size(81, 20);
+            this.combo_kfrank_ack_formation.TabIndex = 29;
+            // 
+            // nUD_kfrank_point
+            // 
+            this.nUD_kfrank_point.Location = new System.Drawing.Point(217, 70);
+            this.nUD_kfrank_point.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.nUD_kfrank_point.Name = "nUD_kfrank_point";
+            this.nUD_kfrank_point.Size = new System.Drawing.Size(56, 21);
+            this.nUD_kfrank_point.TabIndex = 13;
+            this.nUD_kfrank_point.Value = new decimal(new int[] {
+            800,
+            0,
+            0,
+            0});
+            // 
+            // label40
+            // 
+            this.label40.AutoSize = true;
+            this.label40.Location = new System.Drawing.Point(22, 74);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(191, 12);
+            this.label40.TabIndex = 13;
+            this.label40.Text = "胜利5场后，使用防守阵型，积分≥";
+            // 
+            // chk_kfrank
+            // 
+            this.chk_kfrank.AutoSize = true;
+            this.chk_kfrank.Location = new System.Drawing.Point(6, 20);
+            this.chk_kfrank.Name = "chk_kfrank";
+            this.chk_kfrank.Size = new System.Drawing.Size(72, 16);
+            this.chk_kfrank.TabIndex = 9;
+            this.chk_kfrank.Text = "自动对战";
+            this.chk_kfrank.UseVisualStyleBackColor = true;
+            // 
             // groupBox22
             // 
             this.groupBox22.Controls.Add(this.nUD_qm_drink_coin);
@@ -3664,16 +3777,6 @@ namespace com.lover.astd.game.ui
             this.chk_qingming.TabIndex = 10;
             this.chk_qingming.Text = "清明煮酒";
             this.chk_qingming.UseVisualStyleBackColor = true;
-            // 
-            // chk_kfrank
-            // 
-            this.chk_kfrank.AutoSize = true;
-            this.chk_kfrank.Location = new System.Drawing.Point(6, 20);
-            this.chk_kfrank.Name = "chk_kfrank";
-            this.chk_kfrank.Size = new System.Drawing.Size(72, 16);
-            this.chk_kfrank.TabIndex = 9;
-            this.chk_kfrank.Text = "自动对战";
-            this.chk_kfrank.UseVisualStyleBackColor = true;
             // 
             // groupBox21
             // 
@@ -5548,42 +5651,12 @@ namespace com.lover.astd.game.ui
             this.lbl_time.Size = new System.Drawing.Size(0, 12);
             this.lbl_time.TabIndex = 8;
             // 
-            // groupBox23
+            // 练将计算器ToolStripMenuItem
             // 
-            this.groupBox23.Controls.Add(this.nUD_kfrank_point);
-            this.groupBox23.Controls.Add(this.label40);
-            this.groupBox23.Controls.Add(this.chk_kfrank);
-            this.groupBox23.Location = new System.Drawing.Point(545, 404);
-            this.groupBox23.Name = "groupBox23";
-            this.groupBox23.Size = new System.Drawing.Size(285, 122);
-            this.groupBox23.TabIndex = 59;
-            this.groupBox23.TabStop = false;
-            // 
-            // label40
-            // 
-            this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(79, 21);
-            this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(137, 12);
-            this.label40.TabIndex = 13;
-            this.label40.Text = "自动同步八卦阵，积分≤";
-            // 
-            // nUD_kfrank_point
-            // 
-            this.nUD_kfrank_point.Location = new System.Drawing.Point(219, 17);
-            this.nUD_kfrank_point.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.nUD_kfrank_point.Name = "nUD_kfrank_point";
-            this.nUD_kfrank_point.Size = new System.Drawing.Size(56, 21);
-            this.nUD_kfrank_point.TabIndex = 13;
-            this.nUD_kfrank_point.Value = new decimal(new int[] {
-            800,
-            0,
-            0,
-            0});
+            this.练将计算器ToolStripMenuItem.Name = "练将计算器ToolStripMenuItem";
+            this.练将计算器ToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.练将计算器ToolStripMenuItem.Text = "练将计算器";
+            this.练将计算器ToolStripMenuItem.Click += new System.EventHandler(this.menu_train_hero_Click);
             // 
             // NewMainForm
             // 
@@ -5687,6 +5760,9 @@ namespace com.lover.astd.game.ui
             ((System.ComponentModel.ISupportInitialize)(this.num_force_impose_gold)).EndInit();
             this.setPage2.ResumeLayout(false);
             this.setPage2.PerformLayout();
+            this.groupBox23.ResumeLayout(false);
+            this.groupBox23.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nUD_kfrank_point)).EndInit();
             this.groupBox22.ResumeLayout(false);
             this.groupBox22.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nUD_qm_drink_coin)).EndInit();
@@ -5739,9 +5815,6 @@ namespace com.lover.astd.game.ui
             this.logPage.ResumeLayout(false);
             this.logPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.subBrowser)).EndInit();
-            this.groupBox23.ResumeLayout(false);
-            this.groupBox23.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nUD_kfrank_point)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -6178,6 +6251,11 @@ namespace com.lover.astd.game.ui
         private System.Windows.Forms.GroupBox groupBox23;
         public System.Windows.Forms.NumericUpDown nUD_kfrank_point;
         private System.Windows.Forms.Label label40;
+        private System.Windows.Forms.Label label74;
+        private System.Windows.Forms.Label label73;
+        public System.Windows.Forms.ComboBox combo_kfrank_def_formation;
+        public System.Windows.Forms.ComboBox combo_kfrank_ack_formation;
+        private System.Windows.Forms.ToolStripMenuItem 练将计算器ToolStripMenuItem;
 
     }
 }

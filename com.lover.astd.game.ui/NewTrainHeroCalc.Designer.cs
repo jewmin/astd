@@ -49,11 +49,15 @@
             this.num_starPerReTrain = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this.num_curLevel = new System.Windows.Forms.NumericUpDown();
+            this.btn_open_all_trainer = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.num_open_all_trainer_times = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.num_expPerTufei)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_curReTrainLevel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_targetLevel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_starPerReTrain)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_curLevel)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_open_all_trainer_times)).BeginInit();
             this.SuspendLayout();
             // 
             // chk_trainer4
@@ -221,7 +225,7 @@
             this.txt_result.Multiline = true;
             this.txt_result.Name = "txt_result";
             this.txt_result.ReadOnly = true;
-            this.txt_result.Size = new System.Drawing.Size(336, 222);
+            this.txt_result.Size = new System.Drawing.Size(336, 157);
             this.txt_result.TabIndex = 60;
             // 
             // btn_calc
@@ -327,11 +331,55 @@
             0,
             0});
             // 
+            // btn_open_all_trainer
+            // 
+            this.btn_open_all_trainer.Location = new System.Drawing.Point(392, 334);
+            this.btn_open_all_trainer.Name = "btn_open_all_trainer";
+            this.btn_open_all_trainer.Size = new System.Drawing.Size(75, 23);
+            this.btn_open_all_trainer.TabIndex = 69;
+            this.btn_open_all_trainer.Text = "开始";
+            this.btn_open_all_trainer.UseVisualStyleBackColor = true;
+            this.btn_open_all_trainer.Click += new System.EventHandler(this.btn_open_all_trainer_Click);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(189, 340);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(77, 12);
+            this.label3.TabIndex = 71;
+            this.label3.Text = "训练师全开：";
+            // 
+            // num_open_all_trainer_times
+            // 
+            this.num_open_all_trainer_times.Location = new System.Drawing.Point(272, 335);
+            this.num_open_all_trainer_times.Maximum = new decimal(new int[] {
+            500000,
+            0,
+            0,
+            0});
+            this.num_open_all_trainer_times.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.num_open_all_trainer_times.Name = "num_open_all_trainer_times";
+            this.num_open_all_trainer_times.Size = new System.Drawing.Size(114, 21);
+            this.num_open_all_trainer_times.TabIndex = 72;
+            this.num_open_all_trainer_times.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
             // NewTrainHeroCalc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(480, 382);
+            this.Controls.Add(this.num_open_all_trainer_times);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.btn_open_all_trainer);
             this.Controls.Add(this.chk_trainer4);
             this.Controls.Add(this.chk_trainer3);
             this.Controls.Add(this.chk_trainer2);
@@ -361,6 +409,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.num_targetLevel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_starPerReTrain)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_curLevel)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_open_all_trainer_times)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -389,5 +438,8 @@
         private System.Windows.Forms.NumericUpDown num_starPerReTrain;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.NumericUpDown num_curLevel;
+        private System.Windows.Forms.Button btn_open_all_trainer;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.NumericUpDown num_open_all_trainer_times;
     }
 }

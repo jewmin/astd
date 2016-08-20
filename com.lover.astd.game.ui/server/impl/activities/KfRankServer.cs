@@ -21,6 +21,22 @@ namespace com.lover.astd.game.ui.server.impl.activities
             GameConfig config = base.getConfig();
             config.setConfig(this.ServerName, ConfigStrings.enabled, _mainForm.chk_kfrank.Checked.ToString());
             config.setConfig(this.ServerName, ConfigStrings.kfrank_point, _mainForm.nUD_kfrank_point.Value.ToString());
+            if (_mainForm.combo_kfrank_ack_formation.SelectedItem != null)
+			{
+                config.setConfig(this.ServerName, ConfigStrings.kfrank_ack_formation, _mainForm.combo_kfrank_ack_formation.SelectedItem.ToString());
+			}
+			else
+			{
+				config.setConfig(this.ServerName, ConfigStrings.kfrank_ack_formation, "不变阵");
+			}
+            if (_mainForm.combo_kfrank_def_formation.SelectedItem != null)
+            {
+                config.setConfig(this.ServerName, ConfigStrings.kfrank_def_formation, _mainForm.combo_kfrank_def_formation.SelectedItem.ToString());
+            }
+            else
+            {
+                config.setConfig(this.ServerName, ConfigStrings.kfrank_def_formation, "不变阵");
+            }
         }
 
         public override void renderSettings()
@@ -32,6 +48,22 @@ namespace com.lover.astd.game.ui.server.impl.activities
             {
                 int.TryParse(config[ConfigStrings.kfrank_point], out kfrank_point);
             }
+            if (config.ContainsKey(ConfigStrings.kfrank_ack_formation))
+            {
+                _mainForm.combo_kfrank_ack_formation.SelectedItem = config[ConfigStrings.kfrank_ack_formation];
+            }
+            else
+            {
+                _mainForm.combo_kfrank_ack_formation.SelectedItem = "不变阵";
+            }
+            if (config.ContainsKey(ConfigStrings.kfrank_def_formation))
+            {
+                _mainForm.combo_kfrank_def_formation.SelectedItem = config[ConfigStrings.kfrank_def_formation];
+            }
+            else
+            {
+                _mainForm.combo_kfrank_def_formation.SelectedItem = "不变阵";
+            }
             _mainForm.nUD_kfrank_point.Value = kfrank_point;
         }
 
@@ -40,6 +72,8 @@ namespace com.lover.astd.game.ui.server.impl.activities
             GameConfig config = base.getConfig();
             config.setConfig(this.ServerName, ConfigStrings.enabled, "false");
             config.setConfig(this.ServerName, ConfigStrings.kfrank_point, "800");
+            config.setConfig(this.ServerName, ConfigStrings.kfrank_ack_formation, "不变阵");
+            config.setConfig(this.ServerName, ConfigStrings.kfrank_def_formation, "不变阵");
             this.renderSettings();
         }
     }
