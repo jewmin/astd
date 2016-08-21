@@ -141,6 +141,7 @@ namespace com.lover.astd.game.ui
             this.num_fete_1 = new System.Windows.Forms.NumericUpDown();
             this.chk_fete_enable = new System.Windows.Forms.CheckBox();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.chk_market_usetokenafter5 = new System.Windows.Forms.CheckBox();
             this.chk_market_usetoken = new System.Windows.Forms.CheckBox();
             this.chk_market_super = new System.Windows.Forms.CheckBox();
             this.chk_market_drop_notbuy = new System.Windows.Forms.CheckBox();
@@ -465,7 +466,7 @@ namespace com.lover.astd.game.ui
             this.lbl_playerinfo = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lbl_time = new System.Windows.Forms.Label();
-            this.chk_market_usetokenafter5 = new System.Windows.Forms.CheckBox();
+            this.num_super_fanpai_buy_gold = new System.Windows.Forms.NumericUpDown();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_6)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -573,6 +574,7 @@ namespace com.lover.astd.game.ui
             ((System.ComponentModel.ISupportInitialize)(this.num_kf_banquet_buygold)).BeginInit();
             this.logPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.subBrowser)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_super_fanpai_buy_gold)).BeginInit();
             this.SuspendLayout();
             // 
             // mainMenu
@@ -1795,6 +1797,16 @@ namespace com.lover.astd.game.ui
             this.groupBox9.TabIndex = 8;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "集市";
+            // 
+            // chk_market_usetokenafter5
+            // 
+            this.chk_market_usetokenafter5.AutoSize = true;
+            this.chk_market_usetokenafter5.Location = new System.Drawing.Point(113, 223);
+            this.chk_market_usetokenafter5.Name = "chk_market_usetokenafter5";
+            this.chk_market_usetokenafter5.Size = new System.Drawing.Size(90, 16);
+            this.chk_market_usetokenafter5.TabIndex = 39;
+            this.chk_market_usetokenafter5.Text = "5点前不进货";
+            this.chk_market_usetokenafter5.UseVisualStyleBackColor = true;
             // 
             // chk_market_usetoken
             // 
@@ -4952,6 +4964,7 @@ namespace com.lover.astd.game.ui
             // 
             // groupBox15
             // 
+            this.groupBox15.Controls.Add(this.num_super_fanpai_buy_gold);
             this.groupBox15.Controls.Add(this.label65);
             this.groupBox15.Controls.Add(this.label64);
             this.groupBox15.Controls.Add(this.nm_Out);
@@ -5105,9 +5118,9 @@ namespace com.lover.astd.game.ui
             this.chk_super_fanpai.AutoSize = true;
             this.chk_super_fanpai.Location = new System.Drawing.Point(6, 66);
             this.chk_super_fanpai.Name = "chk_super_fanpai";
-            this.chk_super_fanpai.Size = new System.Drawing.Size(96, 16);
+            this.chk_super_fanpai.Size = new System.Drawing.Size(180, 16);
             this.chk_super_fanpai.TabIndex = 53;
-            this.chk_super_fanpai.Text = "自动超级翻牌";
+            this.chk_super_fanpai.Text = "自动超级翻牌，自动到金币≤";
             this.chk_super_fanpai.UseVisualStyleBackColor = true;
             // 
             // label39
@@ -5193,7 +5206,7 @@ namespace com.lover.astd.game.ui
             // 
             // num_gem_flop_upgrade_count
             // 
-            this.num_gem_flop_upgrade_count.Location = new System.Drawing.Point(192, 36);
+            this.num_gem_flop_upgrade_count.Location = new System.Drawing.Point(192, 37);
             this.num_gem_flop_upgrade_count.Name = "num_gem_flop_upgrade_count";
             this.num_gem_flop_upgrade_count.Size = new System.Drawing.Size(51, 21);
             this.num_gem_flop_upgrade_count.TabIndex = 38;
@@ -5660,15 +5673,12 @@ namespace com.lover.astd.game.ui
             this.lbl_time.Size = new System.Drawing.Size(0, 12);
             this.lbl_time.TabIndex = 8;
             // 
-            // chk_market_usetokenafter5
+            // num_super_fanpai_buy_gold
             // 
-            this.chk_market_usetokenafter5.AutoSize = true;
-            this.chk_market_usetokenafter5.Location = new System.Drawing.Point(113, 223);
-            this.chk_market_usetokenafter5.Name = "chk_market_usetokenafter5";
-            this.chk_market_usetokenafter5.Size = new System.Drawing.Size(90, 16);
-            this.chk_market_usetokenafter5.TabIndex = 39;
-            this.chk_market_usetokenafter5.Text = "5点前不进货";
-            this.chk_market_usetokenafter5.UseVisualStyleBackColor = true;
+            this.num_super_fanpai_buy_gold.Location = new System.Drawing.Point(192, 62);
+            this.num_super_fanpai_buy_gold.Name = "num_super_fanpai_buy_gold";
+            this.num_super_fanpai_buy_gold.Size = new System.Drawing.Size(51, 21);
+            this.num_super_fanpai_buy_gold.TabIndex = 69;
             // 
             // NewMainForm
             // 
@@ -5827,6 +5837,7 @@ namespace com.lover.astd.game.ui
             this.logPage.ResumeLayout(false);
             this.logPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.subBrowser)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_super_fanpai_buy_gold)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -6269,6 +6280,7 @@ namespace com.lover.astd.game.ui
         public System.Windows.Forms.ComboBox combo_kfrank_ack_formation;
         private System.Windows.Forms.ToolStripMenuItem 练将计算器ToolStripMenuItem;
         public System.Windows.Forms.CheckBox chk_market_usetokenafter5;
+        public System.Windows.Forms.NumericUpDown num_super_fanpai_buy_gold;
 
     }
 }

@@ -1231,35 +1231,35 @@ namespace com.lover.astd.common.logic
                 else
                 {
                     XmlDocument cmdResult = xml.CmdResult;
-                    int num = 1;
-                    int num2 = 20;
-                    int num3 = 0;
+                    int buyone = 1;
+                    int buyall = 20;
+                    int freetimes = 0;
                     XmlNode xmlNode = cmdResult.SelectSingleNode("/results/superfanpaiinfo/buyone");
                     bool flag3 = xmlNode != null;
                     if (flag3)
                     {
-                        int.TryParse(xmlNode.InnerText, out num);
+                        int.TryParse(xmlNode.InnerText, out buyone);
                     }
                     XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/superfanpaiinfo/buyall");
                     bool flag4 = xmlNode2 != null;
                     if (flag4)
                     {
-                        int.TryParse(xmlNode2.InnerText, out num2);
+                        int.TryParse(xmlNode2.InnerText, out buyall);
                     }
                     XmlNode xmlNode3 = cmdResult.SelectSingleNode("/results/superfanpaiinfo/freetimes");
                     bool flag5 = xmlNode3 != null;
                     if (flag5)
                     {
-                        int.TryParse(xmlNode3.InnerText, out num3);
+                        int.TryParse(xmlNode3.InnerText, out freetimes);
                     }
-                    bool flag6 = false;
+                    bool isfanpai = false;
                     XmlNode xmlNode4 = cmdResult.SelectSingleNode("/results/superfanpaiinfo/isfanpai");
                     bool flag7 = xmlNode4 != null;
                     if (flag7)
                     {
-                        flag6 = (xmlNode4.InnerText != "0");
+                        isfanpai = (xmlNode4.InnerText != "0");
                     }
-                    bool flag8 = flag6;
+                    bool flag8 = isfanpai;
                     if (flag8)
                     {
                         //Random random = new Random();
@@ -1303,7 +1303,7 @@ namespace com.lover.astd.common.logic
                         }
                         base.logInfo(logger, string.Format("当前超级翻牌还剩翻牌次数{0}次, 当前收益:[{1},{2},{3}]级, 全开{4}个宝石", new object[]
 						{
-							num3,
+							freetimes,
 							array2[0],
 							array2[1],
 							array2[2],
@@ -1319,15 +1319,21 @@ namespace com.lover.astd.common.logic
                                 _superFanpai_idx = fanpai_idx;
                             }
                         }
-                        bool flag9 = num3 == 0 && (num > max_buy_gold || max_buy_gold > gold_available);
-                        if (flag9)
+                        if (freetimes == 0)
                         {
-                            result = 2;
+                            if (buyone <= max_buy_gold && max_buy_gold <= gold_available)
+                            {
+                                result = this.superFanpai_buyTimes(protocol, logger, buyone);
+                            }
+                            else
+                            {
+                                result = 2;
+                            }
                         }
                         else
                         {
-                            double num8 = (double)num2 * 1.0 / (double)num7;
-                            bool flag10 = num8 <= gem_price && num2 <= gold_available;
+                            double num8 = (double)buyall * 1.0 / (double)num7;
+                            bool flag10 = num8 <= gem_price && buyall <= gold_available;
                             if (flag10)
                             {
                                 int num9 = this.SuperFanpai_getAll(protocol, logger);
@@ -1456,6 +1462,25 @@ namespace com.lover.astd.common.logic
                 }
             }
             return result;
+        }
+
+        public int superFanpai_buyTimes(ProtocolMgr protocol, ILogger logger, int buyone)
+        {
+            string url = "/root/superFanpai!buyTimes.action";
+            ServerResult xml = protocol.getXml(url, "超级翻牌购买次数");
+            if (xml == null)
+            {
+                return 1;
+            }
+            else if (!xml.CmdSucceed)
+            {
+                return 10;
+            }
+            else
+            {
+                base.logInfo(logger, string.Format("超级翻牌购买次数成功，花费{0}金币", buyone));
+                return 0;
+            }
         }
 
         public int handleCrossPlatformCompeteInfo(ProtocolMgr protocol, ILogger logger, int gold_available, int max_gold_to_continue_support, out long cdMSeconds)
