@@ -9559,7 +9559,6 @@ namespace com.lover.astd.common.logic
                     }
                 }
             }
-            logger.logInfo(string.Format("乱世风云榜 - 我的积分:{0}", score));
             //有任务奖励
             if (taskInfo.state_ == 1)
             {
@@ -9627,6 +9626,7 @@ namespace com.lover.astd.common.logic
             //对战积分<=point，且对战军令消耗小于等于10
             if (score >= point && needtoken <= 10)
             {
+                logger.logInfo(string.Format("乱世风云榜 - 我的积分:{0}", score));
                 if (user.Token >= needtoken)
                 {
                     startMatch(protocol, logger, needtoken, user.Token);
