@@ -971,7 +971,10 @@ namespace com.lover.astd.game.ui
                         if (num < 20)
                         {
                             num++;
-                            Thread.Sleep(100);
+                            if (_exe_thread != null)
+                            {
+                                Thread.Sleep(100);
+                            }
                         }
                         else
                         {

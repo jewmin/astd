@@ -120,6 +120,12 @@ namespace com.lover.astd.common.model.misc
                 case 48:
                     reward = string.Format("{0}倍暴击铁锤", Lv);
                     break;
+                case 49:
+                    reward = string.Format("大将令[{0}]", ItemName);
+                    break;
+                case 50:
+                    reward = "镔铁";
+                    break;
                 default:
                     reward = string.Format("[type={0},itemname={1},quality={2},lv={3},num={4}]", Type, ItemName, Quality, Lv, Num);
                     break;

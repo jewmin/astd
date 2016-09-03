@@ -1134,8 +1134,14 @@ namespace com.lover.astd.common.logic
             {
                 user._attack_daojuJin = 0;
             }
+            //封地///////////////////////////////////////////////////////////////////////////////////////////
+            user._fengdi = new FengDi();
+            xmlNode5 = cmdResult.SelectSingleNode("/results/fengdi");
+            user._fengdi.fillXmlNode(xmlNode5);
+            ////////////////////////////////////////////////////////////////////////////////////////////////
             XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/newarea");
             user._attack_spy_city = "";
+            user._fengdi_areaInfo.Clear();
             user._attack_all_areas.Clear();
             foreach (XmlNode xmlNode6 in xmlNodeList)
             {
@@ -1175,6 +1181,10 @@ namespace com.lover.astd.common.logic
                     {
                         areaInfo.ziyuan = int.Parse(xmlNode7.InnerText);
                     }
+                    else if (xmlNode7.Name == "fengdiflag")
+                    {
+                        areaInfo.fengdiflag = 1;
+                    }
                 }
                 if (areaInfo.ziyuan == 100)
                 {
@@ -1188,6 +1198,10 @@ namespace com.lover.astd.common.logic
                 {
                     user.setNewAreaCityNation(areaInfo.areaid, areaInfo.nation);
                     user._attack_all_areas.Add(areaInfo);
+                    if (areaInfo.fengdiflag == 1)
+                    {
+                        user._fengdi_areaInfo.Add(areaInfo);
+                    }
                 }
             }
 		}
@@ -1332,8 +1346,14 @@ namespace com.lover.astd.common.logic
             }
             base.logInfo(logger, string.Format("领取排名奖励, 宝石+{0}", baoshi));
         }
-
-		public void getUserTokens(ProtocolMgr protocol, ILogger logger, User user)
+        #region 个人令
+        /// <summary>
+        /// 获取个人令
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="logger"></param>
+        /// <param name="user"></param>
+        public void getUserTokens(ProtocolMgr protocol, ILogger logger, User user)
 		{
 			string url = "/root/world!getNewAreaToken.action";
 			ServerResult xml = protocol.getXml(url, "新世界获取个人令");
@@ -1366,8 +1386,15 @@ namespace com.lover.astd.common.logic
                     {
                         userToken.level = int.Parse(xmlNode2.InnerText);
                     }
+                    else if (xmlNode2.Name == "effect")
+                    {
+                        userToken.effect = float.Parse(xmlNode2.InnerText);
+                    }
                 }
-                user._attack_user_tokens.Add(userToken);
+                if (userToken.tokenid > 0)
+                {
+                    user._attack_user_tokens.Add(userToken);
+                }
             }
             XmlNode xmlNode3 = cmdResult.SelectSingleNode("/results/playercityevent/canreward");
             if (xmlNode3 != null)
@@ -1398,7 +1425,13 @@ namespace com.lover.astd.common.logic
                 int.TryParse(xmlNode6.InnerText, out user._attack_current_cityevent_cdtime);
             }
 		}
-
+        /// <summary>
+        /// 使用鼓舞令
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="logger"></param>
+        /// <param name="newTokenId"></param>
+        /// <returns></returns>
 		private bool useInspireToken(ProtocolMgr protocol, ILogger logger, int newTokenId)
 		{
 			string url = "/root/world!useInspireToken.action";
@@ -1408,26 +1441,29 @@ namespace com.lover.astd.common.logic
 			{
 				return false;
 			}
-			else
-			{
-				XmlDocument cmdResult = serverResult.CmdResult;
-                int tokenlevel = 0;
-				XmlNode xmlNode = cmdResult.SelectSingleNode("/results/tokenlevel");
-				if (xmlNode != null)
-				{
-                    int.TryParse(xmlNode.InnerText, out tokenlevel);
-				}
-                float effect = 0f;
-				XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/effect");
-				if (xmlNode2 != null)
-				{
-                    float.TryParse(xmlNode2.InnerText, out effect);
-				}
-                base.logInfo(logger, string.Format("使用[{0}级鼓舞令], 成功, 攻防+{1}%, 持续24小时", tokenlevel, effect));
-				return true;
-			}
+            XmlDocument cmdResult = serverResult.CmdResult;
+            int tokenlevel = 0;
+            XmlNode xmlNode = cmdResult.SelectSingleNode("/results/tokenlevel");
+            if (xmlNode != null)
+            {
+                int.TryParse(xmlNode.InnerText, out tokenlevel);
+            }
+            float effect = 0f;
+            XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/effect");
+            if (xmlNode2 != null)
+            {
+                float.TryParse(xmlNode2.InnerText, out effect);
+            }
+            base.logInfo(logger, string.Format("使用[{0}级鼓舞令], 成功, 攻防+{1}%, 持续24小时", tokenlevel, effect));
+            return true;
 		}
-
+        /// <summary>
+        /// 使用建造令
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="logger"></param>
+        /// <param name="newTokenId"></param>
+        /// <returns></returns>
 		private bool useConstructToken(ProtocolMgr protocol, ILogger logger, int newTokenId)
 		{
 			string url = "/root/world!useConstuctToken.action";
@@ -1456,7 +1492,13 @@ namespace com.lover.astd.common.logic
 				return true;
 			}
 		}
-
+        /// <summary>
+        /// 使用战绩令
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="logger"></param>
+        /// <param name="newTokenId"></param>
+        /// <returns></returns>
 		private bool useScoreToken(ProtocolMgr protocol, ILogger logger, int newTokenId)
 		{
 			string url = "/root/world!useScoreToken.action";
@@ -1490,27 +1532,21 @@ namespace com.lover.astd.common.logic
                 }
                 else if (current.tokenid == 4)
                 {
-                    bool use_flag = false;
-                    if (user._attack_inspiredState == 0)
-                    {
-                        use_flag = true;
-                    }
-                    else if (user._attack_inspiredEffect < (float)current.level)
-                    {
-                        use_flag = true;
-                    }
-                    if (use_flag)
+                    if (user._attack_inspiredState == 0 || user._attack_inspiredEffect <= current.effect)
                     {
                         this.useInspireToken(protocol, logger, current.id);
                     }
                 }
-                else if (current.tokenid == 8 && user._attack_scoreTokencd == 0 && user._attack_cityHpRecoverCd == 0 && this.useScoreToken(protocol, logger, current.id))
+                else if (current.tokenid == 8)
                 {
-                    user._attack_scoreTokencd = (10 + current.level) * 60 * 1000;
+                    if (user._attack_scoreTokencd == 0/* && user._attack_cityHpRecoverCd == 0*/)
+                    {
+                        this.useScoreToken(protocol, logger, current.id);
+                    }
                 }
             }
 		}
-
+        #endregion
         public AreaInfo getNextMoveArea(ProtocolMgr protocol, ILogger logger, User user, AreaInfo target_area, bool is_doing_cityevent, bool is_doing_nation)
 		{
 			AreaInfo areaById = user.getAreaById(user._attack_selfCityId);
@@ -1927,9 +1963,8 @@ namespace com.lover.astd.common.logic
 			string url = "/root/world!transferInNewArea.action";
 			string data = "areaId=" + areaId;
 			ServerResult serverResult = protocol.postXml(url, data, "新世界移动城市");
-			bool flag = serverResult == null;
 			int result;
-			if (flag)
+			if (serverResult == null)
 			{
 				result = 1;
 			}
@@ -1968,100 +2003,83 @@ namespace com.lover.astd.common.logic
 			return result;
 		}
 
-		public int newMoveToArea(ProtocolMgr protocol, ILogger logger, User user, int areaId, out long remaintime)
+        public int newMoveToArea(ProtocolMgr protocol, ILogger logger, User user, int areaId, int reservetime, out long remaintime)
 		{
-			remaintime = 120000L;
+			remaintime = 60000L;
 			string url = "/root/world!transferInNewArea.action";
 			string data = "areaId=" + areaId;
 			ServerResult serverResult = protocol.postXml(url, data, "新世界移动城市");
-			bool flag = serverResult == null;
 			int result;
-			if (flag)
+			if (serverResult == null)
 			{
 				result = 1;
 			}
-			else
-			{
-				bool flag2 = !serverResult.CmdSucceed;
-				if (flag2)
-				{
-					bool flag3 = serverResult.CmdError.IndexOf("城防自动恢复完毕") >= 0;
-					if (flag3)
-					{
-						result = 2;
-					}
-					else
-					{
-						bool flag4 = serverResult.CmdError.IndexOf("不能移动到那里") >= 0;
-						if (flag4)
-						{
-							user._attack_move_path.Clear();
-							result = 3;
-						}
-						else
-						{
-							result = 4;
-						}
-					}
-				}
-				else
-				{
-					XmlDocument cmdResult = serverResult.CmdResult;
-					AreaInfo areaById = user.getAreaById(areaId);
-					bool flag5 = areaById != null;
-					if (flag5)
-					{
-						user._attack_selfCityId = areaById.areaid;
-						base.logInfo(logger, string.Format("移动到城市[{0}]", areaById.areaname));
-						user._remove_attack_move_now(areaById.areaid);
-						XmlNode xmlNode = cmdResult.SelectSingleNode("/results/playerupdateinfo/transfercd");
-						bool flag6 = xmlNode != null;
-						if (flag6)
-						{
-							long.TryParse(xmlNode.InnerText, out remaintime);
-						}
-						string url2 = "/root/world!getNewArea.action";
-						ServerResult xml = protocol.getXml(url2, "新世界界面");
-						bool flag7 = xml == null || !xml.CmdSucceed;
-						if (flag7)
-						{
-							result = 1;
-						}
-						else
-						{
-							double num = 0.0;
-							XmlDocument cmdResult2 = xml.CmdResult;
-							XmlNode xmlNode2 = cmdResult2.SelectSingleNode("/results/freeclearmovetime");
-							bool flag8 = xmlNode2 != null;
-							if (flag8)
-							{
-								double.TryParse(xmlNode2.InnerText, out num);
-							}
-							int num2 = (int)num;
-							bool flag9 = num2 > 0;
-							if (flag9)
-							{
-								base.logInfo(logger, string.Format("有免费清除CD[{0}]次", num2));
-								string url3 = "/root/world!cdMoveRecoverConfirm.action";
-								ServerResult xml2 = protocol.getXml(url3, "免费CD");
-								bool flag10 = xml2 == null || !xml2.CmdSucceed;
-								if (flag10)
-								{
-									result = 1;
-									return result;
-								}
-								base.logInfo(logger, string.Format("清除迁移CD", new object[0]));
-								remaintime = 2000L;
-							}
-							result = 0;
-						}
-					}
-					else
-					{
-						result = 3;
-					}
-				}
-			}
+            else if (!serverResult.CmdSucceed)
+            {
+                if (serverResult.CmdError.IndexOf("城防自动恢复完毕") >= 0)
+                {
+                    result = 2;
+                }
+                else if (serverResult.CmdError.IndexOf("不能移动到那里") >= 0)
+                {
+                    user._attack_move_path.Clear();
+                    result = 3;
+                }
+                else
+                {
+                    result = 4;
+                }
+            }
+            else
+            {
+                XmlDocument cmdResult = serverResult.CmdResult;
+                AreaInfo areaById = user.getAreaById(areaId);
+                if (areaById != null)
+                {
+                    user._attack_selfCityId = areaById.areaid;
+                    base.logInfo(logger, string.Format("移动到城市[{0}]", areaById.areaname));
+                    user._remove_attack_move_now(areaById.areaid);
+                    XmlNode xmlNode = cmdResult.SelectSingleNode("/results/playerupdateinfo/transfercd");
+                    if (xmlNode != null)
+                    {
+                        long.TryParse(xmlNode.InnerText, out remaintime);
+                    }
+                    string url2 = "/root/world!getNewArea.action";
+                    ServerResult xml = protocol.getXml(url2, "新世界界面");
+                    if (xml == null || !xml.CmdSucceed)
+                    {
+                        result = 1;
+                    }
+                    else
+                    {
+                        double freeclearmovetime = 0.0;
+                        XmlDocument cmdResult2 = xml.CmdResult;
+                        XmlNode xmlNode2 = cmdResult2.SelectSingleNode("/results/freeclearmovetime");
+                        if (xmlNode2 != null)
+                        {
+                            double.TryParse(xmlNode2.InnerText, out freeclearmovetime);
+                        }
+                        if ((int)freeclearmovetime > reservetime)
+                        {
+                            base.logInfo(logger, string.Format("有免费清除CD[{0}]次", (int)freeclearmovetime));
+                            string url3 = "/root/world!cdMoveRecoverConfirm.action";
+                            ServerResult xml2 = protocol.getXml(url3, "免费CD");
+                            if (xml2 == null || !xml2.CmdSucceed)
+                            {
+                                result = 1;
+                                return result;
+                            }
+                            base.logInfo(logger, string.Format("清除迁移CD", new object[0]));
+                            remaintime = base.immediate();
+                        }
+                        result = 0;
+                    }
+                }
+                else
+                {
+                    result = 3;
+                }
+            }
 			return result;
 		}
 
@@ -3102,6 +3120,17 @@ namespace com.lover.astd.common.logic
 		}
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="logger"></param>
+        /// <param name="user"></param>
+        /// <param name="max_star"></param>
+        /// <param name="reserved_num"></param>
+        /// <param name="move_target"></param>
+        /// <param name="remain_time"></param>
+        /// <returns></returns>
+        /// <summary>
         /// 处理新世界悬赏事件 10:失败,15:已到保留次数,0:已接,未完成,1:空结果,2:完成,未到最后一次,3:完成最后一次,准备移动,4:完成最后一次,移动完毕,5:已接,任务星级>最大星级
         /// </summary>
         /// <param name="protocol"></param>
@@ -3110,9 +3139,10 @@ namespace com.lover.astd.common.logic
         /// <param name="max_star">最大星级</param>
         /// <param name="reserved_num">保留次数</param>
         /// <param name="move_target">移动目标</param>
+        /// <param name="is_doing_nation">天降奇兵，将忽略保留次数</param>
         /// <param name="remain_time">返回剩余时间</param>
         /// <returns></returns>
-		public int handleNewCityEventInfo(ProtocolMgr protocol, ILogger logger, User user, int max_star, int reserved_num, string move_target, out long remain_time)
+        public int handleNewCityEventInfo(ProtocolMgr protocol, ILogger logger, User user, int max_star, int reserved_num, string move_target, bool is_doing_nation, out long remain_time)
 		{
 			remain_time = 0;
 			string url = "/root/world!getNewCityEventInfo.action";
@@ -3271,7 +3301,7 @@ namespace com.lover.astd.common.logic
                 return 4;
             }
             base.logInfo(logger, string.Format("世界悬赏还剩[{0}]次", remaintimes));
-            if (remaintimes <= reserved_num)
+            if (remaintimes <= reserved_num && !is_doing_nation)
             {
                 base.logInfo(logger, "世界悬赏已到保留次数，不再接受任务");
                 return 15;
@@ -4186,5 +4216,104 @@ namespace com.lover.astd.common.logic
                 int.TryParse(xmlNode.InnerText, out spynum);
             }
         }
-	}
+
+        #region 封地
+        /// <summary>
+        /// 协助生产
+        /// </summary>
+        /// <param name="proto"></param>
+        /// <param name="logger"></param>
+        /// <param name="areaId"></param>
+        public void generateBigG(ProtocolMgr proto, ILogger logger, int areaId)
+        {
+            string url = "/root/world!generateBigG.action";
+            string data = string.Format("areaId={0}", areaId);
+            ServerResult result = proto.postXml(url, data, "获得封地资源信息");
+            if (result == null || !result.CmdSucceed)
+            {
+                return;
+            }
+            XmlDocument cmdResult = result.CmdResult;
+            XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/produceinfo");
+            List<ProduceInfo> produceList = new List<ProduceInfo>();
+            foreach (XmlNode xmlNode in xmlNodeList)
+            {
+                ProduceInfo produce = new ProduceInfo();
+                produce.fillXmlNode(xmlNode);
+                if (produce.resid > 0)
+                {
+                    produceList.Add(produce);
+                }
+            }
+            startProduce(proto, logger, areaId, produceList);
+        }
+        /// <summary>
+        /// 开始生产
+        /// </summary>
+        /// <param name="proto"></param>
+        /// <param name="logger"></param>
+        /// <param name="areaId"></param>
+        /// <param name="produceList"></param>
+        /// <returns></returns>
+        public bool startProduce(ProtocolMgr proto, ILogger logger, int areaId, List<ProduceInfo> produceList)
+        {
+            int[] order = new int[] { 4, 2, 3, 1 };
+            ProduceInfo produce = null;
+            for (int i = 0; i < order.Length; i++)
+            {
+                produce = getValiableProduceInfo(order[i], produceList);
+                if (produce != null) break;
+            }
+            if (produce == null) return false;
+            string url = "/root/world!startProduce.action";
+            string data = string.Format("resId={0}&areaId={1}", produce.resid, areaId);
+            ServerResult result = proto.postXml(url, data, "封地生产");
+            if (result != null && result.CmdSucceed)
+            {
+                logInfo(logger, string.Format("封地生产 - {0}", produce.ToString()));
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// 有效的生产资源
+        /// </summary>
+        /// <param name="resId"></param>
+        /// <param name="produceList"></param>
+        /// <returns></returns>
+        public ProduceInfo getValiableProduceInfo(int resId, List<ProduceInfo> produceList)
+        {
+            foreach (ProduceInfo produce in produceList)
+            {
+                if (produce.resid == resId && produce.isValiable())
+                {
+                    return produce;
+                }
+            }
+            return null;
+        }
+        /// <summary>
+        /// 领取协助奖励
+        /// </summary>
+        /// <param name="proto"></param>
+        /// <param name="logger"></param>
+        /// <param name="user"></param>
+        public void recvFengdiReward(ProtocolMgr proto, ILogger logger, User user)
+        {
+            string url = "/root/world!recvFengdiReward.action";
+            ServerResult result = proto.getXml(url, "领取封地奖励");
+            if (result == null || !result.CmdSucceed)
+            {
+                return;
+            }
+            XmlDocument cmdResult = result.CmdResult;
+            RewardInfo reward = new RewardInfo();
+            reward.handleXmlNode(cmdResult.SelectSingleNode("/results/rewardinfo"));
+            logInfo(logger, string.Format("领取封地奖励 {0}", reward.ToString()));
+            user._fengdi = new FengDi();
+            XmlNode xmlNode = cmdResult.SelectSingleNode("/results/fengdi");
+            user._fengdi.fillXmlNode(xmlNode);
+        }
+        #endregion
+    }
 }

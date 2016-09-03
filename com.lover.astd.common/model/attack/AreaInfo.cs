@@ -39,5 +39,9 @@ namespace com.lover.astd.common.model.attack
         /// 资源 100:间谍
         /// </summary>
         public int ziyuan;
+        /// <summary>
+        /// 封地
+        /// </summary>
+        public int fengdiflag;
 	}
 }

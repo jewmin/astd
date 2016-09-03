@@ -302,6 +302,14 @@ namespace com.lover.astd.common.model
         /// </summary>
 		public List<AreaInfo> _attack_move_path;
         /// <summary>
+        /// 我的封地
+        /// </summary>
+        public FengDi _fengdi;
+        /// <summary>
+        /// 所有封地
+        /// </summary>
+        public List<AreaInfo> _fengdi_areaInfo;
+        /// <summary>
         /// 悬赏目标Id
         /// </summary>
 		public int _attack_cityevent_targetid;
@@ -1568,6 +1576,7 @@ namespace com.lover.astd.common.model
 			this._attack_user_tokens = new List<UserToken>();
 			this._newAreaCityInfo = new Dictionary<int, int>();
 			this._attack_move_path = new List<AreaInfo>();
+            this._fengdi_areaInfo = new List<AreaInfo>();
 			this._qhEquips = new List<Equipment>();
 			this._mhEquips = new List<Equipment>();
 			this._storeEquips = new List<Equipment>();

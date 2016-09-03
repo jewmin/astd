@@ -139,7 +139,9 @@
     <Compile Include="model\activity\TaskInfo.cs" />
     <Compile Include="model\AsObject.cs" />
     <Compile Include="model\attack\AreaInfo.cs" />
+    <Compile Include="model\attack\FengDi.cs" />
     <Compile Include="model\attack\PkInfo.cs" />
+    <Compile Include="model\attack\ProduceInfo.cs" />
     <Compile Include="model\attack\ScopeCity.cs" />
     <Compile Include="model\attack\UserToken.cs" />
     <Compile Include="model\battle\CampaignItem.cs" />

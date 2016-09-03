@@ -25,6 +25,7 @@ namespace com.lover.astd.common.logic
         /// </summary>
         private void initIndex()
         {
+            indexs_["大禹"] = 14;
             indexs_["夏桀"] = 15;
             indexs_["商汤"] = 16;
             indexs_["周文王"] = 17;

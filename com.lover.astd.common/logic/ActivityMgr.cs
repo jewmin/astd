@@ -5009,7 +5009,11 @@ namespace com.lover.astd.common.logic
             string url = "/root/event!joinBoatEventTeam.action";
             string data = "teamId=" + teamid;
             ServerResult serverResult = protocol.postXml(url, data, "加入龙舟队伍");
-            if (serverResult == null || !serverResult.CmdSucceed)
+            if (serverResult == null)
+            {
+                base.logInfo(logger, "加入龙舟队伍失败：null");
+            }
+            else if (!serverResult.CmdSucceed)
             {
                 base.logInfo(logger, "加入龙舟队伍失败：" + serverResult.CmdError);
             }

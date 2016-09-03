@@ -38,6 +38,10 @@ namespace com.lover.astd.common.logicexe.battle
         /// 悬赏剩余时间
         /// </summary>
         private long _cityevent_remain_time;
+        /// <summary>
+        /// 保留清除移动cd次数
+        /// </summary>
+        private int _reservetime;
 
         //private List<string> _juedou_blacklist = new List<string>();
 
@@ -50,6 +54,7 @@ namespace com.lover.astd.common.logicexe.battle
 			this._next_misc_exetime = 0;
             this._next_daoju_exetime = 0;
             this._cityevent_remain_time = 0;
+            this._reservetime = 10;
 		}
 
 		public AttackExe()
@@ -86,15 +91,15 @@ namespace com.lover.astd.common.logicexe.battle
 			{
 				if (this._user._attack_selfCityId == 112)//许都
 				{
-					battleManager.newMoveToArea(this._proto, this._logger, this._user, 111, out remain_time);
+					battleManager.newMoveToArea(this._proto, this._logger, this._user, 111, this._reservetime, out remain_time);
 				}
 				if (this._user._attack_selfCityId == 113)//成都
 				{
-					battleManager.newMoveToArea(this._proto, this._logger, this._user, 114, out remain_time);
+                    battleManager.newMoveToArea(this._proto, this._logger, this._user, 114, this._reservetime, out remain_time);
 				}
 				if (this._user._attack_selfCityId == 134)//武昌
 				{
-					battleManager.newMoveToArea(this._proto, this._logger, this._user, 128, out remain_time);
+                    battleManager.newMoveToArea(this._proto, this._logger, this._user, 128, this._reservetime, out remain_time);
 				}
                 return this.attack_nationevent_player();
             }
@@ -147,7 +152,7 @@ namespace com.lover.astd.common.logicexe.battle
 			{
 				move_target = config["move_target"];
 			}
-			int cityEventRet = battleManager.handleNewCityEventInfo(this._proto, this._logger, this._user, max_star, reserved_num, move_target, out this._cityevent_remain_time);
+			int cityEventRet = battleManager.handleNewCityEventInfo(this._proto, this._logger, this._user, max_star, reserved_num, move_target, is_doing_nation, out this._cityevent_remain_time);
 			if (cityEventRet == 0)
 			{
                 AreaInfo areaById = this._user.getAreaById(this._user._attack_cityevent_target_areaid);
@@ -586,7 +591,19 @@ namespace com.lover.astd.common.logicexe.battle
 			{
 				this.logInfo(string.Format("目前处于攻坚战集结期间, 集结目标为[{0}], 将忽略设置的移动目标", this._user._attack_nation_battle_city));
 				areaName = this._user._attack_nation_battle_city;
-			}
+            }
+            if (this._user._fengdi.remainnum > 0)
+            {
+                foreach (AreaInfo fengdi in this._user._fengdi_areaInfo)
+                {
+                    if (fengdi.nation == this._user.NationInt)
+                    {
+                        this.logInfo(string.Format("发现封地, 封地目标为[{0}], 将忽略设置的移动目标", fengdi.areaname));
+                        areaName = fengdi.areaname;
+                        break;
+                    }
+                }
+            }
 			AreaInfo areaInfo = this._user.getAreaByName(areaName);
 			int areaid = 0;
 			if (areaInfo != null)
@@ -700,11 +717,6 @@ namespace com.lover.astd.common.logicexe.battle
             //加载个人令信息
             battleManager.getUserTokens(this._proto, this._logger, this._user);
 
-            if (this._user._attack_cityHpRecoverCd > 0)//补充城防
-            {
-                return this._user._attack_cityHpRecoverCd;
-            }
-
             //杂七杂八
             long misc_exetime = 3600000;//一个小时
             if (this._factory.TmrMgr.TimeStamp >= this._next_misc_exetime)
@@ -728,6 +740,7 @@ namespace com.lover.astd.common.logicexe.battle
 
             //获取战绩信息
             battleManager.getBattleScoreInfo(this._proto, this._logger, this._user);
+
             //领取战绩奖励
             for (int i = 0; i < this._user._attack_battleScore_awardGot.Length && this._user._attack_battleScore_awardGot[i] != 0; i++)
             {
@@ -736,15 +749,42 @@ namespace com.lover.astd.common.logicexe.battle
                     battleManager.getBattleScoreAward(this._proto, this._logger, i + 1);
                 }
             }
+
             //领取排名奖励
             if (this._user._attack_last_awardGot == 1)
             {
                 battleManager.getRankAward(_proto, _logger);
             }
+
             //领取战绩宝箱
             if (this._user._attack_battleScore_box > 0)
             {
                 battleManager.openScoreBox(this._proto, this._logger, this._user._attack_battleScore_box);
+            }
+
+            //领取封地奖励
+            if (this._user._fengdi.finish == 1)
+            {
+                battleManager.recvFengdiReward(_proto, _logger, _user);
+            }
+
+            //补充城防
+            if (this._user._attack_cityHpRecoverCd > 0)
+            {
+                return this._user._attack_cityHpRecoverCd;
+            }
+
+            //封地生产
+            if (this._user._fengdi.remainnum > 0)
+            {
+                foreach (AreaInfo fengdi in this._user._fengdi_areaInfo)
+                {
+                    if (fengdi.areaid == this._user._attack_selfCityId)
+                    {
+                        battleManager.generateBigG(this._proto, this._logger, fengdi.areaid);
+                        break;
+                    }
+                }
             }
 
             //搜索间谍
@@ -767,7 +807,7 @@ namespace com.lover.astd.common.logicexe.battle
 
             //悬赏
             bool is_doing_cityevent = false;
-            long city_exetime = 300000;//5分钟
+            long city_exetime = 600000;//10分钟
             if (city_event && this._user.AttackOrders > 0)//悬赏
             {
                 if (this._factory.TmrMgr.TimeStamp >= this._next_cityevent_exetime)
@@ -801,6 +841,51 @@ namespace com.lover.astd.common.logicexe.battle
             if (this._cityevent_remain_time > 0)
             {
                 is_doing_cityevent = true;
+            }
+
+            //自动移动
+            AreaInfo areaInfo = null;
+            long transfer_cd;
+            if (this._factory.TmrMgr.TimeStamp >= this._next_move_exetime)
+            {
+                if (auto_move)
+                {
+                    areaInfo = this.calcTargetMoveArea();
+                    if (areaInfo != null)
+                    {
+                        areaInfo = battleManager.getNextMoveArea(this._proto, this._logger, this._user, areaInfo, is_doing_cityevent, is_doing_nation);
+                    }
+                }
+                if (this._user._attack_transfer_cd > 0)
+                {
+                    transfer_cd = this._user._attack_transfer_cd;
+                }
+                else if (areaInfo != null)
+                {
+                    //int moveRet = battleManager.moveToArea(this._proto, this._logger, this._user, areaInfo.areaid);
+                    //if (moveRet == 0)
+                    //{
+                    //    transfer_cd = 60000;
+                    //}
+                    //else if (moveRet == 2)
+                    //{
+                    //    transfer_cd = 60000;//600000
+                    //}
+                    //else
+                    //{
+                    //    transfer_cd = 60000;
+                    //}
+                    battleManager.newMoveToArea(this._proto, this._logger, this._user, areaInfo.areaid, this._reservetime, out transfer_cd);
+                }
+                else
+                {
+                    transfer_cd = 60000;//1800000
+                }
+                this._next_move_exetime = this._factory.TmrMgr.TimeStamp + transfer_cd;
+            }
+            else
+            {
+                transfer_cd = this._next_move_exetime - this._factory.TmrMgr.TimeStamp;
             }
 
             //攻坚战
@@ -852,50 +937,6 @@ namespace com.lover.astd.common.logicexe.battle
             {
                 this._user._attack_nation_battle_city = "";
                 this._user._attack_nationBattleRemainTime = base.next_gongjian_time();
-            }
-
-            //自动移动
-            AreaInfo areaInfo = null;
-            long transfer_cd;
-            if (this._factory.TmrMgr.TimeStamp >= this._next_move_exetime)
-            {
-                if (auto_move)
-                {
-                    areaInfo = this.calcTargetMoveArea();
-                    if (areaInfo != null)
-                    {
-                        areaInfo = battleManager.getNextMoveArea(this._proto, this._logger, this._user, areaInfo, is_doing_cityevent, is_doing_nation);
-                    }
-                }
-                if (this._user._attack_transfer_cd > 0)
-                {
-                    transfer_cd = this._user._attack_transfer_cd;
-                }
-                else if (areaInfo != null)
-                {
-                    int moveRet = battleManager.moveToArea(this._proto, this._logger, this._user, areaInfo.areaid);
-                    if (moveRet == 0)
-                    {
-                        transfer_cd = 60000;
-                    }
-                    else if (moveRet == 2)
-                    {
-                        transfer_cd = 600000;
-                    }
-                    else
-                    {
-                        transfer_cd = 60000;
-                    }
-                }
-                else
-                {
-                    transfer_cd = 1800000;
-                }
-                this._next_move_exetime = this._factory.TmrMgr.TimeStamp + transfer_cd;
-            }
-            else
-            {
-                transfer_cd = this._next_move_exetime - this._factory.TmrMgr.TimeStamp;
             }
 
             //决斗
