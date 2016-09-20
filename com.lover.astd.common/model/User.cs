@@ -143,6 +143,18 @@ namespace com.lover.astd.common.model
 		public int _impose_repayEvent_numMax = 80;
 
 		public string _impose_repayEvent_rewardStatus = "";
+        /// <summary>
+        /// 每日任务征收次数
+        /// </summary>
+        public int _impose_task_num = 0;
+        /// <summary>
+        /// 每日任务强征次数
+        /// </summary>
+        public int _impose_force_task_num = 0;
+        /// <summary>
+        /// 每日任务纺织次数
+        /// </summary>
+        public int _weave_task_num = 0;
 
 		public int[] _fete_min_levels;
 

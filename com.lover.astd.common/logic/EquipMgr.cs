@@ -2752,106 +2752,64 @@ namespace com.lover.astd.common.logic
             string url = "/root/market!trade.action";
             string data = string.Format("gold=0&merchantId={0}", merchant.merchantid);
             ServerResult serverResult = protocol.postXml(url, data, "委派" + merchant.merchantname);
-            bool flag = serverResult == null;
-            int result;
-            if (flag)
+            if (serverResult == null)
             {
-                result = 1;
+                return 1;
             }
-            else
+            else if (!serverResult.CmdSucceed)
             {
-                bool flag2 = !serverResult.CmdSucceed;
-                if (flag2)
+                return 2;
+            }
+
+            XmlDocument cmdResult = serverResult.CmdResult;
+            string[] array = new string[] { "白色", "蓝色", "绿色", "黄色", "红色", "紫色" };
+            int sell_index = 0;
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i].Equals(sell_quality))
                 {
-                    result = 2;
-                }
-                else
-                {
-                    XmlDocument cmdResult = serverResult.CmdResult;
-                    string[] array = new string[]
-					{
-						"白色",
-						"蓝色",
-						"绿色",
-						"黄色",
-						"红色",
-						"紫色"
-					};
-                    int num = 0;
-                    int num2;
-                    for (int i = 0; i < array.Length; i = num2 + 1)
-                    {
-                        bool flag3 = array[i].Equals(sell_quality);
-                        if (flag3)
-                        {
-                            num = i + 1;
-                            break;
-                        }
-                        num2 = i;
-                    }
-                    string tradeSN = "";
-                    string text = "";
-                    int num3 = 0;
-                    int num4 = 0;
-                    bool flag4 = false;
-                    XmlNode xmlNode = cmdResult.SelectSingleNode("/results/tradesn");
-                    bool flag5 = xmlNode != null;
-                    if (flag5)
-                    {
-                        tradeSN = xmlNode.InnerText;
-                    }
-                    XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/merchandise");
-                    XmlNodeList childNodes = xmlNode2.ChildNodes;
-                    foreach (XmlNode xmlNode3 in childNodes)
-                    {
-                        bool flag6 = xmlNode3.Name == "merchandisename";
-                        if (flag6)
-                        {
-                            text = xmlNode3.InnerText;
-                        }
-                        else
-                        {
-                            bool flag7 = xmlNode3.Name == "merchandisequality";
-                            if (flag7)
-                            {
-                                num3 = int.Parse(xmlNode3.InnerText);
-                            }
-                            else
-                            {
-                                bool flag8 = xmlNode3.Name == "cost";
-                                if (flag8)
-                                {
-                                    num4 = int.Parse(xmlNode3.InnerText);
-                                }
-                                else
-                                {
-                                    bool flag9 = xmlNode3.Name == "chip";
-                                    if (flag9)
-                                    {
-                                        flag4 = true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    string text2 = string.Format("委派[{0}], 花费{1}银币, 获得[{2}{3}], 售价{4}银币", new object[]
-					{
-						merchant.merchantname,
-						merchant.cost,
-						text,
-						flag4 ? "碎片" : "",
-						num4
-					});
-                    base.logInfo(logger, text2);
-                    bool flag10 = num3 <= num;
-                    if (flag10)
-                    {
-                        this.sellMerchantGoods(protocol, logger, tradeSN, text);
-                    }
-                    result = 0;
+                    sell_index = i + 1;
+                    break;
                 }
             }
-            return result;
+            string tradeSN = "";
+            string merchandisename = "";
+            int merchandisequality = 0;
+            int cost = 0;
+            bool chip = false;
+            XmlNode xmlNode = cmdResult.SelectSingleNode("/results/tradesn");
+            if (xmlNode != null)
+            {
+                tradeSN = xmlNode.InnerText;
+            }
+            XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/merchandise");
+            XmlNodeList childNodes = xmlNode2.ChildNodes;
+            foreach (XmlNode xmlNode3 in childNodes)
+            {
+                if (xmlNode3.Name == "merchandisename")
+                {
+                    merchandisename = xmlNode3.InnerText;
+                }
+                else if (xmlNode3.Name == "merchandisequality")
+                {
+                    merchandisequality = int.Parse(xmlNode3.InnerText);
+                }
+                else if (xmlNode3.Name == "cost")
+                {
+                    cost = int.Parse(xmlNode3.InnerText);
+                }
+                else if (xmlNode3.Name == "chip")
+                {
+                    chip = true;
+                }
+            }
+            string text2 = string.Format("委派[{0}], 花费{1}银币, 获得[{2}{3}], 售价{4}银币", new object[] { merchant.merchantname, merchant.cost, merchandisename, chip ? "碎片" : "", cost });
+            base.logInfo(logger, text2);
+            if (merchandisequality <= sell_index && !merchandisename.Contains("赤兔马") && !merchandisename.Contains("锦缎虎纹披风"))
+            {
+                this.sellMerchantGoods(protocol, logger, tradeSN, merchandisename);
+            }
+            return 0;
         }
 
         public bool sellMerchantGoods(ProtocolMgr protocol, ILogger logger, string tradeSN, string name)

@@ -20,7 +20,7 @@ namespace com.lover.astd.common.logicexe.temp
             int result = 0;
             do
             {
-                result = _factory.getMiscManager().handleWeaveInfo(_proto, _logger, _user, 130, 10, out weave_state, false, false);
+                result = _factory.getMiscManager().handleWeaveInfo(_proto, _logger, _user, 130, 10, out weave_state, false, false, false);
             }
             while (num > 0 && result != 2);
             _finished = true;

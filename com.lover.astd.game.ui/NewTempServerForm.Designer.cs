@@ -110,7 +110,7 @@
             this.num_ticketWeapons.Size = new System.Drawing.Size(114, 21);
             this.num_ticketWeapons.TabIndex = 11;
             this.num_ticketWeapons.Value = new decimal(new int[] {
-            1,
+            99999,
             0,
             0,
             0});
@@ -264,7 +264,7 @@
             this.num_campaign_count.Size = new System.Drawing.Size(185, 21);
             this.num_campaign_count.TabIndex = 1;
             this.num_campaign_count.Value = new decimal(new int[] {
-            1,
+            99,
             0,
             0,
             0});

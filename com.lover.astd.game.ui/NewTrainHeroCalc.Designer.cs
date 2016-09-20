@@ -367,7 +367,7 @@
             this.num_open_all_trainer_times.Size = new System.Drawing.Size(114, 21);
             this.num_open_all_trainer_times.TabIndex = 72;
             this.num_open_all_trainer_times.Value = new decimal(new int[] {
-            1,
+            999,
             0,
             0,
             0});

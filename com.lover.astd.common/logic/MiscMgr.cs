@@ -876,6 +876,9 @@ namespace com.lover.astd.common.logic
             {
                 return;
             }
+            user._impose_task_num = 0;
+            user._impose_force_task_num = 0;
+            user._weave_task_num = 0;
             string url = "/root/task!getNewPerdayTask.action";
             ServerResult xml = protocol.getXml(url, "新每日任务信息");
             if (xml == null || !xml.CmdSucceed)
@@ -910,7 +913,7 @@ namespace com.lover.astd.common.logic
             }
             else
             {
-                check_task(protocol, logger, cmdResult.SelectNodes("/results/task"));
+                check_task(protocol, logger, user, cmdResult.SelectNodes("/results/task"));
             }
             if (outreward == 1)
             {
@@ -927,16 +930,19 @@ namespace com.lover.astd.common.logic
             }
             else
             {
-                check_task(protocol, logger, cmdResult.SelectNodes("/results/outtask"));
+                check_task(protocol, logger, user, cmdResult.SelectNodes("/results/outtask"));
             }
         }
 
-        private void check_task(ProtocolMgr protocol, ILogger logger, XmlNodeList xmlNodeList)
+        private void check_task(ProtocolMgr protocol, ILogger logger, User user, XmlNodeList xmlNodeList)
         {
             string url = "";
             int taskid = 0;
             int taskstate = 0;
             string taskname = "";
+            string taskcontext = "";
+            int finishnum = 0;
+            int finishline = 0;
             foreach (XmlNode xmlNode2 in xmlNodeList)
             {
                 if (xmlNode2 != null)
@@ -956,6 +962,21 @@ namespace com.lover.astd.common.logic
                     {
                         taskname = xmlNode3.InnerText;
                     }
+                    xmlNode3 = xmlNode2.SelectSingleNode("content");
+                    if (xmlNode3 != null)
+                    {
+                        taskcontext = xmlNode3.InnerText;
+                    }
+                    xmlNode3 = xmlNode2.SelectSingleNode("finishnum");
+                    if (xmlNode3 != null)
+                    {
+                        int.TryParse(xmlNode3.InnerText, out finishnum);
+                    }
+                    xmlNode3 = xmlNode2.SelectSingleNode("finishline");
+                    if (xmlNode3 != null)
+                    {
+                        int.TryParse(xmlNode3.InnerText, out finishline);
+                    }
                     if (taskstate == 0)
                     {
                         url = "/root/task!newReceive.action";
@@ -968,6 +989,24 @@ namespace com.lover.astd.common.logic
                         else
                         {
                             base.logInfo(logger, string.Format("接受新每日任务：{0}成功", taskname));
+                        }
+                    }
+                    else if (taskstate == 1)
+                    {
+                        if (taskcontext.Contains("征收"))
+                        {
+                            user._impose_task_num = finishline - finishnum;
+                            base.logInfo(logger, string.Format("新每日任务，需要征收{0}次", user._impose_task_num));
+                        }
+                        else if (taskcontext.Contains("强征"))
+                        {
+                            user._impose_force_task_num = finishline - finishnum;
+                            base.logInfo(logger, string.Format("新每日任务，需要强征{0}次", user._impose_force_task_num));
+                        }
+                        else if (taskcontext.Contains("纺织"))
+                        {
+                            user._weave_task_num = finishline - finishnum;
+                            base.logInfo(logger, string.Format("新每日任务，需要纺织{0}次", user._weave_task_num));
                         }
                     }
                     else if (taskstate == 3)
@@ -5560,324 +5599,310 @@ namespace com.lover.astd.common.logic
             }
         }
 
-        public int handleWeaveInfo(ProtocolMgr protocol, ILogger logger, User user, int weave_price, int weave_count, out int weave_state, bool do_tired_weave = false, bool only_free = true)
+        public int handleWeaveInfo(ProtocolMgr protocol, ILogger logger, User user, int weave_price, int weave_count, out int weave_state, bool do_tired_weave = false, bool only_free = true, bool only_task = true)
         {
             weave_state = 0;
-            int result;
             if (user.Level < 82)
             {
-                result = 2;
+                return 2;
+            }
+
+            string url = "/root/make.action";
+            ServerResult xml = protocol.getXml(url, "获取纺织信息");
+            if (xml == null)
+            {
+                return 1;
+            }
+            else if (!xml.CmdSucceed)
+            {
+                return 10;
+            }
+
+            List<MiscMgr.WeaveWorker> worker_list = new List<MiscMgr.WeaveWorker>();
+            List<MiscMgr.ClothInfo> cloth_list = new List<MiscMgr.ClothInfo>();
+            int price = 0;
+            bool firstrefresh = false;
+            int cardnum = 0;
+            int status = -1;
+            int cost1 = 10;
+            int cost2 = 30;
+            int remainhigh = 0;
+            int makenum = 0;
+            int use = 0;
+            int maxdaytimes = 0;
+            int alreadytimes = 0;
+            int remainlimit = 0;
+            int limit = 0;
+            XmlDocument cmdResult = xml.CmdResult;
+            XmlNode xmlNode = cmdResult.SelectSingleNode("/results/cost1");
+            if (xmlNode != null)
+            {
+                int.TryParse(xmlNode.InnerText, out cost1);
+            }
+            xmlNode = cmdResult.SelectSingleNode("/results/alreadytimes");
+            if (xmlNode != null)
+            {
+                int.TryParse(xmlNode.InnerText, out alreadytimes);
+            }
+            xmlNode = cmdResult.SelectSingleNode("/results/maxdaytimes");
+            if (xmlNode != null)
+            {
+                int.TryParse(xmlNode.InnerText, out maxdaytimes);
+            }
+            xmlNode = cmdResult.SelectSingleNode("/results/cost2");
+            if (xmlNode != null)
+            {
+                int.TryParse(xmlNode.InnerText, out cost2);
+            }
+            xmlNode = cmdResult.SelectSingleNode("/results/status");
+            if (xmlNode != null)
+            {
+                int.TryParse(xmlNode.InnerText, out status);
+            }
+            xmlNode = cmdResult.SelectSingleNode("/results/remainhigh");
+            if (xmlNode != null)
+            {
+                int.TryParse(xmlNode.InnerText, out remainhigh);
+            }
+            xmlNode = cmdResult.SelectSingleNode("/results/remainlimit");
+            if (xmlNode != null)
+            {
+                int.TryParse(xmlNode.InnerText, out remainlimit);
+            }
+            xmlNode = cmdResult.SelectSingleNode("/results/limit");
+            if (xmlNode != null)
+            {
+                int.TryParse(xmlNode.InnerText, out limit);
+            }
+            use = limit - remainlimit;
+            XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/card");
+            if (xmlNodeList != null)
+            {
+                foreach (XmlNode xmlNode6 in xmlNodeList)
+                {
+                    if (xmlNode6 != null && xmlNode6.HasChildNodes)
+                    {
+                        XmlNode xmlNode7 = xmlNode6.SelectSingleNode("cardnum");
+                        if (xmlNode7 != null)
+                        {
+                            int.TryParse(xmlNode7.InnerText, out cardnum);
+                        }
+                    }
+                }
+            }
+            XmlNode xmlNode8 = cmdResult.SelectSingleNode("/results/firstrefresh");
+            firstrefresh = (xmlNode8 != null && xmlNode8.InnerText == "1");
+            XmlNode xmlNode9 = cmdResult.SelectSingleNode("/results");
+            XmlNodeList childNodes = xmlNode9.ChildNodes;
+            int up = 0;
+            bool teacher = false;
+            foreach (XmlNode xmlNode10 in childNodes)
+            {
+                if (xmlNode10.Name == "makenum")
+                {
+                    makenum = int.Parse(xmlNode10.InnerText);
+                }
+                else if (xmlNode10.Name == "makemax")
+                {
+                    int.Parse(xmlNode10.InnerText);
+                }
+                else if (xmlNode10.Name == "price")
+                {
+                    price = int.Parse(xmlNode10.InnerText);
+                }
+                else if (xmlNode10.Name == "tech")
+                {
+                    int.Parse(xmlNode10.InnerText);
+                }
+                else if (xmlNode10.Name == "up")
+                {
+                    up = int.Parse(xmlNode10.InnerText);
+                }
+                else if (xmlNode10.Name == "teacher")
+                {
+                    teacher = xmlNode10.InnerText.Equals("1");
+                }
+                else if (xmlNode10.Name == "make")
+                {
+                    XmlNodeList childNodes2 = xmlNode10.ChildNodes;
+                    MiscMgr.ClothInfo clothInfo = new MiscMgr.ClothInfo();
+                    foreach (XmlNode xmlNode11 in childNodes2)
+                    {
+                        if (xmlNode11.Name == "id")
+                        {
+                            clothInfo.id = int.Parse(xmlNode11.InnerText);
+                        }
+                        else if (xmlNode11.Name == "type")
+                        {
+                            clothInfo.type = int.Parse(xmlNode11.InnerText);
+                        }
+                        else if (xmlNode11.Name == "name")
+                        {
+                            clothInfo.name = xmlNode11.InnerText;
+                        }
+                        else if (xmlNode11.Name == "cost")
+                        {
+                            clothInfo.cost = int.Parse(xmlNode11.InnerText);
+                        }
+                        else if (xmlNode11.Name == "successp")
+                        {
+                            clothInfo.success = float.Parse(xmlNode11.InnerText);
+                        }
+                        else if (xmlNode11.Name == "criticalp")
+                        {
+                            clothInfo.critical = float.Parse(xmlNode11.InnerText);
+                        }
+                        else if (xmlNode11.Name == "sellprice")
+                        {
+                            clothInfo.sellprice = int.Parse(xmlNode11.InnerText);
+                        }
+                        else if (xmlNode11.Name == "lv")
+                        {
+                            clothInfo.level = int.Parse(xmlNode11.InnerText);
+                        }
+                    }
+                    cloth_list.Add(clothInfo);
+                }
+                else if (xmlNode10.Name == "playermaker")
+                {
+                    XmlNodeList childNodes3 = xmlNode10.ChildNodes;
+                    MiscMgr.WeaveWorker weaveWorker = new MiscMgr.WeaveWorker();
+                    foreach (XmlNode xmlNode12 in childNodes3)
+                    {
+                        if (xmlNode12.Name == "id")
+                        {
+                            weaveWorker.id = int.Parse(xmlNode12.InnerText);
+                        }
+                        else if (xmlNode12.Name == "skill")
+                        {
+                            weaveWorker.skill = xmlNode12.InnerText;
+                        }
+                    }
+                    worker_list.Add(weaveWorker);
+                }
+
+            }
+            if (!teacher)
+            {
+                base.logInfo(logger, string.Format("当前布价: {0}{1}", price, (up < 0) ? "↓" : "↑"));
+            }
+            weave_state = status;
+            if (firstrefresh)
+            {
+                int pos = 0;
+                int formerSkillId = 0;
+                foreach (MiscMgr.WeaveWorker current in worker_list)
+                {
+                    if (current.haveLowSkill(out pos, out formerSkillId))
+                    {
+                        this.refreshWorker(protocol, logger, current.id, pos, formerSkillId);
+                        break;
+                    }
+                }
+            }
+
+            if (use >= maxdaytimes)
+            {
+                return 2;
+            }
+            else if (use > weave_count)
+            {
+                return 2;
+            }
+            else if (!teacher && price < weave_price)
+            {
+                return 4;
+            }
+            else if (status == 3)
+            {
+                return 2;
+            }
+            else if (only_task && user._weave_task_num <= 0)
+            {
+                return 2;
+            }
+
+            if (makenum > 0)
+            {
+                base.logInfo(logger, "发现免费纺织, 检查是否符合纺织条件");
+            }
+            if (makenum == 0)
+            {
+                if (only_free)
+                {
+                    return 0;
+                }
+                if (!do_tired_weave && status != 1)
+                {
+                    return 2;
+                }
+                if (status == 1 && user.CurMovable < cost1)
+                {
+                    return 3;
+                }
+                if (status == 2 && user.CurMovable < cost2)
+                {
+                    return 3;
+                }
+            }
+            List<MiscMgr.WeaveAssist> assists = null;
+            if (!teacher)
+            {
+                List<MiscMgr.WeaveAssist> weaveAssistInfo = this.getWeaveAssistInfo(protocol, logger);
+                assists = this.getAssists(weaveAssistInfo);
+                List<MiscMgr.ClothInfo> list3 = this.setAssist(protocol, logger, assists);
+                if (list3 != null && list3.Count > 0)
+                {
+                    cloth_list = list3;
+                }
             }
             else
             {
-                List<MiscMgr.WeaveWorker> list = new List<MiscMgr.WeaveWorker>();
-                List<MiscMgr.ClothInfo> list2 = new List<MiscMgr.ClothInfo>();
-                int price = 0;
-                bool firstrefresh = false;
-                int cardnum = 0;
-                int status = -1;
-                int cost1 = 10;
-                int cost2 = 30;
-                int remainhigh = 0;
-                int makenum = 0;
-                int use = 0;
-                int maxdaytimes = 0;
-                int alreadytimes = 0;
-                string url = "/root/make.action";
-                ServerResult xml = protocol.getXml(url, "获取纺织信息");
-                if (xml == null)
+                base.logInfo(logger, "纺织大师, 无需布价, 妙手来钱~~");
+            }
+            int count = cloth_list.Count;
+            for (int i = 0; i < count - 2; i++)
+            {
+                for (int j = i + 1; j < count - 1; j++)
                 {
-                    result = 1;
-                }
-                else
-                {
-                    if (!xml.CmdSucceed)
+                    if (cloth_list[i].sellprice < cloth_list[j].sellprice)
                     {
-                        result = 10;
-                    }
-                    else
-                    {
-                        XmlDocument cmdResult = xml.CmdResult;
-                        XmlNode xmlNode = cmdResult.SelectSingleNode("/results/cost1");
-                        if (xmlNode != null)
-                        {
-                            int.TryParse(xmlNode.InnerText, out cost1);
-                        }
-                        xmlNode = cmdResult.SelectSingleNode("/results/alreadytimes");
-                        if (xmlNode != null)
-                        {
-                            int.TryParse(xmlNode.InnerText, out alreadytimes);
-                        }
-                        xmlNode = cmdResult.SelectSingleNode("/results/maxdaytimes");
-                        if (xmlNode != null)
-                        {
-                            int.TryParse(xmlNode.InnerText, out maxdaytimes);
-                        }
-                        XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/cost2");
-                        if (xmlNode2 != null)
-                        {
-                            int.TryParse(xmlNode2.InnerText, out cost2);
-                        }
-                        XmlNode xmlNode3 = cmdResult.SelectSingleNode("/results/status");
-                        if (xmlNode3 != null)
-                        {
-                            int.TryParse(xmlNode3.InnerText, out status);
-                        }
-                        XmlNode xmlNode4 = cmdResult.SelectSingleNode("/results/remainhigh");
-                        if (xmlNode4 != null)
-                        {
-                            int.TryParse(xmlNode4.InnerText, out remainhigh);
-                        }
-                        else
-                        {
-                            remainhigh = 0;
-                        }
-                        int remainlimit = 0;
-                        XmlNode xmlNode5 = cmdResult.SelectSingleNode("/results/remainlimit");
-                        if (xmlNode5 != null)
-                        {
-                            int.TryParse(xmlNode5.InnerText, out remainlimit);
-                        }
-                        else
-                        {
-                            remainlimit = 0;
-                        }
-                        int limit = 0;
-                        xmlNode5 = cmdResult.SelectSingleNode("/results/limit");
-                        if (xmlNode5 != null)
-                        {
-                            int.TryParse(xmlNode5.InnerText, out limit);
-                        }
-                        else
-                        {
-                            limit = 0;
-                        }
-                        use = limit - remainlimit;
-                        XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/card");
-                        if (xmlNodeList != null)
-                        {
-                            foreach (XmlNode xmlNode6 in xmlNodeList)
-                            {
-                                if (xmlNode6 != null && xmlNode6.HasChildNodes)
-                                {
-                                    XmlNode xmlNode7 = xmlNode6.SelectSingleNode("cardnum");
-                                    if (xmlNode7 != null)
-                                    {
-                                        int.TryParse(xmlNode7.InnerText, out cardnum);
-                                    }
-                                }
-                            }
-                        }
-                        XmlNode xmlNode8 = cmdResult.SelectSingleNode("/results/firstrefresh");
-                        firstrefresh = (xmlNode8 != null && xmlNode8.InnerText == "1");
-                        XmlNode xmlNode9 = cmdResult.SelectSingleNode("/results");
-                        XmlNodeList childNodes = xmlNode9.ChildNodes;
-                        int up = 0;
-                        bool teacher = false;
-                        foreach (XmlNode xmlNode10 in childNodes)
-                        {
-                            if (xmlNode10.Name == "makenum")
-                            {
-                                makenum = int.Parse(xmlNode10.InnerText);
-                            }
-                            else if (xmlNode10.Name == "makemax")
-                            {
-                                int.Parse(xmlNode10.InnerText);
-                            }
-                            else if (xmlNode10.Name == "price")
-                            {
-                                price = int.Parse(xmlNode10.InnerText);
-                            }
-                            else if (xmlNode10.Name == "tech")
-                            {
-                                int.Parse(xmlNode10.InnerText);
-                            }
-                            else if (xmlNode10.Name == "up")
-                            {
-                                up = int.Parse(xmlNode10.InnerText);
-                            }
-                            else if (xmlNode10.Name == "teacher")
-                            {
-                                teacher = xmlNode10.InnerText.Equals("1");
-                            }
-                            else if (xmlNode10.Name == "make")
-                            {
-                                XmlNodeList childNodes2 = xmlNode10.ChildNodes;
-                                MiscMgr.ClothInfo clothInfo = new MiscMgr.ClothInfo();
-                                foreach (XmlNode xmlNode11 in childNodes2)
-                                {
-                                    if (xmlNode11.Name == "id")
-                                    {
-                                        clothInfo.id = int.Parse(xmlNode11.InnerText);
-                                    }
-                                    else if (xmlNode11.Name == "type")
-                                    {
-                                        clothInfo.type = int.Parse(xmlNode11.InnerText);
-                                    }
-                                    else if (xmlNode11.Name == "name")
-                                    {
-                                        clothInfo.name = xmlNode11.InnerText;
-                                    }
-                                    else if (xmlNode11.Name == "cost")
-                                    {
-                                        clothInfo.cost = int.Parse(xmlNode11.InnerText);
-                                    }
-                                    else if (xmlNode11.Name == "successp")
-                                    {
-                                        clothInfo.success = float.Parse(xmlNode11.InnerText);
-                                    }
-                                    else if (xmlNode11.Name == "criticalp")
-                                    {
-                                        clothInfo.critical = float.Parse(xmlNode11.InnerText);
-                                    }
-                                    else if (xmlNode11.Name == "sellprice")
-                                    {
-                                        clothInfo.sellprice = int.Parse(xmlNode11.InnerText);
-                                    }
-                                    else if (xmlNode11.Name == "lv")
-                                    {
-                                        clothInfo.level = int.Parse(xmlNode11.InnerText);
-                                    }
-                                }
-                                list2.Add(clothInfo);
-                            }
-                            else if (xmlNode10.Name == "playermaker")
-                            {
-                                XmlNodeList childNodes3 = xmlNode10.ChildNodes;
-                                MiscMgr.WeaveWorker weaveWorker = new MiscMgr.WeaveWorker();
-                                foreach (XmlNode xmlNode12 in childNodes3)
-                                {
-                                    if (xmlNode12.Name == "id")
-                                    {
-                                        weaveWorker.id = int.Parse(xmlNode12.InnerText);
-                                    }
-                                    else if (xmlNode12.Name == "skill")
-                                    {
-                                        weaveWorker.skill = xmlNode12.InnerText;
-                                    }
-                                }
-                                list.Add(weaveWorker);
-                            }
-                            
-                        }
-                        if (!teacher)
-                        {
-                            base.logInfo(logger, string.Format("当前布价: {0}{1}", price, (up < 0) ? "↓" : "↑"));
-                        }
-                        weave_state = status;
-                        if (firstrefresh)
-                        {
-                            int pos = 0;
-                            int formerSkillId = 0;
-                            foreach (MiscMgr.WeaveWorker current in list)
-                            {
-                                if (current.haveLowSkill(out pos, out formerSkillId))
-                                {
-                                    this.refreshWorker(protocol, logger, current.id, pos, formerSkillId);
-                                    break;
-                                }
-                            }
-                        }
-                        if (use >= maxdaytimes)
-                        {
-                            result = 2;
-                        }
-                        else if (use > weave_count)
-                        {
-                            result = 2;
-                        }
-                        else if (!teacher && price < weave_price)
-                        {
-                            result = 4;
-                        }
-                        else if (status == 3)
-                        {
-                            result = 2;
-                        }
-                        else
-                        {
-                            if (makenum > 0)
-                            {
-                                base.logInfo(logger, "发现免费纺织, 检查是否符合纺织条件");
-                            }
-                            if (makenum == 0)
-                            {
-                                if (only_free)
-                                {
-                                    result = 0;
-                                    return result;
-                                }
-                                if (!do_tired_weave && status != 1)
-                                {
-                                    result = 2;
-                                    return result;
-                                }
-                                if (status == 1 && user.CurMovable < cost1)
-                                {
-                                    result = 3;
-                                    return result;
-                                }
-                                if (status == 2 && user.CurMovable < cost2)
-                                {
-                                    result = 3;
-                                    return result;
-                                }
-                            }
-                            List<MiscMgr.WeaveAssist> assists = null;
-                            if (!teacher)
-                            {
-                                List<MiscMgr.WeaveAssist> weaveAssistInfo = this.getWeaveAssistInfo(protocol, logger);
-                                assists = this.getAssists(weaveAssistInfo);
-                                List<MiscMgr.ClothInfo> list3 = this.setAssist(protocol, logger, assists);
-                                if (list3 != null && list3.Count > 0)
-                                {
-                                    list2 = list3;
-                                }
-                            }
-                            else
-                            {
-                                base.logInfo(logger, "纺织大师, 无需布价, 妙手来钱~~");
-                            }
-                            int count = list2.Count;
-                            for (int i = 0; i < count - 2; i++)
-                            {
-                                for (int j = i + 1; j < count - 1; j++)
-                                {
-                                    if (list2[i].sellprice < list2[j].sellprice)
-                                    {
-                                        MiscMgr.ClothInfo value = list2[i];
-                                        list2[i] = list2[j];
-                                        list2[j] = value;
-                                    }
-                                }
-                            }
-                            MiscMgr.ClothInfo clothInfo2 = null;
-                            int count2 = list2.Count;
-                            for (int k = 0; k < count2; k++)
-                            {
-                                if ((double)list2[k].success >= 1.0)
-                                {
-                                    clothInfo2 = list2[k];
-                                    break;
-                                }
-                            }
-                            if (clothInfo2 == null)
-                            {
-                                clothInfo2 = list2[0];
-                            }
-                            if (clothInfo2 != null && !this.make(protocol, logger, clothInfo2, assists, cardnum > 0))
-                            {
-                                result = 10;
-                            }
-                            else
-                            {
-                                result = 0;
-                            }
-                        }
+                        MiscMgr.ClothInfo value = cloth_list[i];
+                        cloth_list[i] = cloth_list[j];
+                        cloth_list[j] = value;
                     }
                 }
             }
-            return result;
+            MiscMgr.ClothInfo clothInfo2 = null;
+            int count2 = cloth_list.Count;
+            for (int k = 0; k < count2; k++)
+            {
+                if ((double)cloth_list[k].success >= 1.0)
+                {
+                    clothInfo2 = cloth_list[k];
+                    break;
+                }
+            }
+            if (clothInfo2 == null)
+            {
+                clothInfo2 = cloth_list[0];
+            }
+            if (clothInfo2 != null)
+            {
+                if (this.make(protocol, logger, clothInfo2, assists, cardnum > 0))
+                {
+                    user._weave_task_num--;
+                    return 0;
+                }
+                else
+                {
+                    return 10;
+                }
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         private List<MiscMgr.WeaveAssist> getWeaveAssistInfo(ProtocolMgr protocol, ILogger logger)
@@ -6300,15 +6325,22 @@ namespace com.lover.astd.common.logic
                     {
                         return 4;
                     }
-                    else if (percost > 0)
-                    {
-                        return 2;
-                    }
                     else if (refinenum < onceplus || refinenum < reserve_count)
                     {
                         if (equipMgr.handleWarChariotUpgrade(protocol, logger, user, true) == 0)
                         {
                             return 0;
+                        }
+                        return 2;
+                    }
+                    else if (percost > 0)
+                    {
+                        if (refinenum < maxrefinenum * 0.8)
+                        {
+                            if (equipMgr.handleWarChariotUpgrade(protocol, logger, user, true) == 0)
+                            {
+                                return 0;
+                            }
                         }
                         return 2;
                     }
