@@ -5,4 +5,5 @@ LuaExeId =
   eMovable = 2, -- 行动力
   eEquipment = 3, -- 猴子套装强化
   eTuCity = 4, -- 屠城嘉奖
+  eTraining = 5, -- 大练兵
 }

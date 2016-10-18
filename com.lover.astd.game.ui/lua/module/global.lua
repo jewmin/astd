@@ -32,6 +32,7 @@ global.type2name[42] = "µãÈ¯"
 global.type2name[43] = "ÉñÃØ±¦Ïä"
 global.type2name[44] = "¼Ò´«ÓñÅå"
 global.type2name[48] = "%d±¶±©»÷Ìú´¸"
+global.type2name[50] = "ïÙÌú"
 
 -- ½âÎö½±Àøxml
 global.handleXmlNode = function(xmlNode)
@@ -128,4 +129,14 @@ global.split = function(str, separator)
 		i = j
 	end
 	return t
+end
+
+-- È¡²¿¶ÓÃû³Æ
+global.getArmy = function(army)
+  local armyname = {"ÆÕÍ¨", "¾«Ó¢", "Ê×Áì"}
+  if army >= 1 and army <= 3 then
+    return armyname[army]
+  else
+    return "Î´Öª"
+  end
 end
