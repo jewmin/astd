@@ -140,3 +140,13 @@ global.getArmy = function(army)
     return "未知"
   end
 end
+
+-- 取月亮
+global.getMoon = function(type)
+  local moon = {"月黑风高;士气低落", "月色朦胧;士气规整", "月满乾坤;士气高涨"}
+  if type >= 1 and type <= 3 then
+    return moon[type]
+  else
+    return "未知"
+  end
+end

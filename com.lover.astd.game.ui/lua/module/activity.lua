@@ -265,3 +265,118 @@ activity.training_upArmy = function(uparmy)
   local data = activity.training_parseXml(result.CmdResult)
   return true, data
 end
+
+activity.MGEventInfo_parseXml = function(cmdResult)
+  local data = {}
+  -- 增加士气数量
+  local xmlNode = cmdResult:SelectSingleNode("/results/getmoral")
+  data.getmoral = xmlNode and tonumber(xmlNode.InnerText) or 0
+  -- 当前武将
+  xmlNode = cmdResult:SelectSingleNode("/results/generalorder/thisgeneral")
+  data.thisgeneral = xmlNode and tonumber(xmlNode.InnerText) or 0
+  -- 总武将
+  xmlNode = cmdResult:SelectSingleNode("/results/generalorder/totalgeneral")
+  data.totalgeneral = xmlNode and tonumber(xmlNode.InnerText) or 0
+  -- 免费轮数
+  xmlNode = cmdResult:SelectSingleNode("/results/freeround")
+  data.freeround = xmlNode and tonumber(xmlNode.InnerText) or 0
+  -- 购买轮数花费金币
+  xmlNode = cmdResult:SelectSingleNode("/results/buyroundcost")
+  data.buyroundcost = xmlNode and tonumber(xmlNode.InnerText) or 200
+  -- 宝物当前进度
+  xmlNode = cmdResult:SelectSingleNode("/results/fullnum")
+  data.fullnum = xmlNode and tonumber(xmlNode.InnerText) or 0
+  -- 宝物总进度
+  xmlNode = cmdResult:SelectSingleNode("/results/maxfullnum")
+  data.maxfullnum = xmlNode and tonumber(xmlNode.InnerText) or 200
+  -- 宝物领取状态 0:未达到 1:可领取 2:已领取
+  xmlNode = cmdResult:SelectSingleNode("/results/baowuget")
+  data.baowuget = xmlNode and tonumber(xmlNode.InnerText) or 0
+  -- 当前士气
+  xmlNode = cmdResult:SelectSingleNode("/results/gmginfo/moral")
+  data.moral = xmlNode and tonumber(xmlNode.InnerText) or 0
+  -- 月亮类型 1:月黑风高;士气低落 2:月色朦胧;士气规整 3:月满乾坤;士气高涨
+  xmlNode = cmdResult:SelectSingleNode("/results/gmginfo/moontype")
+  data.moontype = xmlNode and tonumber(xmlNode.InnerText) or 1
+  -- 送礼免费次数
+  xmlNode = cmdResult:SelectSingleNode("/results/gmginfo/freecakenum")
+  data.freecakenum = xmlNode and tonumber(xmlNode.InnerText) or 0
+  -- 送礼花费金币
+  xmlNode = cmdResult:SelectSingleNode("/results/gmginfo/cakecost")
+  data.cakecost = xmlNode and tonumber(xmlNode.InnerText) or 100
+  -- 有下一位武将
+  xmlNode = cmdResult:SelectSingleNode("/results/gmginfo/havenextg")
+  data.havenextg = xmlNode and tonumber(xmlNode.InnerText) or 0
+  -- 士气奖励列表
+  local xmlNodeList = cmdResult:SelectNodes("/results/gmginfo/moralinfo")
+  data.moralinfolist = {}
+  if xmlNodeList ~= nil then
+    for i = 1, xmlNodeList.Count do
+      local childXmlNode = xmlNodeList:Item(i - 1)
+      local childXmlNodeList = childXmlNode.ChildNodes
+      local moralinfo = {}
+      moralinfo.needmoral = 0
+      moralinfo.state = 0
+      for j = 1, childXmlNodeList.Count do
+        local childChildXmlNode = childXmlNodeList:Item(j - 1)
+        if childChildXmlNode.Name == "needmoral" then
+          moralinfo.needmoral = tonumber(childChildXmlNode.InnerText)
+        elseif childChildXmlNode.Name == "state" then
+          moralinfo.state = tonumber(childChildXmlNode.InnerText)
+        end
+      end
+      table.insert(data.moralinfolist, moralinfo)
+    end
+  end
+  return data
+end
+
+activity.event_getMGEventInfo = function()
+  local url = "/root/event!getMGEventInfo.action"
+  local result = ProtocolMgr():getXml(url, "赏月送礼-获取信息")
+  if not result or not result.CmdSucceed then return false end
+
+  -- ILogger():logInfo(result.CmdResult.InnerXml)
+  local data = activity.MGEventInfo_parseXml(result.CmdResult)
+  return true, data
+end
+
+activity.event_eatMoonCake = function(cakecost)
+  local url = "/root/event!eatMoonCake.action"
+  local result = ProtocolMgr():getXml(url, "赏月送礼-送礼")
+  if not result or not result.CmdSucceed then return false end
+
+  -- ILogger():logInfo(result.CmdResult.InnerXml)
+  local data = activity.MGEventInfo_parseXml(result.CmdResult)
+  local tips = "免费送礼"
+  if cakecost > 0 then tips = string.format("花费%d金币送礼", cakecost) end
+  ILogger():logInfo(string.format("赏月送礼 %s, 增加%d士气, 当前士气:%d", tips, data.getmoral, data.moral))
+  return true, data
+end
+
+activity.event_recvMoralReward = function(rewardId)
+  local url = "/root/event!recvMoralReward.action"
+  local data = string.format("rewardId=%d", rewardId)
+  local result = ProtocolMgr():postXml(url, data, "赏月送礼-领取奖励")
+  if not result or not result.CmdSucceed then return false end
+
+  -- ILogger():logInfo(result.CmdResult.InnerXml)
+  local data = activity.MGEventInfo_parseXml(result.CmdResult)
+  local xmlNode = result.CmdResult:SelectSingleNode("/results/rewardinfo")
+  local reward = global.handleXmlNode(xmlNode)
+  ILogger():logInfo(string.format("赏月送礼 领取奖励, 获得 %s", global.tostring(reward)))
+  return true, data
+end
+
+activity.event_nextGeneral = function(buyroundcost)
+  local url = "/root/event!nextGeneral.action"
+  local result = ProtocolMgr():getXml(url, "赏月送礼-下一位")
+  if not result or not result.CmdSucceed then return false end
+
+  -- ILogger():logInfo(result.CmdResult.InnerXml)
+  local data = activity.MGEventInfo_parseXml(result.CmdResult)
+  local tips = "下一位武将"
+  if buyroundcost > 0 then tips = string.format("花费%d金币, 再来一轮", buyroundcost) end
+  ILogger():logInfo(string.format("赏月送礼 %s %d/%d %s", tips, data.thisgeneral, data.totalgeneral, global.getMoon(data.moontype)))
+  return true, data
+end

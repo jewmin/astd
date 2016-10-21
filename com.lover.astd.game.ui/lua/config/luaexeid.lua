@@ -6,4 +6,5 @@ LuaExeId =
   eEquipment = 3, -- 猴子套装强化
   eTuCity = 4, -- 屠城嘉奖
   eTraining = 5, -- 大练兵
+  eMoral = 6, -- 赏月送礼
 }

@@ -24,7 +24,7 @@ baijiayanConfig =
 }
 
 -- 大练兵
-trainingConfig = 
+trainingConfig =
 {
   -- 购买轮数, 花费金币<=buyroundcost
   buyroundcost = 0,
@@ -33,11 +33,27 @@ trainingConfig =
   resetcost = 0,
 
   -- 升级部队
-  uparmy = 
+  uparmy =
   {
     -- 花费金币<=gold
     gold = 0,
     -- 部队类型 1:普通 2:精英 3:首领
     army = 3,
+  }
+}
+
+-- 赏月送礼
+moralConfig =
+{
+  -- 再来一轮, 花费金币<=buyroundcost
+  buyroundcost = 0,
+
+  -- 送礼
+  moral =
+  {
+    -- 花费金币<=cakecost
+    cakecost = 0,
+    -- 月亮类型 1:月黑风高;士气低落 2:月色朦胧;士气规整 3:月满乾坤;士气高涨
+    moontype = 3,
   }
 }
