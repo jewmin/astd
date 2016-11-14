@@ -2787,6 +2787,28 @@ namespace com.lover.astd.common.logic
                         list.Add(item);
                     }
                 }
+                xmlNodeList = cmdResult.SelectNodes("/results/jailwork");
+                foreach (XmlNode xmlNode in xmlNodeList)
+                {
+                    int id = 0;
+                    int canget = 0;
+                    XmlNodeList childNodes = xmlNode.ChildNodes;
+                    foreach (XmlNode xmlNode2 in childNodes)
+                    {
+                        if (xmlNode2.Name == "id")
+                        {
+                            id = int.Parse(xmlNode2.InnerText);
+                        }
+                        else if (xmlNode2.Name == "canget")
+                        {
+                            canget = int.Parse(xmlNode2.InnerText);
+                        }
+                    }
+                    if (canget > 0)
+                    {
+                        recvJailWork(protocol, logger, 1, id - 1);
+                    }
+                }
                 this.slashFreeWorker(protocol, logger, cmdResult);
                 if (_do_jail_tech)
                 {
@@ -2804,6 +2826,38 @@ namespace com.lover.astd.common.logic
                 return list;
             }
 		}
+
+        public void recvJailWork(ProtocolMgr protocol, ILogger logger, int type, int weizhi)
+        {
+            string url = "/root/jail!recvJailWork.action";
+            string data = string.Format("type={0}&weizhi={1}", type, weizhi);
+            ServerResult serverResult = protocol.postXml(url, data, "监狱劳作");
+            if (serverResult == null || !serverResult.CmdSucceed)
+            {
+                return;
+            }
+            XmlDocument cmdResult = serverResult.CmdResult;
+            XmlNode xmlNode = cmdResult.SelectSingleNode("/results/baoshi");
+            if (xmlNode != null)
+            {
+                int num = 0;
+                int.TryParse(xmlNode.InnerText, out num);
+                if (num > 0)
+                {
+                    base.logInfo(logger, string.Format("监狱劳作成功, 获得宝石{0}个", num));
+                }
+            }
+            xmlNode = cmdResult.SelectSingleNode("/results/bintie");
+            if (xmlNode != null)
+            {
+                int num = 0;
+                int.TryParse(xmlNode.InnerText, out num);
+                if (num > 0)
+                {
+                    base.logInfo(logger, string.Format("监狱劳作成功, 获得镔铁{0}个", num));
+                }
+            }
+        }
 
         public void recvExtraTech(ProtocolMgr protocol, ILogger logger)
         {

@@ -1890,107 +1890,90 @@ namespace com.lover.astd.common.logic
         {
             string url = "/root/dinner!getAllDinner.action";
             ServerResult xml = protocol.getXml(url, "获取宴会信息");
-            bool flag = xml == null || !xml.CmdSucceed;
-            if (!flag)
+            if (xml == null || !xml.CmdSucceed)
             {
-                XmlDocument cmdResult = xml.CmdResult;
-                XmlNode xmlNode = cmdResult.SelectSingleNode("/results/indinnertime");
-                bool flag2 = xmlNode != null;
-                if (flag2)
+                return;
+            }
+
+            XmlDocument cmdResult = xml.CmdResult;
+            XmlNode xmlNode = cmdResult.SelectSingleNode("/results/indinnertime");
+            if (xmlNode != null)
+            {
+                user._dinner_in_time = int.Parse(xmlNode.InnerText);
+            }
+            else
+            {
+                user._dinner_in_time = -1;
+            }
+            XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/teamstate");
+            user._dinner_joined = (xmlNode2.InnerText == "1");
+            XmlNode xmlNode3 = cmdResult.SelectSingleNode("/results/normaldinner");
+            if (xmlNode3 == null)
+            {
+                return;
+            }
+
+            user._dinner_count = 0;
+            foreach (XmlNode xmlNode4 in xmlNode3)
+            {
+                if (xmlNode4.Name == "num")
                 {
-                    user._dinner_in_time = int.Parse(xmlNode.InnerText);
+                    int.TryParse(xmlNode4.InnerText, out user._dinner_count);
                 }
-                else
+            }
+            if (user._dinner_count == 0)
+            {
+                return;
+            }
+
+            XmlNode xmlNode5 = cmdResult.SelectSingleNode("/results");
+            if (xmlNode5 == null || !xmlNode5.HasChildNodes)
+            {
+                return;
+            }
+
+            user._dinner_team_id = "";
+            user._dinner_team_creator = "";
+            XmlNodeList childNodes = xmlNode5.ChildNodes;
+            string nation = user.Nation;
+            foreach (XmlNode xmlNode6 in childNodes)
+            {
+                if (xmlNode6.Name == "team")
                 {
-                    user._dinner_in_time = -1;
-                }
-                XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/teamstate");
-                user._dinner_joined = (xmlNode2.InnerText == "1");
-                XmlNode xmlNode3 = cmdResult.SelectSingleNode("/results/normaldinner");
-                bool flag3 = xmlNode3 == null;
-                if (!flag3)
-                {
-                    user._dinner_count = 0;
-                    foreach (XmlNode xmlNode4 in xmlNode3)
+                    XmlNodeList childNodes2 = xmlNode6.ChildNodes;
+                    string dinner_team_id = "";
+                    string dinner_team_creator = "";
+                    string text = "";
+                    int num = 0;
+                    int maxnum = 0;
+                    foreach (XmlNode xmlNode7 in childNodes2)
                     {
-                        bool flag4 = xmlNode4.Name == "num";
-                        if (flag4)
+                        if (xmlNode7.Name == "teamid")
                         {
-                            int.TryParse(xmlNode4.InnerText, out user._dinner_count);
+                            dinner_team_id = xmlNode7.InnerText;
+                        }
+                        else if (xmlNode7.Name == "creator")
+                        {
+                            dinner_team_creator = xmlNode7.InnerText;
+                        }
+                        else if (xmlNode7.Name == "nation")
+                        {
+                            text = xmlNode7.InnerText;
+                        }
+                        else if (xmlNode7.Name == "num")
+                        {
+                            num = int.Parse(xmlNode7.InnerText);
+                        }
+                        else if (xmlNode7.Name == "maxnum")
+                        {
+                            maxnum = int.Parse(xmlNode7.InnerText);
                         }
                     }
-                    bool flag5 = user._dinner_count == 0;
-                    if (!flag5)
+                    if (/*text.IndexOf(nation) >= 0 && */maxnum != num)
                     {
-                        XmlNode xmlNode5 = cmdResult.SelectSingleNode("/results");
-                        bool flag6 = xmlNode5 == null || !xmlNode5.HasChildNodes;
-                        if (!flag6)
-                        {
-                            user._dinner_team_id = "";
-                            user._dinner_team_creator = "";
-                            XmlNodeList childNodes = xmlNode5.ChildNodes;
-                            string nation = user.Nation;
-                            foreach (XmlNode xmlNode6 in childNodes)
-                            {
-                                bool flag7 = xmlNode6.Name == "team";
-                                if (flag7)
-                                {
-                                    XmlNodeList childNodes2 = xmlNode6.ChildNodes;
-                                    string dinner_team_id = "";
-                                    string dinner_team_creator = "";
-                                    string text = "";
-                                    int num = 0;
-                                    int num2 = 0;
-                                    foreach (XmlNode xmlNode7 in childNodes2)
-                                    {
-                                        bool flag8 = xmlNode7.Name == "teamid";
-                                        if (flag8)
-                                        {
-                                            dinner_team_id = xmlNode7.InnerText;
-                                        }
-                                        else
-                                        {
-                                            bool flag9 = xmlNode7.Name == "creator";
-                                            if (flag9)
-                                            {
-                                                dinner_team_creator = xmlNode7.InnerText;
-                                            }
-                                            else
-                                            {
-                                                bool flag10 = xmlNode7.Name == "nation";
-                                                if (flag10)
-                                                {
-                                                    text = xmlNode7.InnerText;
-                                                }
-                                                else
-                                                {
-                                                    bool flag11 = xmlNode7.Name == "num";
-                                                    if (flag11)
-                                                    {
-                                                        num = int.Parse(xmlNode7.InnerText);
-                                                    }
-                                                    else
-                                                    {
-                                                        bool flag12 = xmlNode7.Name == "maxnum";
-                                                        if (flag12)
-                                                        {
-                                                            num2 = int.Parse(xmlNode7.InnerText);
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    bool flag13 = text.IndexOf(nation) >= 0 && num2 != num;
-                                    if (flag13)
-                                    {
-                                        user._dinner_team_id = dinner_team_id;
-                                        user._dinner_team_creator = dinner_team_creator;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
+                        user._dinner_team_id = dinner_team_id;
+                        user._dinner_team_creator = dinner_team_creator;
+                        break;
                     }
                 }
             }
