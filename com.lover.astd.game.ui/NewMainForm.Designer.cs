@@ -406,6 +406,7 @@ namespace com.lover.astd.game.ui
             this.chk_world_army_enable = new System.Windows.Forms.CheckBox();
             this.combo_world_army_boxtype = new System.Windows.Forms.ComboBox();
             this.groupBox15 = new System.Windows.Forms.GroupBox();
+            this.num_super_fanpai_buy_gold = new System.Windows.Forms.NumericUpDown();
             this.label65 = new System.Windows.Forms.Label();
             this.label64 = new System.Windows.Forms.Label();
             this.nm_Out = new System.Windows.Forms.NumericUpDown();
@@ -466,7 +467,6 @@ namespace com.lover.astd.game.ui
             this.lbl_playerinfo = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lbl_time = new System.Windows.Forms.Label();
-            this.num_super_fanpai_buy_gold = new System.Windows.Forms.NumericUpDown();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_6)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -565,6 +565,7 @@ namespace com.lover.astd.game.ui
             ((System.ComponentModel.ISupportInitialize)(this.num_daily_treasure_game_goldstep)).BeginInit();
             this.groupBox16.SuspendLayout();
             this.groupBox15.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_super_fanpai_buy_gold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nm_Out)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_troop_turntable_buygold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_gem_flop_upgrade_count)).BeginInit();
@@ -574,7 +575,6 @@ namespace com.lover.astd.game.ui
             ((System.ComponentModel.ISupportInitialize)(this.num_kf_banquet_buygold)).BeginInit();
             this.logPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.subBrowser)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.num_super_fanpai_buy_gold)).BeginInit();
             this.SuspendLayout();
             // 
             // mainMenu
@@ -4061,7 +4061,7 @@ namespace com.lover.astd.game.ui
             0});
             this.nUD_DianQuan.Location = new System.Drawing.Point(62, 62);
             this.nUD_DianQuan.Maximum = new decimal(new int[] {
-            200000,
+            900000,
             0,
             0,
             0});
@@ -4131,7 +4131,7 @@ namespace com.lover.astd.game.ui
             0});
             this.nUD_BaoShi.Location = new System.Drawing.Point(62, 40);
             this.nUD_BaoShi.Maximum = new decimal(new int[] {
-            20000,
+            90000,
             0,
             0,
             0});
@@ -4993,6 +4993,13 @@ namespace com.lover.astd.game.ui
             this.groupBox15.TabStop = false;
             this.groupBox15.Text = "各种翻牌/兵器回馈/兵器转盘";
             // 
+            // num_super_fanpai_buy_gold
+            // 
+            this.num_super_fanpai_buy_gold.Location = new System.Drawing.Point(192, 62);
+            this.num_super_fanpai_buy_gold.Name = "num_super_fanpai_buy_gold";
+            this.num_super_fanpai_buy_gold.Size = new System.Drawing.Size(51, 21);
+            this.num_super_fanpai_buy_gold.TabIndex = 69;
+            // 
             // label65
             // 
             this.label65.AutoSize = true;
@@ -5673,13 +5680,6 @@ namespace com.lover.astd.game.ui
             this.lbl_time.Size = new System.Drawing.Size(0, 12);
             this.lbl_time.TabIndex = 8;
             // 
-            // num_super_fanpai_buy_gold
-            // 
-            this.num_super_fanpai_buy_gold.Location = new System.Drawing.Point(192, 62);
-            this.num_super_fanpai_buy_gold.Name = "num_super_fanpai_buy_gold";
-            this.num_super_fanpai_buy_gold.Size = new System.Drawing.Size(51, 21);
-            this.num_super_fanpai_buy_gold.TabIndex = 69;
-            // 
             // NewMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -5825,6 +5825,7 @@ namespace com.lover.astd.game.ui
             this.groupBox16.PerformLayout();
             this.groupBox15.ResumeLayout(false);
             this.groupBox15.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_super_fanpai_buy_gold)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nm_Out)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_troop_turntable_buygold)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_gem_flop_upgrade_count)).EndInit();
@@ -5837,7 +5838,6 @@ namespace com.lover.astd.game.ui
             this.logPage.ResumeLayout(false);
             this.logPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.subBrowser)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.num_super_fanpai_buy_gold)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
