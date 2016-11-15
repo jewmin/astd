@@ -2674,7 +2674,7 @@ namespace com.lover.astd.common.logic
             }
 		}
 
-		public void doJail(ProtocolMgr protocol, ILogger logger, User user, bool _do_jail_tech, int gold_available)
+        public void doJail(ProtocolMgr protocol, ILogger logger, User user, bool _do_jail_tech, int gold_available, int jailwork_type)
 		{
 			bool flag = user.Level < User.Level_Jail;
 			if (!flag)
@@ -2682,7 +2682,7 @@ namespace com.lover.astd.common.logic
 				bool flag2 = !user._attack_have_jail;
 				if (!flag2)
 				{
-					List<int> jailInfo = this.getJailInfo(protocol, logger, user, _do_jail_tech, gold_available);
+                    List<int> jailInfo = this.getJailInfo(protocol, logger, user, _do_jail_tech, gold_available, jailwork_type);
 					bool flag3 = !user._attack_have_jail;
 					if (!flag3)
 					{
@@ -2721,7 +2721,7 @@ namespace com.lover.astd.common.logic
 			return result;
 		}
 
-		public List<int> getJailInfo(ProtocolMgr protocol, ILogger logger, User user, bool _do_jail_tech, int gold_available)
+        public List<int> getJailInfo(ProtocolMgr protocol, ILogger logger, User user, bool _do_jail_tech, int gold_available, int jailwork_type)
 		{
 			List<int> list = new List<int>();
 			if (user.Level < User.Level_Jail)
@@ -2806,7 +2806,7 @@ namespace com.lover.astd.common.logic
                     }
                     if (canget > 0)
                     {
-                        recvJailWork(protocol, logger, 1, id - 1);
+                        recvJailWork(protocol, logger, jailwork_type, id - 1);
                     }
                 }
                 this.slashFreeWorker(protocol, logger, cmdResult);

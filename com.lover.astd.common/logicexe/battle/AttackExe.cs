@@ -368,6 +368,15 @@ namespace com.lover.astd.common.logicexe.battle
 					attack_filter_content = config["attack_filter_content"].Trim();
 				}
 			}
+            int jailwork_type = 0;
+            if (config.ContainsKey(ConfigStrings.jailwork_type))
+            {
+                int.TryParse(config[ConfigStrings.jailwork_type], out jailwork_type);
+                if (jailwork_type < 0 || jailwork_type > 1)
+                {
+                    jailwork_type = 0;
+                }
+            }
 			if (user._attack_battleScore < min_score || user.AttackOrders > attack_reserve_token)
 			{
 				if (use_token)
@@ -375,7 +384,7 @@ namespace com.lover.astd.common.logicexe.battle
 					battleManager.useToken(this._proto, this._logger, this._user, min_score);
 				}
 				long findAndAttackRet = battleManager.find_and_attack(this._proto, this._logger, this._user, attack_reserve_token, attack_only_not_injail, attack_npc, level_min, level_max, attack_filter_type, attack_filter_content);                
-				battleManager.doJail(this._proto, this._logger, this._user, do_jail_tech, base.getGoldAvailable());
+				battleManager.doJail(this._proto, this._logger, this._user, do_jail_tech, base.getGoldAvailable(), jailwork_type);
 				if (user.AttackOrders <= attack_reserve_token || user.TokenCdFlag)
 				{
 					if (is_moving)
@@ -702,6 +711,16 @@ namespace com.lover.astd.common.logicexe.battle
                 string move_target = config["move_target"];
             }
             bool auto_juedou = config.ContainsKey(ConfigStrings.juedou) && config[ConfigStrings.juedou].ToLower().Equals("true");
+            int jailwork_type = 0;
+            if (config.ContainsKey(ConfigStrings.jailwork_type))
+            {
+                int.TryParse(config[ConfigStrings.jailwork_type], out jailwork_type);
+                if (jailwork_type < 0 || jailwork_type > 1)
+                {
+                    jailwork_type = 0;
+                }
+            }
+
             if (!this._user._inNewArea)//不在新区
             {
                 return base.an_hour_later();
@@ -729,7 +748,7 @@ namespace com.lover.astd.common.logicexe.battle
                 //技术研究
                 if (this._user.Level >= User.Level_Jail)
                 {
-                    battleManager.getJailInfo(this._proto, this._logger, this._user, do_jail_tech, base.getGoldAvailable());
+                    battleManager.getJailInfo(this._proto, this._logger, this._user, do_jail_tech, base.getGoldAvailable(), jailwork_type);
                 }
                 this._next_misc_exetime = this._factory.TmrMgr.TimeStamp + misc_exetime;
             }

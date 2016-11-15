@@ -467,6 +467,7 @@ namespace com.lover.astd.game.ui
             this.lbl_playerinfo = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lbl_time = new System.Windows.Forms.Label();
+            this.combo_jailwork_type = new System.Windows.Forms.ComboBox();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_6)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -2420,6 +2421,7 @@ namespace com.lover.astd.game.ui
             // tabPage7
             // 
             this.tabPage7.BackColor = System.Drawing.Color.DarkSeaGreen;
+            this.tabPage7.Controls.Add(this.combo_jailwork_type);
             this.tabPage7.Controls.Add(this.chk_juedou);
             this.tabPage7.Controls.Add(this.label67);
             this.tabPage7.Controls.Add(this.nUD_reserved_num);
@@ -2555,7 +2557,7 @@ namespace com.lover.astd.game.ui
             // label31
             // 
             this.label31.ForeColor = System.Drawing.Color.Brown;
-            this.label31.Location = new System.Drawing.Point(67, 53);
+            this.label31.Location = new System.Drawing.Point(101, 53);
             this.label31.Name = "label31";
             this.label31.Size = new System.Drawing.Size(499, 28);
             this.label31.TabIndex = 52;
@@ -5680,6 +5682,18 @@ namespace com.lover.astd.game.ui
             this.lbl_time.Size = new System.Drawing.Size(0, 12);
             this.lbl_time.TabIndex = 8;
             // 
+            // combo_jailwork_type
+            // 
+            this.combo_jailwork_type.FormattingEnabled = true;
+            this.combo_jailwork_type.Items.AddRange(new object[] {
+            "宝石",
+            "镔铁"});
+            this.combo_jailwork_type.Location = new System.Drawing.Point(6, 55);
+            this.combo_jailwork_type.Name = "combo_jailwork_type";
+            this.combo_jailwork_type.Size = new System.Drawing.Size(89, 20);
+            this.combo_jailwork_type.TabIndex = 62;
+            this.combo_jailwork_type.Text = "劳作类型";
+            // 
             // NewMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -6281,6 +6295,7 @@ namespace com.lover.astd.game.ui
         private System.Windows.Forms.ToolStripMenuItem 练将计算器ToolStripMenuItem;
         public System.Windows.Forms.CheckBox chk_market_usetokenafter5;
         public System.Windows.Forms.NumericUpDown num_super_fanpai_buy_gold;
+        public System.Windows.Forms.ComboBox combo_jailwork_type;
 
     }
 }

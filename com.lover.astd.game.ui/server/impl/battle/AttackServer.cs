@@ -84,6 +84,16 @@ namespace com.lover.astd.game.ui.server.impl.battle
 				}
 			}
             _mainForm.chk_juedou.Checked = (config.ContainsKey(ConfigStrings.juedou) && config[ConfigStrings.juedou].ToLower().Equals("true"));
+            if (config.ContainsKey(ConfigStrings.jailwork_type))
+            {
+                int jailwork_type = 0;
+                int.TryParse(config[ConfigStrings.jailwork_type], out jailwork_type);
+                if (jailwork_type < 0 || jailwork_type > _mainForm.combo_jailwork_type.Items.Count - 1)
+                {
+                    jailwork_type = 0;
+                }
+                _mainForm.combo_jailwork_type.SelectedIndex = jailwork_type;
+            }
 		}
 
 		public override void saveSettings()
@@ -111,6 +121,7 @@ namespace com.lover.astd.game.ui.server.impl.battle
             expr_0D.setConfig(this.ServerName, "attack_filter_type", _mainForm.combo_attack_filter_type.SelectedIndex.ToString());//定向攻击类型
             expr_0D.setConfig(this.ServerName, "attack_filter_content", _mainForm.txt_attack_filter_content.Text);//攻击目标
             expr_0D.setConfig(this.ServerName, ConfigStrings.juedou, _mainForm.chk_juedou.Checked.ToString());//决斗
+            expr_0D.setConfig(this.ServerName, ConfigStrings.jailwork_type, _mainForm.combo_jailwork_type.SelectedIndex.ToString());//监狱劳作类型:0宝石1镔铁
 		}
 
 		public override void loadDefaultSettings()
@@ -138,6 +149,7 @@ namespace com.lover.astd.game.ui.server.impl.battle
 			expr_06.setConfig(this.ServerName, "attack_filter_type", "0");
 			expr_06.setConfig(this.ServerName, "attack_filter_content", "");
             expr_06.setConfig(this.ServerName, ConfigStrings.juedou, "false");
+            expr_06.setConfig(this.ServerName, ConfigStrings.jailwork_type, "0");
 			this.renderSettings();
 		}
 	}
