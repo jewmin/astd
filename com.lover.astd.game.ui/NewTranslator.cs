@@ -11,6 +11,9 @@ using System.Net;
 using System.IO;
 using ComponentAce.Compression.Libs.zlib;
 using com.lover.common;
+using com.lover.astd.common.model;
+using System.Xml;
+using System.Text.RegularExpressions;
 
 namespace com.lover.astd.game.ui
 {
@@ -77,6 +80,10 @@ namespace com.lover.astd.game.ui
                 result = TransferMgr.doPost(url, txt_data.Text, ref _cookies);
             }
             txt_result.Text = result;
+            ServerResult serverResult = new ServerResult(result);
+            XmlDocument cmdResult = serverResult.CmdResult;
+            object astd_obj = AstdObject.ParseXmlNode(cmdResult.SelectSingleNode("/results"));
+            Dictionary<string, object> obj = astd_obj as Dictionary<string, object>;
         }
 
         private void btn_open_Click(object sender, EventArgs e)

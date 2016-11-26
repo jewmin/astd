@@ -138,6 +138,7 @@
     <Compile Include="model\AccountData.cs" />
     <Compile Include="model\activity\TaskInfo.cs" />
     <Compile Include="model\AsObject.cs" />
+    <Compile Include="model\AstdObject.cs" />
     <Compile Include="model\attack\AreaInfo.cs" />
     <Compile Include="model\attack\FengDi.cs" />
     <Compile Include="model\attack\PkInfo.cs" />

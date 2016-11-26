@@ -4308,21 +4308,35 @@ namespace com.lover.astd.common.logic
         /// <param name="logger"></param>
         /// <param name="areaId"></param>
         /// <param name="produceList"></param>
+        /// <param name="resId">默认生产资源，为0则根据条件获取</param>
+        /// <param name="times">循环次数</param>
         /// <returns></returns>
-        public bool startProduce(ProtocolMgr proto, ILogger logger, int areaId, List<ProduceInfo> produceList)
+        public bool startProduce(ProtocolMgr proto, ILogger logger, int areaId, List<ProduceInfo> produceList, int resId = 0, int times = 5)
         {
             int[] order = new int[] { 4, 2, 3, 1 };
-            ProduceInfo produce = null;
-            for (int i = 0; i < order.Length; i++)
+            ProduceInfo produce = getValiableProduceInfo(resId, produceList);
+            if (produce == null)
             {
-                produce = getValiableProduceInfo(order[i], produceList);
-                if (produce != null) break;
+                for (int i = 0; i < order.Length; i++)
+                {
+                    produce = getValiableProduceInfo(order[i], produceList);
+                    if (produce != null) break;
+                }
             }
             if (produce == null) return false;
             string url = "/root/world!startProduce.action";
             string data = string.Format("resId={0}&areaId={1}", produce.resid, areaId);
             ServerResult result = proto.postXml(url, data, "封地生产");
-            if (result != null && result.CmdSucceed)
+            if (result == null)
+            {
+                logInfo(logger, "封地生产 - 失败:null");
+            }
+            else if (!result.CmdSucceed)
+            {
+                logInfo(logger, string.Format("封地生产 - 失败:{0}", result.CmdError));
+                if (times > 0) return startProduce(proto, logger, areaId, produceList, 1, times - 1);
+            }
+            else
             {
                 logInfo(logger, string.Format("封地生产 - {0}", produce.ToString()));
                 return true;

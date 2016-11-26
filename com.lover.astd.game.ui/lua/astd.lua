@@ -22,6 +22,7 @@ luanet.load_assembly("com.lover.astd.common")
 ConfigStrings = luanet.import_type("com.lover.astd.common.ConfigStrings") -- 配置字符集
 ActivityType = luanet.import_type("com.lover.astd.common.model.enumer.ActivityType") -- 活动类型
 ExeCode = luanet.import_type("com.lover.astd.common.model.enumer.ExeCode") -- 结果码
+XmlNodeType = luanet.import_type("System.Xml.XmlNodeType") -- xml节点类型
 
 InitFnTable = {}
 FinaFnTable = {}

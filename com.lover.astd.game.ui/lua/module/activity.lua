@@ -13,44 +13,45 @@ activity.event_getDuanwuEventInfo = function()
 	if not result.CmdSucceed then return activity.error end
 
 	-- ILogger():logInfo(result.CmdResult.InnerXml)
-	local data = {}
+	-- local data = {}
   local cmdResult = result.CmdResult
-	local xmlNode = cmdResult:SelectSingleNode("/results/hunger")
-	data.currenthunger = xmlNode and tonumber(xmlNode.InnerText) or 0
-  xmlNode = cmdResult:SelectSingleNode("/results/maxhunger")
-	data.maxhunger = xmlNode and tonumber(xmlNode.InnerText) or 0
-  xmlNode = cmdResult:SelectSingleNode("/results/eatnum")
-	data.eatnum = xmlNode and tonumber(xmlNode.InnerText) or 0
-  xmlNode = cmdResult:SelectSingleNode("/results/buyroundcost")
-	data.buyroundcost = xmlNode and tonumber(xmlNode.InnerText) or 0
-  xmlNode = cmdResult:SelectSingleNode("/results/remainround")
-	data.remainround = xmlNode and tonumber(xmlNode.InnerText) or 0
-  xmlNode = cmdResult:SelectSingleNode("/results/zongziinfo/hunger")
-	data.hunger = xmlNode and tonumber(xmlNode.InnerText) or 0
-  xmlNode = cmdResult:SelectSingleNode("/results/zongziinfo/goldcost")
-	data.goldcost = xmlNode and tonumber(xmlNode.InnerText) or 0
-  xmlNode = cmdResult:SelectSingleNode("/results/zongziinfo/goldhunger")
-	data.goldhunger = xmlNode and tonumber(xmlNode.InnerText) or 0
-  local xmlNodeList = cmdResult:SelectNodes("/results/rewards")
-  data.rewards = {}
-  if xmlNodeList ~= nil then
-    for i = 1, xmlNodeList.Count do
-      local childXmlNode = xmlNodeList:Item(i - 1)
-      local childXmlNodeList = childXmlNode.ChildNodes
-      local reward = {}
-      reward.id = 0
-      reward.state = 0
-      for j = 1, childXmlNodeList.Count do
-        local childChildXmlNode = childXmlNodeList:Item(j - 1)
-        if childChildXmlNode.Name == "id" then
-          reward.id = tonumber(childChildXmlNode.InnerText)
-        elseif childChildXmlNode.Name == "state" then
-          reward.state = tonumber(childChildXmlNode.InnerText)
-        end
-      end
-      table.insert(data.rewards, reward)
-    end
-  end
+	-- local xmlNode = cmdResult:SelectSingleNode("/results/hunger")
+	-- data.currenthunger = xmlNode and tonumber(xmlNode.InnerText) or 0
+  -- xmlNode = cmdResult:SelectSingleNode("/results/maxhunger")
+	-- data.maxhunger = xmlNode and tonumber(xmlNode.InnerText) or 0
+  -- xmlNode = cmdResult:SelectSingleNode("/results/eatnum")
+	-- data.eatnum = xmlNode and tonumber(xmlNode.InnerText) or 0
+  -- xmlNode = cmdResult:SelectSingleNode("/results/buyroundcost")
+	-- data.buyroundcost = xmlNode and tonumber(xmlNode.InnerText) or 0
+  -- xmlNode = cmdResult:SelectSingleNode("/results/remainround")
+	-- data.remainround = xmlNode and tonumber(xmlNode.InnerText) or 0
+  -- xmlNode = cmdResult:SelectSingleNode("/results/zongziinfo/hunger")
+	-- data.hunger = xmlNode and tonumber(xmlNode.InnerText) or 0
+  -- xmlNode = cmdResult:SelectSingleNode("/results/zongziinfo/goldcost")
+	-- data.goldcost = xmlNode and tonumber(xmlNode.InnerText) or 0
+  -- xmlNode = cmdResult:SelectSingleNode("/results/zongziinfo/goldhunger")
+	-- data.goldhunger = xmlNode and tonumber(xmlNode.InnerText) or 0
+  -- local xmlNodeList = cmdResult:SelectNodes("/results/rewards")
+  -- data.rewards = {}
+  -- if xmlNodeList ~= nil then
+  --   for i = 1, xmlNodeList.Count do
+  --     local childXmlNode = xmlNodeList:Item(i - 1)
+  --     local childXmlNodeList = childXmlNode.ChildNodes
+  --     local reward = {}
+  --     reward.id = 0
+  --     reward.state = 0
+  --     for j = 1, childXmlNodeList.Count do
+  --       local childChildXmlNode = childXmlNodeList:Item(j - 1)
+  --       if childChildXmlNode.Name == "id" then
+  --         reward.id = tonumber(childChildXmlNode.InnerText)
+  --       elseif childChildXmlNode.Name == "state" then
+  --         reward.state = tonumber(childChildXmlNode.InnerText)
+  --       end
+  --     end
+  --     table.insert(data.rewards, reward)
+  --   end
+  -- end
+  local data = global.parseXmlNode(cmdResult:SelectSingleNode("/results"))
   return activity.success, data
 end
 
@@ -93,9 +94,10 @@ activity.event_nextRound = function()
   return true
 end
 
-activity.event_getRewardById = function(rewardId)
+activity.event_getRewardById = function(rewardId, dbid)
   local url = "/root/event!getRewardById.action"
   local data = string.format("rewardId=%d", rewardId)
+  if dbid ~= nil then data = string.format("rewardId=%d&dbid=%d", rewardId, dbid) end
   local result = ProtocolMgr():postXml(url, data, "端午百家宴-领取奖励")
 	if not result or not result.CmdSucceed then return false end
 

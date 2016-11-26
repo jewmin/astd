@@ -20,6 +20,14 @@ baijiayanConfig =
 
     -- 花费金币<=gold
     gold = 20,
+  },
+
+  select_db =
+  {
+    "秦始皇",
+    "王翦",
+    "夏桀",
+    "后羿"
   }
 }
 

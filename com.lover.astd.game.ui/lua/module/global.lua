@@ -34,6 +34,27 @@ global.type2name[44] = "¼Ò´«ÓñÅå"
 global.type2name[48] = "%d±¶±©»÷Ìú´¸"
 global.type2name[50] = "ïÙÌú"
 
+global.parseXmlNode = function(xmlNode)
+  if xmlNode == nil then return nil end
+  if xmlNode.HasChildNodes then
+    local childNodes = xmlNode.ChildNodes
+    if childNodes == nil then return nil end
+    local result = {}
+    for i = 1, childNodes.Count do
+      local item = childNodes:Item(i - 1)
+      if item == nil then return nil end
+      if item.NodeType == XmlNodeType.Text then return (tonumber(item.InnerText) or item.InnerText) end
+
+      local value = result[item.Name]
+      if not value or type(value) ~= "table" then result[item.Name] = {} end
+      table.insert(result[item.Name], global.parseXmlNode(item))
+    end
+    return result
+  else
+    return (tonumber(xmlNode.InnerText) or xmlNode.InnerText)
+  end
+end
+
 -- ½âÎö½±Àøxml
 global.handleXmlNode = function(xmlNode)
   local list = xmlNode:SelectNodes("reward");
