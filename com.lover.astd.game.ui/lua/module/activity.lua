@@ -94,10 +94,11 @@ activity.event_nextRound = function()
   return true
 end
 
-activity.event_getRewardById = function(rewardId, dbid)
+activity.event_getRewardById = function(rewardId, dbId)
+  -- ILogger():logInfo(string.format("rewardId:%d, dbId:%d", rewardId, dbId))
   local url = "/root/event!getRewardById.action"
   local data = string.format("rewardId=%d", rewardId)
-  if dbid ~= nil then data = string.format("rewardId=%d&dbid=%d", rewardId, dbid) end
+  if dbId ~= nil then data = string.format("rewardId=%d&dbId=%d", rewardId, dbId) end
   local result = ProtocolMgr():postXml(url, data, "端午百家宴-领取奖励")
 	if not result or not result.CmdSucceed then return false end
 

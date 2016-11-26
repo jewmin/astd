@@ -71,6 +71,7 @@ end
 BaijiayanExe.getChoice = function(choices)
   for i, v in ipairs(choices) do
     for j = 1, #baijiayanConfig.select_db do
+      -- ILogger():logInfo("v.bigginfo[1].name[1]:"..v.bigginfo[1].name[1].." baijiayanConfig.select_db[j]:"..baijiayanConfig.select_db[j])
       if v.bigginfo[1].name[1] == baijiayanConfig.select_db[j] then return v.rewardid[1] end
     end
   end
