@@ -497,5 +497,7 @@ namespace com.lover.astd.common
         public const string kfrank_def_formation = "kfrank_def_formation";
 
         public const string jailwork_type = "jailwork_type";
+
+        public const string weave_item = "weave_item";
 	}
 }

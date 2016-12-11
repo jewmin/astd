@@ -246,6 +246,7 @@ namespace com.lover.astd.game.ui
         private void btn_doWeave_Click(object sender, EventArgs e)
         {
             Dictionary<string, string> conf = new Dictionary<string, string>();
+            conf.Add(ConfigStrings.weave_item, _frm.combo_movable_weave_like.SelectedIndex.ToString());
             _frm.addTempServer("weave", conf);
             Close();
         }

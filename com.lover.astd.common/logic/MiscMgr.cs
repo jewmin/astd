@@ -5551,7 +5551,7 @@ namespace com.lover.astd.common.logic
 				"岭南商人"
 			};
         }
-
+        
         private void refreshWorker(ProtocolMgr protocol, ILogger logger, int workerId, int pos, int formerSkillId)
         {
             string url = "/root/make!refreshWeaverAttribute.action";
@@ -5582,12 +5582,139 @@ namespace com.lover.astd.common.logic
             }
         }
 
-        public int handleWeaveInfo(ProtocolMgr protocol, ILogger logger, User user, int weave_price, int weave_count, out int weave_state, bool do_tired_weave = false, bool only_free = true, bool only_task = true)
+        private List<string> getClothes()
+        {
+            return new List<string>
+			{
+				"孔羽缭绫",
+				"虎纹亚麻",
+				"流云壮锦"
+			};
+        }
+
+        //0:孔羽 1:虎纹 2:流云
+        public bool makeRoyaltyWeave(ProtocolMgr protocol, ILogger logger, string bussinessname, int like, out int islike)
+        {
+            islike = 0;
+            string url = "/root/make!royaltyWeave.action";
+            string data = string.Format("like={0}", like);
+            ServerResult xml = protocol.postXml(url, data, "纺织");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return false;
+            }
+
+            AstdLuaObject lua = new AstdLuaObject();
+            lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+            islike = lua.GetIntValue("results.like");//0:不喜欢,1:喜欢
+            int weavestate = lua.GetIntValue("results.weavestate");//纺织状态,0:失败
+            int hanganadd = lua.GetIntValue("results.hanganadd");//好感度增加
+            int bussinessdone = lua.GetIntValue("results.bussinessdone");//已通商人数
+            int bussinessdonemax = lua.GetIntValue("results.bussinessdonemax");//最大通商人数
+            if (weavestate > 1)
+            {
+                RewardInfo reward = new RewardInfo();
+                reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
+                logInfo(logger, string.Format("纺织成功，[{0}({1}/{2})]商人好感度增加{3}，获得{4}", bussinessname, bussinessdone, bussinessdonemax, hanganadd, reward.ToString()));
+            }
+            else
+            {
+                string likeString = "不喜欢";
+                if (islike == 1)
+                {
+                    likeString = "喜欢";
+                }
+                logInfo(logger, string.Format("纺织失败，[{0}({1}/{2})]商人{3}{4}", bussinessname, bussinessdone, bussinessdonemax, likeString, getClothes()[like]));
+            }
+            return true;
+        }
+
+        //0:success, 1:null, 2:finish, 3:movable, 4:price, 10:error
+        public int handleRoyaltyWeaveInfo(ProtocolMgr protocol, ILogger logger, User user, int weave_count, ref int like, bool do_tired_weave = false)
+        {
+            string url = "/root/make!royaltyWeaveInfo.action";
+            ServerResult xml = protocol.getXml(url, "获取皇家织造厂信息");
+            if (xml == null)
+            {
+                return 1;
+            }
+            else if (!xml.CmdSucceed)
+            {
+                return 10;
+            }
+
+            AstdLuaObject lua = new AstdLuaObject();
+            lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+            int activestatus = lua.GetIntValue("results.activestatus");//纺织状态,1:高效,2:疲劳
+            int needactive = lua.GetIntValue("results.needactive");//纺织所需行动力
+            int remainhigh = lua.GetIntValue("results.remainhigh");//高效次数
+            int limit = lua.GetIntValue("results.limit");//极限次数
+            int remainlimit = lua.GetIntValue("results.remainlimit");//剩余极限次数
+            int cost1 = lua.GetIntValue("results.cost1");//高效消耗行动力
+            int cost2 = lua.GetIntValue("results.cost2");//疲劳消耗行动力
+            string bussinessname = lua.GetStringValue("results.bussinessname");//当前商人
+            int bussinessdone = lua.GetIntValue("results.bussinessdone");//已通商人数
+            int bussinessdonemax = lua.GetIntValue("results.bussinessdonemax");//最大通商人数
+            int haogandu = lua.GetIntValue("results.haogandu");//当前商人好感度
+            int haogandumax = lua.GetIntValue("results.haogandumax");//商人最大好感度
+            int heishi = lua.GetIntValue("results.heishi");//黑市状态,0:没有,1:出现
+            int buyheishicost = lua.GetIntValue("results.buyheishicost");//黑市购买宝箱花费金币数
+            int heishimianfei = lua.GetIntValue("results.heishimianfei");//黑市免费开宝箱次数
+
+            int use = limit - remainlimit;
+            if (remainlimit <= 0)
+            {
+                return 2;
+            }
+            else if (activestatus == 2 && !do_tired_weave)
+            {
+                return 2;
+            }
+            else if (user.CurMovable < needactive)
+            {
+                return 3;
+            }
+            else if (use >= weave_count)
+            {
+                return 2;
+            }
+
+            int islike;
+            if (this.makeRoyaltyWeave(protocol, logger, bussinessname, like, out islike))
+            {
+                user._weave_task_num--;
+                if (islike == 0)
+                {
+                    like = (like + 1) % 3;
+                }
+                return 0;
+            }
+            return 10;
+        }
+
+        public int handleWeaveInfo(ProtocolMgr protocol, ILogger logger, User user, int weave_price, int weave_count, out int weave_state, ref int like, bool do_tired_weave = false, bool only_free = true, bool only_task = true)
         {
             weave_state = 0;
             if (user.Level < 82)
             {
                 return 2;
+            }
+
+            bool isRoyaltyWeave = false;
+            foreach (Building building in user._buildings)
+            {
+                if (building.BuildingId == 24)
+                {
+                    if (building.State == 1)
+                    {
+                        isRoyaltyWeave = true;
+                    }
+                    break;
+                }
+            }
+            if (isRoyaltyWeave)
+            {
+                return handleRoyaltyWeaveInfo(protocol, logger, user, weave_count, ref like, do_tired_weave);
             }
 
             string url = "/root/make.action";

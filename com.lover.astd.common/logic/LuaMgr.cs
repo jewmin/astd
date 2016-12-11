@@ -39,6 +39,8 @@ namespace com.lover.astd.common.logic
             lua_.RegisterFunction("User", this, this.GetType().GetMethod("GetUser"));
             lua_.RegisterFunction("ILogger", this, this.GetType().GetMethod("GetLogger"));
             lua_.RegisterFunction("GameConfig", conf_, conf_.GetType().GetMethod("getConfig"));
+            lua_.RegisterFunction("GetDbConfig", this, this.GetType().GetMethod("GetDbConfig"));
+            lua_.RegisterFunction("SetDbConfig", this, this.GetType().GetMethod("SetDbConfig"));
             lua_.RegisterFunction("OtherConfig", other_conf_, other_conf_.GetType().GetMethod("getConfig"));
             lua_.RegisterFunction("ProtocolMgr", this, this.GetType().GetMethod("GetProtocolMgr"));
             lua_.RegisterFunction("MiscManager", factory_, factory_.GetType().GetMethod("getMiscManager"));
@@ -87,6 +89,16 @@ namespace com.lover.astd.common.logic
             lua_exe.setReadableName(readable);
             lua_exe.setLuaId(id);
             return lua_exe;
+        }
+
+        public string GetDbConfig(string configname)
+        {
+            return DbHelper.GetVariable(user_._db_userid, configname);
+        }
+
+        public void SetDbConfig(string configname, string configvalue)
+        {
+            DbHelper.SetVariable(user_._db_userid, configname, configvalue);
         }
 
         public object[] CallFunction(string func, params object[] args)

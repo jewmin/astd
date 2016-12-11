@@ -387,6 +387,10 @@ namespace com.lover.astd.common.model
 		public string _weapon_info;
 
 		public string _army_reach;
+        /// <summary>
+        /// sqlite db userid
+        /// </summary>
+        public int _db_userid;
 
 		private ServiceFactory _factory;
         /// <summary>

@@ -195,6 +195,7 @@ namespace com.lover.astd.game.ui
             this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.chk_attack_army = new System.Windows.Forms.CheckBox();
             this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.combo_jailwork_type = new System.Windows.Forms.ComboBox();
             this.chk_juedou = new System.Windows.Forms.CheckBox();
             this.label67 = new System.Windows.Forms.Label();
             this.nUD_reserved_num = new System.Windows.Forms.NumericUpDown();
@@ -467,7 +468,8 @@ namespace com.lover.astd.game.ui
             this.lbl_playerinfo = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lbl_time = new System.Windows.Forms.Label();
-            this.combo_jailwork_type = new System.Windows.Forms.ComboBox();
+            this.combo_movable_weave_like = new System.Windows.Forms.ComboBox();
+            this.label75 = new System.Windows.Forms.Label();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_6)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -2460,6 +2462,18 @@ namespace com.lover.astd.game.ui
             this.tabPage7.TabIndex = 2;
             this.tabPage7.Text = "敌国";
             // 
+            // combo_jailwork_type
+            // 
+            this.combo_jailwork_type.FormattingEnabled = true;
+            this.combo_jailwork_type.Items.AddRange(new object[] {
+            "宝石",
+            "镔铁"});
+            this.combo_jailwork_type.Location = new System.Drawing.Point(6, 55);
+            this.combo_jailwork_type.Name = "combo_jailwork_type";
+            this.combo_jailwork_type.Size = new System.Drawing.Size(89, 20);
+            this.combo_jailwork_type.TabIndex = 62;
+            this.combo_jailwork_type.Text = "劳作类型";
+            // 
             // chk_juedou
             // 
             this.chk_juedou.AutoSize = true;
@@ -4354,6 +4368,8 @@ namespace com.lover.astd.game.ui
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label75);
+            this.groupBox2.Controls.Add(this.combo_movable_weave_like);
             this.groupBox2.Controls.Add(this.num_movable_reserve);
             this.groupBox2.Controls.Add(this.label45);
             this.groupBox2.Controls.Add(this.num_movable_refine_factory_gold);
@@ -5682,17 +5698,27 @@ namespace com.lover.astd.game.ui
             this.lbl_time.Size = new System.Drawing.Size(0, 12);
             this.lbl_time.TabIndex = 8;
             // 
-            // combo_jailwork_type
+            // combo_movable_weave_like
             // 
-            this.combo_jailwork_type.FormattingEnabled = true;
-            this.combo_jailwork_type.Items.AddRange(new object[] {
-            "宝石",
-            "镔铁"});
-            this.combo_jailwork_type.Location = new System.Drawing.Point(6, 55);
-            this.combo_jailwork_type.Name = "combo_jailwork_type";
-            this.combo_jailwork_type.Size = new System.Drawing.Size(89, 20);
-            this.combo_jailwork_type.TabIndex = 62;
-            this.combo_jailwork_type.Text = "劳作类型";
+            this.combo_movable_weave_like.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.combo_movable_weave_like.FormattingEnabled = true;
+            this.combo_movable_weave_like.Items.AddRange(new object[] {
+            "孔羽缭绫",
+            "虎纹亚麻",
+            "流云壮锦"});
+            this.combo_movable_weave_like.Location = new System.Drawing.Point(83, 145);
+            this.combo_movable_weave_like.Name = "combo_movable_weave_like";
+            this.combo_movable_weave_like.Size = new System.Drawing.Size(61, 20);
+            this.combo_movable_weave_like.TabIndex = 62;
+            // 
+            // label75
+            // 
+            this.label75.AutoSize = true;
+            this.label75.Location = new System.Drawing.Point(25, 149);
+            this.label75.Name = "label75";
+            this.label75.Size = new System.Drawing.Size(53, 12);
+            this.label75.TabIndex = 63;
+            this.label75.Text = "纺织布匹";
             // 
             // NewMainForm
             // 
@@ -6296,6 +6322,8 @@ namespace com.lover.astd.game.ui
         public System.Windows.Forms.CheckBox chk_market_usetokenafter5;
         public System.Windows.Forms.NumericUpDown num_super_fanpai_buy_gold;
         public System.Windows.Forms.ComboBox combo_jailwork_type;
+        private System.Windows.Forms.Label label75;
+        public System.Windows.Forms.ComboBox combo_movable_weave_like;
 
     }
 }

@@ -766,6 +766,9 @@ namespace com.lover.astd.game.ui
                     _exeMgr.setExeVariables(protocolMgr, this, this, _gameUser, _account.GameConf, _account.OtherConf, _factory);
                     _exeMgr.init_data();
                     lua_mgr_.CreateVM(_exeMgr);
+                    DbHelper.CreateTable(EnumString.getString(_account.Server_type), _account.ServerId, _gameUser.Username);
+                    DbHelper.InsertUser((int)_account.Server_type, _account.ServerId, _gameUser.Id, _gameUser.Username);
+                    _gameUser._db_userid = DbHelper.GetUserId((int)_account.Server_type, _account.ServerId, _gameUser.Id);
                     init_completed();
                 }
             }

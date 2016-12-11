@@ -33,6 +33,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\libs\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -128,6 +131,7 @@
     <Compile Include="logic\ProtocolMgr.cs" />
     <Compile Include="logic\ServiceFactory.cs" />
     <Compile Include="logic\TroopMgr.cs" />
+    <Compile Include="DbHelper.cs" />
     <Compile Include="manager\EnumString.cs" />
     <Compile Include="manager\ExeMgr.cs" />
     <Compile Include="manager\LogHelper.cs" />
@@ -138,6 +142,7 @@
     <Compile Include="model\AccountData.cs" />
     <Compile Include="model\activity\TaskInfo.cs" />
     <Compile Include="model\AsObject.cs" />
+    <Compile Include="model\AstdLuaObject.cs" />
     <Compile Include="model\AstdObject.cs" />
     <Compile Include="model\attack\AreaInfo.cs" />
     <Compile Include="model\attack\FengDi.cs" />

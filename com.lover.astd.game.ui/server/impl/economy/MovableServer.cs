@@ -1,6 +1,7 @@
 using com.lover.astd.common.config;
 using System;
 using System.Collections.Generic;
+using com.lover.astd.common;
 
 namespace com.lover.astd.game.ui.server.impl.economy
 {
@@ -94,6 +95,13 @@ namespace com.lover.astd.game.ui.server.impl.economy
 			}
             //玉石炼制上限
             _mainForm.num_movable_refine_factory_stone.Value = value6;
+            //纺织布匹
+            int weave_like = 0;
+            if (config.ContainsKey(ConfigStrings.weave_item))
+            {
+                int.TryParse(config[ConfigStrings.weave_item], out weave_like);
+                _mainForm.combo_movable_weave_like.SelectedIndex = weave_like;
+            }
 		}
 
 		public override void saveSettings()
@@ -125,6 +133,14 @@ namespace com.lover.astd.game.ui.server.impl.economy
             config.setConfig(this.ServerName, "weave_count", _mainForm.num_movable_weave_count.Value.ToString());
             config.setConfig(this.ServerName, "gold_refine_limit", _mainForm.num_movable_refine_factory_gold.Value.ToString());
             config.setConfig(this.ServerName, "stone_refine_limit", _mainForm.num_movable_refine_factory_stone.Value.ToString());
+            if (_mainForm.combo_movable_weave_like.SelectedIndex >= 0)
+            {
+                config.setConfig(this.ServerName, ConfigStrings.weave_item, _mainForm.combo_movable_weave_like.SelectedIndex.ToString());
+            }
+            else
+            {
+                config.setConfig(this.ServerName, ConfigStrings.weave_item, "0");
+            }
 		}
 
 		public override void loadDefaultSettings()
@@ -145,6 +161,7 @@ namespace com.lover.astd.game.ui.server.impl.economy
 			expr_06.setConfig(this.ServerName, "arch_trade_max", "false");
 			expr_06.setConfig(this.ServerName, "trade_visit", "");
 			expr_06.setConfig(this.ServerName, "trade_visit_fail", "1");
+            expr_06.setConfig(this.ServerName, ConfigStrings.weave_item, "0");
 			this.renderSettings();
 		}
 	}

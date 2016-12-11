@@ -15,6 +15,8 @@ namespace com.lover.astd.common.model.building
 
 		private int _cdtime;
 
+        private int _state;
+
 		public int BuildingId
 		{
 			get
@@ -75,6 +77,18 @@ namespace com.lover.astd.common.model.building
 			}
 		}
 
+        public int State
+        {
+            get
+            {
+                return this._state;
+            }
+            set
+            {
+                this._state = value;
+            }
+        }
+
 		public string getCost()
 		{
 			bool isOutCity = this.IsOutCity;
@@ -90,66 +104,68 @@ namespace com.lover.astd.common.model.building
 			return result;
 		}
 
+        //<id>1182886</id>
+        //<buildid>29</buildid>
+        //<buildname>城墙</buildname>
+        //<intro>升级可以增加城防上限。</intro>
+        //<cityid>null</cityid>
+        //<playerid>227393</playerid>
+        //<buildlevel>338</buildlevel>
+        //<nextcopper>1404000</nextcopper>
+        //<cdtime>522</cdtime>
+        //<lastcdtime>0</lastcdtime>
+        //<lastupdatetime>0</lastupdatetime>
 		public void fillValues(XmlNodeList nodes)
 		{
 			foreach (XmlNode xmlNode in nodes)
 			{
-				bool flag = xmlNode.Name == "id";
-				if (flag)
+				if (xmlNode.Name == "id")
 				{
 					base.Id = int.Parse(xmlNode.InnerText);
 				}
-				else
-				{
-					bool flag2 = xmlNode.Name == "buildid";
-					if (flag2)
-					{
-						this.BuildingId = int.Parse(xmlNode.InnerText);
-					}
-					else
-					{
-						bool flag3 = xmlNode.Name == "buildname";
-						if (flag3)
-						{
-							base.Name = xmlNode.InnerText;
-						}
-						else
-						{
-							bool flag4 = xmlNode.Name == "buildlevel";
-							if (flag4)
-							{
-								this.Level = int.Parse(xmlNode.InnerText);
-							}
-							else
-							{
-								bool flag5 = xmlNode.Name == "nextcopper";
-								if (flag5)
-								{
-									this.UpgradeCost = int.Parse(xmlNode.InnerText);
-									this.IsOutCity = false;
-								}
-								else
-								{
-									bool flag6 = xmlNode.Name == "nextstone";
-									if (flag6)
-									{
-										this.UpgradeCost = int.Parse(xmlNode.InnerText);
-										this.IsOutCity = true;
-									}
-									else
-									{
-										bool flag7 = xmlNode.Name == "cdtime";
-										if (flag7)
-										{
-											this.Cdtime = int.Parse(xmlNode.InnerText);
-										}
-									}
-								}
-							}
-						}
-					}
-				}
+                else if (xmlNode.Name == "buildid")
+                {
+                    this.BuildingId = int.Parse(xmlNode.InnerText);
+                }
+                else if (xmlNode.Name == "buildname")
+                {
+                    base.Name = xmlNode.InnerText;
+                }
+                else if (xmlNode.Name == "buildlevel")
+                {
+                    this.Level = int.Parse(xmlNode.InnerText);
+                }
+                else if (xmlNode.Name == "nextcopper")
+                {
+                    this.UpgradeCost = int.Parse(xmlNode.InnerText);
+                    this.IsOutCity = false;
+                }
+                else if (xmlNode.Name == "nextstone")
+                {
+                    this.UpgradeCost = int.Parse(xmlNode.InnerText);
+                    this.IsOutCity = true;
+                }
+                else if (xmlNode.Name == "cdtime")
+                {
+                    this.Cdtime = int.Parse(xmlNode.InnerText);
+                }
 			}
 		}
+
+        //<id>32</id>
+        //<slaves>0</slaves>
+        //<process>20</process>
+        //<state>1</state>
+        //<totalprocess>20</totalprocess>
+        public void fillMoziValues(XmlNodeList nodes)
+        {
+            foreach (XmlNode xmlNode in nodes)
+            {
+                if (xmlNode.Name == "state")
+                {
+                    this.State = int.Parse(xmlNode.InnerText);
+                }
+            }
+        }
 	}
 }

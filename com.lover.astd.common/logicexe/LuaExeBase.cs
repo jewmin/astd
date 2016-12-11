@@ -31,7 +31,7 @@ namespace com.lover.astd.common.logicexe
             catch (Exception ex)
             {
                 base.logInfo(string.Format("{0} execute error: {1}", this._readable, ex.Message));
-                return base.next_day();
+                return base.next_halfhour();
             }
         }
 
