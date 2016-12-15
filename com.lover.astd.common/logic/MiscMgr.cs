@@ -5611,6 +5611,10 @@ namespace com.lover.astd.common.logic
             int hanganadd = lua.GetIntValue("results.hanganadd");//好感度增加
             int bussinessdone = lua.GetIntValue("results.bussinessdone");//已通商人数
             int bussinessdonemax = lua.GetIntValue("results.bussinessdonemax");//最大通商人数
+            int heishi = lua.GetIntValue("results.heishi");//黑市状态,0:没有,1:出现
+            int buyheishicost = lua.GetIntValue("results.buyheishicost");//黑市购买宝箱花费金币数
+            int heishimianfei = lua.GetIntValue("results.heishimianfei");//黑市免费开宝箱次数
+            string heishistate = lua.GetStringValue("results.heishistate");//黑市宝箱开启状态 0,1,0,0,0, 0未开启 1已开启
             if (weavestate > 1)
             {
                 RewardInfo reward = new RewardInfo();
@@ -5626,6 +5630,49 @@ namespace com.lover.astd.common.logic
                 }
                 logInfo(logger, string.Format("纺织失败，[{0}({1}/{2})]商人{3}{4}", bussinessname, bussinessdone, bussinessdonemax, likeString, getClothes()[like]));
             }
+            if (heishi == 1)
+            {
+                logInfo(logger, "黑市出现");
+                while (heishimianfei > 0)
+                {
+                    if (!makeHeishi(protocol, logger, ref heishimianfei, ref heishistate))
+                    {
+                        break;
+                    }
+                }
+            }
+            return true;
+        }
+
+        public bool makeHeishi(ProtocolMgr protocol, ILogger logger, ref int heishimianfei, ref string heishistate)
+        {
+            int state = 0;
+            string[] heishilist = heishistate.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < heishilist.Length; i++)
+            {
+                if (heishilist[i].Equals("0"))
+                {
+                    state = i;
+                    break;
+                }
+            }
+            string url = "/root/make!heishi.action";
+            string data = string.Format("heishi={0}", state);
+            ServerResult xml = protocol.postXml(url, data, "黑市");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return false;
+            }
+
+            AstdLuaObject lua = new AstdLuaObject();
+            lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+            int heishi = lua.GetIntValue("results.heishi");//黑市状态,0:没有,1:出现
+            int buyheishicost = lua.GetIntValue("results.buyheishicost");//黑市购买宝箱花费金币数
+            heishimianfei = lua.GetIntValue("results.heishimianfei");//黑市免费开宝箱次数
+            heishistate = lua.GetStringValue("results.heishistate");//黑市宝箱开启状态 0,1,0,0,0, 0未开启 1已开启
+            RewardInfo reward = new RewardInfo();
+            reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
+            logInfo(logger, string.Format("免费开启黑市宝箱, 获得{0}", reward.ToString()));
             return true;
         }
 
@@ -5660,6 +5707,7 @@ namespace com.lover.astd.common.logic
             int heishi = lua.GetIntValue("results.heishi");//黑市状态,0:没有,1:出现
             int buyheishicost = lua.GetIntValue("results.buyheishicost");//黑市购买宝箱花费金币数
             int heishimianfei = lua.GetIntValue("results.heishimianfei");//黑市免费开宝箱次数
+            string heishistate = lua.GetStringValue("results.heishistate");//黑市宝箱开启状态 0,1,0,0,0, 0未开启 1已开启
 
             int use = limit - remainlimit;
             if (remainlimit <= 0)

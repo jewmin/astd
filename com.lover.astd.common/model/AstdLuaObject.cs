@@ -20,7 +20,9 @@ namespace com.lover.astd.common.model
 
         public int GetIntValue(string fullpath)
         {
-            return int.Parse(lua_state_.GetString(fullpath));
+            string value = GetStringValue(fullpath);
+            if (value.Equals("")) return 0;
+            else return int.Parse(value);
         }
 
         public double GetDoubleValue(string fullpath)
@@ -30,7 +32,9 @@ namespace com.lover.astd.common.model
 
         public string GetStringValue(string fullpath)
         {
-            return lua_state_.GetString(fullpath);
+            string value = lua_state_.GetString(fullpath);
+            if (value == null) return "";
+            else return value;
         }
 
         public ListDictionary GetListValue(string fullpath)
