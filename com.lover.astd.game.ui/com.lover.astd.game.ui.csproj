@@ -207,10 +207,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="lua\astd.lua" />
-    <None Include="lua\exe\movable.lua" />
-    <None Include="lua\module\global.lua" />
-    <None Include="lua\module\refine.lua" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\com.lover.astd.common\com.lover.astd.common.csproj">

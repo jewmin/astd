@@ -258,12 +258,18 @@ namespace LuaInterface
 			}
 
 			// Pushes out and ref return values
-			for(int index=0;index<lastCalledMethod.outList.Length;index++)
-			{
-				nReturnValues++;
-				for(int i=0;i<lastCalledMethod.outList.Length;i++)
-					translator.push(luaState,lastCalledMethod.args[lastCalledMethod.outList[i]]);
-			}
+            //for(int index=0;index<lastCalledMethod.outList.Length;index++)
+            //{
+            //    nReturnValues++;
+            //    for(int i=0;i<lastCalledMethod.outList.Length;i++)
+            //        translator.push(luaState,lastCalledMethod.args[lastCalledMethod.outList[i]]);
+            //}
+            // has bug
+            for (int index = 0; index < lastCalledMethod.outList.Length; index++)
+            {
+                nReturnValues++;
+                translator.push(luaState, lastCalledMethod.args[lastCalledMethod.outList[index]]);
+            }
 			return nReturnValues;
 		}
 	}
