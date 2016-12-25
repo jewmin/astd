@@ -43,6 +43,7 @@ require("exe.equipment") -- 猴子套装强化
 require("exe.world") -- 屠城嘉奖
 require("exe.training") -- 大练兵
 require("exe.moral") -- 赏月送礼
+require("exe.snowtrading") -- 雪地通商
 
 -- 执行execute
 function OnLuaExecute(exeId)
@@ -83,6 +84,11 @@ function OnAddExe(exeMgr)
 	MoralExe.exe:setOtherConf(exeMgr._otherConf);
 	MoralExe.exe:init_data()
 	exeMgr:addExe(MoralExe.exe)
+
+	SnowTradingExe.exe:setVariables(exeMgr._proto, exeMgr._logger, exeMgr._server, exeMgr._user, exeMgr._conf, exeMgr._factory)
+	SnowTradingExe.exe:setOtherConf(exeMgr._otherConf);
+	SnowTradingExe.exe:init_data()
+	exeMgr:addExe(SnowTradingExe.exe)
 end
 
 -- 删除exe
@@ -94,6 +100,7 @@ function OnDelExe(exeMgr)
 	exeMgr:removeExe(WorldExe.exe)
 	exeMgr:removeExe(TrainingExe.exe)
 	exeMgr:removeExe(MoralExe.exe)
+	exeMgr:removeExe(SnowTradingExe.exe)
 end
 
 -- 初始化函数

@@ -12,11 +12,17 @@ using System.Threading;
 using System.Xml;
 using com.lover.astd.common.config;
 using com.lover.astd.common.model.activity;
+using com.lover.astd.common.activity;
 
 namespace com.lover.astd.common.logic
 {
     public class ActivityMgr : MgrBase
     {
+        /// <summary>
+        /// 雪地通商
+        /// </summary>
+        private ActivitySnowTrading snowTrading_;
+
         public class KfzbItem
         {
             public int pos;
@@ -276,6 +282,7 @@ namespace com.lover.astd.common.logic
             this._logColor = Color.SteelBlue;
             this._tmrMgr = tmrMgr;
             this._factory = factory;
+            snowTrading_ = new ActivitySnowTrading(tmrMgr, factory);
         }
 
         private bool doSilverFlopStep(char[,] s, int pos)
@@ -10011,6 +10018,13 @@ namespace com.lover.astd.common.logic
                 }
                 logger.log(string.Format("第{0}次喝酒{1}, 获得{2}{3}", generalnum + 1, text, rewardinfo.ToString(), text2), Color.Red);
             }
+        }
+        #endregion
+
+        #region 雪地通商
+        public int snowTradingGetSnowTradingInfo(ProtocolMgr protocol, ILogger logger, User user, int buyroundcostlimit, int goldavailable, bool isreinforce, int reinforcecostlimit)
+        {
+            return snowTrading_.getSnowTradingInfo(protocol, logger, user, buyroundcostlimit, goldavailable, isreinforce, reinforcecostlimit);
         }
         #endregion
     }

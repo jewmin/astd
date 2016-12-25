@@ -824,10 +824,62 @@ namespace com.lover.astd.common.logicexe.battle
                 }
             }
 
+            //攻坚战
+            long gongjian_exetime = 300000;//5分钟
+            this._user._attack_gongjian_status = -1;
+            if (gongjian)
+            {
+                if (this._factory.TmrMgr.TimeStamp >= this._next_gongjian_exetime)
+                {
+                    battleManager.getNationBattleInfo(this._proto, this._logger, this._user);
+                    if (this._user._attack_gongjian_status == 3)
+                    {
+                        battleManager.getNationBattleReward(this._proto, this._logger);//攻坚奖励
+                        battleManager.getNationBattleInfo(this._proto, this._logger, this._user);//攻坚战信息
+                        gongjian_exetime = base.next_gongjian_time();
+                    }
+                    else if (this._user._attack_gongjian_status == 0)
+                    {
+                        gongjian_exetime = base.next_gongjian_time();
+                    }
+                    else if (this._user._attack_gongjian_status == 1)
+                    {
+                        AreaInfo areaByName = this._user.getAreaByName(this._user._attack_nation_battle_city);
+                        if (areaByName == null)
+                        {
+                            gongjian_exetime = 60000;
+                        }
+                        else if (this._user._attack_selfCityId == areaByName.areaid)
+                        {
+                            gongjian_exetime = this._user._attack_nationBattleRemainTime;
+                        }
+                        else
+                        {
+                            gongjian_exetime = base.immediate();
+                        }
+                    }
+                    else
+                    {
+                        gongjian_exetime = this._user._attack_nationBattleRemainTime;
+                    }
+                    this._next_gongjian_exetime = this._factory.TmrMgr.TimeStamp + gongjian_exetime;
+                }
+                else
+                {
+                    gongjian_exetime = this._next_gongjian_exetime - this._factory.TmrMgr.TimeStamp;
+                }
+            }
+            else
+            {
+                this._user._attack_nation_battle_city = "";
+                this._user._attack_nationBattleRemainTime = base.next_gongjian_time();
+            }
+            //logInfo(string.Format("攻坚状态:{0}", this._user._attack_gongjian_status));
+
             //悬赏
             bool is_doing_cityevent = false;
             long city_exetime = 600000;//10分钟
-            if (city_event && this._user.AttackOrders > 0)//悬赏
+            if (city_event && this._user.AttackOrders > 0 && this._user._attack_gongjian_status == -1)//悬赏
             {
                 if (this._factory.TmrMgr.TimeStamp >= this._next_cityevent_exetime)
                 {
@@ -905,57 +957,6 @@ namespace com.lover.astd.common.logicexe.battle
             else
             {
                 transfer_cd = this._next_move_exetime - this._factory.TmrMgr.TimeStamp;
-            }
-
-            //攻坚战
-            long gongjian_exetime = 300000;//5分钟
-            this._user._attack_gongjian_status = -1;
-            if (gongjian)
-            {
-                if (this._factory.TmrMgr.TimeStamp >= this._next_gongjian_exetime)
-                {
-                    battleManager.getNationBattleInfo(this._proto, this._logger, this._user);
-                    if (this._user._attack_gongjian_status == 3)
-                    {
-                        battleManager.getNationBattleReward(this._proto, this._logger);//攻坚奖励
-                        battleManager.getNationBattleInfo(this._proto, this._logger, this._user);//攻坚战信息
-                        gongjian_exetime = base.next_gongjian_time();
-                    }
-                    else if (this._user._attack_gongjian_status == 0)
-                    {
-                        gongjian_exetime = base.next_gongjian_time();
-                    }
-                    else if (this._user._attack_gongjian_status == 1)
-                    {
-                        AreaInfo areaByName = this._user.getAreaByName(this._user._attack_nation_battle_city);
-                        if (areaByName == null)
-                        {
-                            gongjian_exetime = 60000;
-                        }
-                        else if (this._user._attack_selfCityId == areaByName.areaid)
-                        {
-                            gongjian_exetime = this._user._attack_nationBattleRemainTime;
-                        }
-                        else
-                        {
-                            gongjian_exetime = base.immediate();
-                        }
-                    }
-                    else
-                    {
-                        gongjian_exetime = this._user._attack_nationBattleRemainTime;
-                    }
-                    this._next_gongjian_exetime = this._factory.TmrMgr.TimeStamp + gongjian_exetime;
-                }
-                else
-                {
-                    gongjian_exetime = this._next_gongjian_exetime - this._factory.TmrMgr.TimeStamp;
-                }
-            }
-            else
-            {
-                this._user._attack_nation_battle_city = "";
-                this._user._attack_nationBattleRemainTime = base.next_gongjian_time();
             }
 
             //决斗

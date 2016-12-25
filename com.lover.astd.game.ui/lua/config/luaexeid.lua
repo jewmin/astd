@@ -7,4 +7,5 @@ LuaExeId =
   eTuCity = 4, -- 屠城嘉奖
   eTraining = 5, -- 大练兵
   eMoral = 6, -- 赏月送礼
+  eSnowTrading = 7, -- 雪地通商
 }

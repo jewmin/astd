@@ -25,6 +25,13 @@ namespace com.lover.astd.common.model
             else return int.Parse(value);
         }
 
+        static public int GetIntValue(LuaTable table, string field)
+        {
+            string value = GetStringValue(table, field);
+            if (value.Equals("")) return 0;
+            else return int.Parse(value);
+        }
+
         public double GetDoubleValue(string fullpath)
         {
             return lua_state_.GetNumber(fullpath);
@@ -35,6 +42,13 @@ namespace com.lover.astd.common.model
             string value = lua_state_.GetString(fullpath);
             if (value == null) return "";
             else return value;
+        }
+
+        static public string GetStringValue(LuaTable table, string field)
+        {
+            object value = table[field];
+            if (value == null) return "";
+            else return (string)value;
         }
 
         public ListDictionary GetListValue(string fullpath)

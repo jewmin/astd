@@ -65,3 +65,14 @@ moralConfig =
     moontype = 3,
   }
 }
+
+-- 雪地通商
+snowTradingConfig =
+{
+  -- 购买次数费用
+  buyroundcost = 4,
+  -- 加固雪橇
+  reinforce = false,
+  -- 加固雪橇费用
+  reinforcecost = 20,
+}
