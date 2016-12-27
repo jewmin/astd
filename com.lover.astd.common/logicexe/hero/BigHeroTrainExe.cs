@@ -8,6 +8,7 @@ namespace com.lover.astd.common.logicexe.hero
     public class BigHeroTrainExe : ExeBase
     {
         private int max_big_level_;
+        private int total_pos_;
         public BigHeroTrainExe()
 		{
 			this._name = ConfigStrings.S_BigHeroTrain;
@@ -17,7 +18,7 @@ namespace com.lover.astd.common.logicexe.hero
         public void getAllBigGenerals()
         {
             _factory.getBigHeroManager().getAllBigGenerals(_proto, _logger);
-            _factory.getBigHeroManager().getBigTrainInfo(_proto, _logger, out max_big_level_);
+            _factory.getBigHeroManager().getBigTrainInfo(_proto, _logger, out max_big_level_, out total_pos_);
         }
 
         public override void init_data()
@@ -82,7 +83,7 @@ namespace com.lover.astd.common.logicexe.hero
             int pos = 1;
             foreach (BigHero hero in heros)
             {
-                if (pos > 3)
+                if (pos > total_pos_)
                 {
                     break;
                 }

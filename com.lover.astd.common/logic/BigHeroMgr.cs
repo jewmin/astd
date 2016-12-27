@@ -25,40 +25,40 @@ namespace com.lover.astd.common.logic
         /// </summary>
         private void initIndex()
         {
-            indexs_["大禹"] = 14;
-            indexs_["夏桀"] = 15;
-            indexs_["商汤"] = 16;
-            indexs_["周文王"] = 17;
-            indexs_["姜子牙"] = 18;
-            indexs_["王翦"] = 19;
-            indexs_["秦始皇"] = 20;
-            indexs_["李牧"] = 21;
-            indexs_["张飞"] = 22;
-            indexs_["荆轲"] = 23;
-            indexs_["鬼谷子"] = 24;
-            indexs_["蒙恬"] = 25;
-            indexs_["诸葛亮"] = 26;
-            indexs_["曹操"] = 27;
-            indexs_["墨子"] = 28;
-            indexs_["典韦"] = 29;
-            indexs_["文丑"] = 30;
-            indexs_["西施"] = 31;
-            indexs_["兀突骨"] = 32;
-            indexs_["刘备"] = 33;
-            indexs_["吕布"] = 34;
-            indexs_["黄忠"] = 35;
-            indexs_["太史慈"] = 36;
-            indexs_["赵云"] = 37;
-            indexs_["关羽"] = 38;
-            indexs_["许褚"] = 39;
-            indexs_["孙膑"] = 40;
-            indexs_["白起"] = 41;
-            indexs_["郭嘉"] = 42;
-            indexs_["司马懿"] = 43;
-            indexs_["张辽"] = 44;
-            indexs_["徐庶"] = 45;
-            indexs_["周瑜"] = 46;
-            indexs_["甘宁"] = 47;
+            indexs_["大禹"] = 1400;
+            indexs_["夏桀"] = 1500;
+            indexs_["姜子牙"] = 1600;
+            indexs_["王翦"] = 1700;
+            indexs_["秦始皇"] = 1800;
+            indexs_["李牧"] = 1900;
+            indexs_["张飞"] = 2000;
+            indexs_["荆轲"] = 2100;
+            indexs_["鬼谷子"] = 2200;
+            indexs_["诸葛亮"] = 2201;
+            indexs_["曹操"] = 2202;
+            indexs_["商汤"] = 2300;
+            indexs_["周文王"] = 2400;
+            indexs_["蒙恬"] = 2500;
+            indexs_["墨子"] = 2800;
+            indexs_["典韦"] = 2900;
+            indexs_["文丑"] = 3000;
+            indexs_["西施"] = 3100;
+            indexs_["兀突骨"] = 3200;
+            indexs_["刘备"] = 3300;
+            indexs_["吕布"] = 3400;
+            indexs_["黄忠"] = 3500;
+            indexs_["太史慈"] = 3600;
+            indexs_["赵云"] = 3700;
+            indexs_["关羽"] = 3800;
+            indexs_["许褚"] = 3900;
+            indexs_["孙膑"] = 4000;
+            indexs_["白起"] = 4100;
+            indexs_["郭嘉"] = 4200;
+            indexs_["司马懿"] = 4300;
+            indexs_["张辽"] = 4400;
+            indexs_["徐庶"] = 4500;
+            indexs_["周瑜"] = 4600;
+            indexs_["甘宁"] = 4700;
         }
         /// <summary>
         /// 获得大将信息
@@ -106,9 +106,10 @@ namespace com.lover.astd.common.logic
         /// <param name="protocol"></param>
         /// <param name="logger"></param>
         /// <param name="max_big_level"></param>
-        public void getBigTrainInfo(ProtocolMgr protocol, ILogger logger, out int max_big_level)
+        public void getBigTrainInfo(ProtocolMgr protocol, ILogger logger, out int max_big_level, out int totalpos)
         {
             max_big_level = 0;
+            totalpos = 0;
             string url = "/root/general!getBigTrainInfo.action";
             ServerResult xml = protocol.getXml(url, "获取大将训练信息");
             if (xml == null || !xml.CmdSucceed)
@@ -120,6 +121,11 @@ namespace com.lover.astd.common.logic
             if (xmlNode != null)
             {
                 int.TryParse(xmlNode.InnerText, out max_big_level);
+            }
+            xmlNode = cmdResult.SelectSingleNode("/results/totalpos");
+            if (xmlNode != null)
+            {
+                int.TryParse(xmlNode.InnerText, out totalpos);
             }
             XmlNodeList childNodes = cmdResult.SelectNodes("/results/traininfo");
             if (childNodes != null)
