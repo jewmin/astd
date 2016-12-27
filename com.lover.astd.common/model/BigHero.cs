@@ -92,7 +92,7 @@ namespace com.lover.astd.common.model
         /// <param name="nodes"></param>
         public void fillValues(XmlNodeList nodes)
         {
-            index_ = 999;
+            index_ = 9999;
             foreach (XmlNode xmlNode in nodes)
             {
                 if (xmlNode.Name == "generalid")
