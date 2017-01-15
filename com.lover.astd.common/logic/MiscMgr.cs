@@ -4386,6 +4386,12 @@ namespace com.lover.astd.common.logic
                 {
                     int.TryParse(boxnumXmlNode.InnerText, out boxnum);
                 }
+                int canabroud = 0;
+                XmlNode canabroudXmlNode = cmdResult.SelectSingleNode("/results/canabroud");
+                if (canabroudXmlNode != null)
+                {
+                    int.TryParse(canabroudXmlNode.InnerText, out canabroud);
+                }
                 XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/newtrade");
                 int[] visitStateArray = new int[12];
                 int[] visitFailArray = new int[12];
@@ -4412,6 +4418,21 @@ namespace com.lover.astd.common.logic
                     }
                     visitStateArray[id - 1] = visitstate;
                     visitFailArray[id - 1] = visitfailnum;
+                }
+                if (canabroud == 1)
+                {
+                    if (user.CurMovable < 60)
+                    {
+                        return 2;
+                    }
+                    else if (abroudTrade(protocol, logger, user))
+                    {
+                        return 0;
+                    }
+                    else
+                    {
+                        return 10;
+                    }
                 }
                 if (tradefreind == 1)
                 {
@@ -4479,6 +4500,38 @@ namespace com.lover.astd.common.logic
                     return 0;
                 }
             }
+        }
+
+        public bool abroudTrade(ProtocolMgr protocol, ILogger logger, User user)
+        {
+            string url = "/root/caravan!abroudTrade.action";
+            ServerResult xml = protocol.getXml(url, "海外通商");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return false;
+            }
+
+            RewardInfo reward = new RewardInfo();
+            reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
+            logInfo(logger, string.Format("海外通商，获得{0}", reward.ToString()));
+            if (!openAbroudTradeBox(protocol, logger, user, 0))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool openAbroudTradeBox(ProtocolMgr protocol, ILogger logger, User user, int abroud)
+        {
+            string url = "/root/caravan!openAbroudTradeBox.action";
+            string data = string.Format("abroud={0}", abroud);
+            ServerResult xml = protocol.postXml(url, data, "海外通商 - 再开一次");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return false;
+            }
+            return true;
         }
 
         public int doNewTrade(ProtocolMgr protocol, ILogger logger, User user, out int map_count)
