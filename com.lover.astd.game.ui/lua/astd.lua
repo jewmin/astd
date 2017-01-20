@@ -44,6 +44,7 @@ require("exe.world") -- 屠城嘉奖
 require("exe.training") -- 大练兵
 require("exe.moral") -- 赏月送礼
 require("exe.snowtrading") -- 雪地通商
+require("exe.springfestivalwish") -- 辞旧迎新
 
 -- 执行execute
 function OnLuaExecute(exeId)
@@ -89,6 +90,11 @@ function OnAddExe(exeMgr)
 	SnowTradingExe.exe:setOtherConf(exeMgr._otherConf);
 	SnowTradingExe.exe:init_data()
 	exeMgr:addExe(SnowTradingExe.exe)
+
+	SpringFestivalWishExe.exe:setVariables(exeMgr._proto, exeMgr._logger, exeMgr._server, exeMgr._user, exeMgr._conf, exeMgr._factory)
+	SpringFestivalWishExe.exe:setOtherConf(exeMgr._otherConf);
+	SpringFestivalWishExe.exe:init_data()
+	exeMgr:addExe(SpringFestivalWishExe.exe)
 end
 
 -- 删除exe
@@ -101,6 +107,7 @@ function OnDelExe(exeMgr)
 	exeMgr:removeExe(TrainingExe.exe)
 	exeMgr:removeExe(MoralExe.exe)
 	exeMgr:removeExe(SnowTradingExe.exe)
+	exeMgr:removeExe(SpringFestivalWishExe.exe)
 end
 
 -- 初始化函数

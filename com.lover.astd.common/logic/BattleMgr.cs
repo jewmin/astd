@@ -1424,6 +1424,18 @@ namespace com.lover.astd.common.logic
             {
                 int.TryParse(xmlNode6.InnerText, out user._attack_current_cityevent_cdtime);
             }
+            user._remaintutimes = 0;
+            XmlNode xmlNode7 = cmdResult.SelectSingleNode("/results/tucity/remaintutimes");
+            if (xmlNode7 != null)
+            {
+                int.TryParse(xmlNode7.InnerText, out user._remaintutimes);
+            }
+            user._tucd = 0;
+            XmlNode xmlNode8 = cmdResult.SelectSingleNode("/results/tucity/tucd");
+            if (xmlNode8 != null)
+            {
+                int.TryParse(xmlNode8.InnerText, out user._tucd);
+            }
 		}
         /// <summary>
         /// 使用鼓舞令
@@ -4383,5 +4395,19 @@ namespace com.lover.astd.common.logic
             user._fengdi.fillXmlNode(xmlNode);
         }
         #endregion
+
+        public void tuCity(ProtocolMgr proto, ILogger logger, User user, int areaId)
+        {
+            string url = "/root/world!tuCity.action";
+            string data = string.Format("areaId={0}", areaId);
+            ServerResult result = proto.postXml(url, data, "屠城");
+            if (result != null && result.CmdSucceed)
+            {
+                AstdLuaObject lua = new AstdLuaObject();
+                lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
+                int baoshi = lua.GetIntValue("results.baoshi");
+                logInfo(logger, string.Format("发动屠城，获得宝石+{0}", baoshi));
+            }
+        }
     }
 }

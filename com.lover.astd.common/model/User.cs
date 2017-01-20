@@ -279,6 +279,14 @@ namespace com.lover.astd.common.model
 		public string _attack_current_cityevent_name;
 
 		public int _attack_current_cityevent_cdtime;
+        /// <summary>
+        /// 屠城剩余次数
+        /// </summary>
+        public int _remaintutimes = 0;
+        /// <summary>
+        /// 屠城cd
+        /// </summary>
+        public int _tucd = 0;
 
 		public int _attack_can_reward_cityevent;
         /// <summary>

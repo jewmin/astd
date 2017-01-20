@@ -8,4 +8,5 @@ LuaExeId =
   eTraining = 5, -- 大练兵
   eMoral = 6, -- 赏月送礼
   eSnowTrading = 7, -- 雪地通商
+  eSpringFestivalWish = 8, -- 辞旧迎新
 }

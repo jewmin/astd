@@ -10027,5 +10027,64 @@ namespace com.lover.astd.common.logic
             return snowTrading_.getSnowTradingInfo(protocol, logger, user, buyroundcostlimit, goldavailable, isreinforce, reinforcecostlimit);
         }
         #endregion
+
+        #region 辞旧迎新
+        public int getSpringFestivalWishInfo(ProtocolMgr protocol, ILogger logger, User user)
+        {
+            string url = "/root/springFestivalWish!getSpringFestivalWishInfo.action";
+            ServerResult xml = protocol.getXml(url, "许愿");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return 10;
+            }
+            AstdLuaObject lua = new AstdLuaObject();
+            lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+            int haschoose = lua.GetIntValue("results.haschoose");
+            if (haschoose == 0)
+            {
+                if (!hangInTheTree(protocol, logger, user))
+                {
+                    return 10;
+                }
+                return 0;
+            }
+            int cangetreward = lua.GetIntValue("results.cangetreward");
+            if (cangetreward == 0)
+            {
+                if (!openCijiuReward(protocol, logger, user))
+                {
+                    return 10;
+                }
+                return 0;
+            }
+            return 2;
+        }
+
+        public bool hangInTheTree(ProtocolMgr protocol, ILogger logger, User user)
+        {
+            string url = "/root/springFestivalWish!hangInTheTree.action";
+            ServerResult xml = protocol.getXml(url, "开始许愿");
+            if (xml != null && xml.CmdSucceed)
+            {
+                logInfo(logger, "许愿成功");
+                return true;
+            }
+            return false;
+        }
+
+        public bool openCijiuReward(ProtocolMgr protocol, ILogger logger, User user)
+        {
+            string url = "/root/springFestivalWish!openCijiuReward.action";
+            ServerResult xml = protocol.getXml(url, "领取辞旧奖励");
+            if (xml != null && xml.CmdSucceed)
+            {
+                RewardInfo reward = new RewardInfo();
+                reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
+                logInfo(logger, string.Format("辞旧，获得{0}", reward.ToString()));
+                return true;
+            }
+            return false;
+        }
+        #endregion
     }
 }

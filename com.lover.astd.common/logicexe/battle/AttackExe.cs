@@ -809,6 +809,19 @@ namespace com.lover.astd.common.logicexe.battle
             //搜索间谍
             battleManager.AttackSpy(this._proto, this._logger, this._user);
 
+            //屠城
+            if (this._user._remaintutimes > 0 && this._user._tucd == 0)
+            {
+                foreach (AreaInfo current in this._user._attack_all_areas)
+                {
+                    if (current.nation != this._user.NationInt)
+                    {
+                        battleManager.tuCity(this._proto, this._logger, this._user, current.areaid);
+                        break;
+                    }
+                }
+            }
+
             //天降奇兵
             bool is_doing_nation = false;
             if (nation_event)
