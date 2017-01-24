@@ -39,6 +39,7 @@ namespace com.lover.astd.common.logicexe
 			{
 				this._factory.getMiscManager().autoBuyCredit(this._proto, this._logger, this._user);
 			}
+            this._factory.getMiscManager().getGeneralTowerInfo(this._proto, this._logger);
 			this.refreshUi();
 		}
 

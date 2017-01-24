@@ -8602,5 +8602,49 @@ namespace com.lover.astd.common.logic
             }
         }
         #endregion
+
+        #region 将军塔
+        public void getGeneralTowerInfo(ProtocolMgr protocol, ILogger logger)
+        {
+            string url = "/root/mainCity!getGeneralTowerInfo.action";
+            ServerResult xml = protocol.getXml(url, "将军塔");
+            if (xml != null && xml.CmdSucceed)
+            {
+                AstdLuaObject lua = new AstdLuaObject();
+                lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+                int buildingprogress = lua.GetIntValue("results.generaltower.buildingprogress");//进度
+                int leveluprequirement = lua.GetIntValue("results.generaltower.leveluprequirement");//升级要求
+                int buildingstone = lua.GetIntValue("results.generaltower.buildingstone");//筑造石
+                int gemstonenum = lua.GetIntValue("results.generaltower.gemstonenum");//今天获得宝石
+                int generaltowerlevel = lua.GetIntValue("results.generaltower.generaltowerlevel");//等级
+                while (buildingstone > 0)
+                {
+                    useBuildingStone(protocol, logger, out buildingstone);
+                }
+            }
+        }
+
+        public void useBuildingStone(ProtocolMgr protocol, ILogger logger, out int buildingstone)
+        {
+            buildingstone = 0;
+            string url = "/root/mainCity!useBuildingStone.action";
+            ServerResult xml = protocol.getXml(url, "");
+            if (xml != null && xml.CmdSucceed)
+            {
+                AstdLuaObject lua = new AstdLuaObject();
+                lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+                int levelup = lua.GetIntValue("results.generaltower.levelup");//升级
+                int addprogress = lua.GetIntValue("results.generaltower.addprogress");//增加进度
+                int buildingprogress = lua.GetIntValue("results.generaltower.buildingprogress");//进度
+                buildingstone = lua.GetIntValue("results.generaltower.buildingstone");//筑造石
+                string leveluptext = "";
+                if (levelup == 1)
+                {
+                    leveluptext = "将军塔升级，";
+                }
+                logInfo(logger, string.Format("将军塔进度增加{0}，{1}当前进度{2}，剩余筑造石{3}", addprogress, leveluptext, buildingprogress, buildingstone));
+            }
+        }
+        #endregion
     }
 }
