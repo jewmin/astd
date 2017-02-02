@@ -2921,5 +2921,107 @@ namespace com.lover.astd.common.logic
                 return true;
             }
         }
+
+        #region 专属
+        public long handleSpecialEquipInfo(ProtocolMgr protocol, ILogger logger, User user)
+        {
+            List<SheetInfo> list = getSpecialEquipInfo(protocol, logger, user);
+            if (user._specialEquipSkillInfo.makestate == 1)
+            {
+                if (!judgeSpecialEquip(protocol, logger, user))
+                {
+                    return next_halfhour();
+                }
+            }
+            if (user._specialEquipSkillInfo.makenum <= 0)
+            {
+                return user._specialEquipSkillInfo.makecd > 0 ? user._specialEquipSkillInfo.makecd : next_hour();
+            }
+            foreach (SheetInfo item in list)
+            {
+                if (item.succprob + user._specialEquipSkillInfo.addprob >= 1.0 && item.material2num <= user._specialEquipSkillInfo.material2num && item.material1num <= item.goodsnum)
+                {
+                    if (!makeSpecialEquip(protocol, logger, user, item))
+                    {
+                        return next_halfhour();
+                    }
+                    break;
+                }
+            }
+            return user._specialEquipSkillInfo.endcd;
+        }
+
+        public List<SheetInfo> getSpecialEquipInfo(ProtocolMgr protocol, ILogger logger, User user)
+        {
+            List<SheetInfo> list = new List<SheetInfo>();
+            if (user.Level < 300)
+            {
+                return list;
+            }
+
+            string url = "/root/equip!getSpecialEquipInfo.action";
+            ServerResult xml = protocol.getXml(url, "获取专属");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return list;
+            }
+
+            user._specialEquipSkillInfo.handle(xml.CmdResult.SelectSingleNode("/results/skillinfo"));
+
+            XmlNode node = xml.CmdResult.SelectSingleNode("/results");
+            XmlNodeList nodeList = node.ChildNodes;
+            foreach (XmlNode item in nodeList)
+            {
+                if (item.Name == "sheetinfo")
+                {
+                    SheetInfo sheet = new SheetInfo();
+                    sheet.handle(item);
+                    if (sheet.id > 0 && sheet.quality >= 5)
+                    {
+                        list.Add(sheet);
+                    }
+                }
+            }
+            return list;
+        }
+
+        public bool judgeSpecialEquip(ProtocolMgr protocol, ILogger logger, User user)
+        {
+            string url = "/root/equip!judgeSpecialEquip.action";
+            string text = "淬火";
+            ServerResult xml = protocol.getXml(url, text);
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return false;
+            }
+            XmlNode node = xml.CmdResult.SelectSingleNode("/results/succ");
+            if (node != null)
+            {
+                if (node.InnerText == "1")
+                {
+                    logInfo(logger, string.Format("{0}成功", text));
+                }
+                else
+                {
+                    logInfo(logger, string.Format("{0}失败", text));
+                }
+            }
+            return true;
+        }
+
+        public bool makeSpecialEquip(ProtocolMgr protocol, ILogger logger, User user, SheetInfo sheetinfo)
+        {
+            string url = "/root/equip!makeSpecialEquip.action";
+            string data = string.Format("specialId={0}", sheetinfo.id);
+            ServerResult xml = protocol.postXml(url, data, "铸造");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return false;
+            }
+            user._specialEquipSkillInfo.handle2(xml.CmdResult.SelectSingleNode("/results"));
+            logInfo(logger, string.Format("铸造{0}lv.{1}, 消耗镔铁*{2}, {3}*{4}", sheetinfo.name, sheetinfo.lv, sheetinfo.material2num, sheetinfo.goodsname, sheetinfo.material1num));
+            return true;
+        }
+        #endregion
     }
 }

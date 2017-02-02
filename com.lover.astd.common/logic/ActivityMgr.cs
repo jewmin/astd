@@ -10040,6 +10040,7 @@ namespace com.lover.astd.common.logic
             AstdLuaObject lua = new AstdLuaObject();
             lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
             int haschoose = lua.GetIntValue("results.haschoose");
+            int nowevent = lua.GetIntValue("results.nowevent");
             if (haschoose == 0)
             {
                 if (!hangInTheTree(protocol, logger, user))
@@ -10051,9 +10052,19 @@ namespace com.lover.astd.common.logic
             int cangetreward = lua.GetIntValue("results.cangetreward");
             if (cangetreward == 0)
             {
-                if (!openCijiuReward(protocol, logger, user))
+                if (nowevent == 2)
                 {
-                    return 10;
+                    if (!openYinxingReward(protocol, logger, user))
+                    {
+                        return 10;
+                    }
+                }
+                else
+                {
+                    if (!openCijiuReward(protocol, logger, user))
+                    {
+                        return 10;
+                    }
                 }
                 return 0;
             }
@@ -10084,6 +10095,158 @@ namespace com.lover.astd.common.logic
                 return true;
             }
             return false;
+        }
+
+        public bool openYinxingReward(ProtocolMgr protocol, ILogger logger, User user)
+        {
+            string url = "/root/springFestivalWish!openYinxingReward.action";
+            ServerResult xml = protocol.getXml(url, "领取迎新奖励");
+            if (xml != null && xml.CmdSucceed)
+            {
+                RewardInfo reward = new RewardInfo();
+                reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
+                logInfo(logger, string.Format("迎新，获得{0}", reward.ToString()));
+                return true;
+            }
+            return false;
+        }
+        #endregion
+
+        #region 抓年兽
+        public int getBombNianInfo(ProtocolMgr protocol, ILogger logger, User user, int cost1, int cost5, int cost10)
+        {
+            string url = "/root/bombNianEvent!getBombNianInfo.action";
+            ServerResult xml = protocol.getXml(url, "抓年兽");
+            if (xml != null && xml.CmdSucceed)
+            {
+                AstdLuaObject lua = new AstdLuaObject();
+                lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+                int niannum = lua.GetIntValue("results.playerbombnianeventinfo.niannum");
+                int nianhp = lua.GetIntValue("results.playerbombnianeventinfo.nianhp");
+                int nianmaxhp = lua.GetIntValue("results.playerbombnianeventinfo.nianmaxhp");
+                int firecrackersnum = lua.GetIntValue("results.playerbombnianeventinfo.firecrackersnum");
+                int stringfirecrackersnum = lua.GetIntValue("results.playerbombnianeventinfo.stringfirecrackersnum");
+                int springthundernum = lua.GetIntValue("results.playerbombnianeventinfo.springthundernum");
+                int niantype = lua.GetIntValue("results.playerbombnianeventinfo.niantype");
+                int firecrackerscost = lua.GetIntValue("results.cost.firecrackerscost");
+                int stringfirecrackerscost = lua.GetIntValue("results.cost.stringfirecrackerscost");
+                int springthundercost = lua.GetIntValue("results.cost.springthundercost");
+                float precent = (float)nianhp / (float)nianmaxhp;
+                bool result = false;
+                if (precent >= 0.75)
+                {
+                    if (springthundercost <= cost10)
+                    {
+                        result = bombNian(protocol, logger, user, 3);
+                    }
+                    else if (stringfirecrackerscost <= cost5)
+                    {
+                        result = bombNian(protocol, logger, user, 2);
+                    }
+                    else if (firecrackerscost <= cost1)
+                    {
+                        result = bombNian(protocol, logger, user, 1);
+                    }
+                    else if (precent < 1.0)
+                    {
+                        result = huntNian(protocol, logger, user);
+                    }
+                    else
+                    {
+                        return 2;
+                    }
+                }
+                else if (precent >= 0.5)
+                {
+                    if (stringfirecrackerscost <= cost5)
+                    {
+                        result = bombNian(protocol, logger, user, 2);
+                    }
+                    else if (firecrackerscost <= cost1)
+                    {
+                        result = bombNian(protocol, logger, user, 1);
+                    }
+                    else if (springthundercost <= cost10)
+                    {
+                        result = bombNian(protocol, logger, user, 3);
+                    }
+                    else
+                    {
+                        result = huntNian(protocol, logger, user);
+                    }
+                }
+                else if (precent >= 0.2)
+                {
+                    if (firecrackerscost <= cost1)
+                    {
+                        result = bombNian(protocol, logger, user, 1);
+                    }
+                    else if (stringfirecrackerscost <= cost5)
+                    {
+                        result = bombNian(protocol, logger, user, 2);
+                    }
+                    else if (springthundercost <= cost10)
+                    {
+                        result = bombNian(protocol, logger, user, 3);
+                    }
+                    else
+                    {
+                        result = huntNian(protocol, logger, user);
+                    }
+                }
+                else
+                {
+                    result = huntNian(protocol, logger, user);
+                }
+                if (!result)
+                {
+                    return 1;
+                }
+                return 0;
+            }
+            return 10;
+        }
+
+        public bool bombNian(ProtocolMgr protocol, ILogger logger, User user, int bombType)
+        {
+            string url = "/root/bombNianEvent!bombNian.action";
+            string data = string.Format("bombType={0}", bombType);
+            ServerResult xml = protocol.postXml(url, data, "放鞭炮");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return false;
+            }
+            AstdLuaObject lua = new AstdLuaObject();
+            lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+            int bombattack = lua.GetIntValue("results.bombattack");
+            RewardInfo reward = new RewardInfo();
+            reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/bombnianreward/rewardinfo"));
+            logInfo(logger, string.Format("放鞭炮，年兽血量减少{0}，获得{1}", bombattack, reward.ToString()));
+            return true;
+        }
+
+        public bool huntNian(ProtocolMgr protocol, ILogger logger, User user)
+        {
+            string url = "/root/bombNianEvent!huntNian.action";
+            ServerResult xml = protocol.getXml(url, "抓年兽");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return false;
+            }
+            AstdLuaObject lua = new AstdLuaObject();
+            lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+            int huntstate = lua.GetIntValue("results.huntstate");
+            if (huntstate == 1)
+            {
+                RewardInfo reward = new RewardInfo();
+                reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/huntnianreward/rewardinfo"));
+                logInfo(logger, string.Format("年兽捕抓成功，获得{0}", reward.ToString()));
+            }
+            else
+            {
+                logInfo(logger, string.Format("年兽捕抓失败"));
+            }
+            return true;
         }
         #endregion
     }

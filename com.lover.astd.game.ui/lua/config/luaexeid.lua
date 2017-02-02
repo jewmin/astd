@@ -9,4 +9,6 @@ LuaExeId =
   eMoral = 6, -- 赏月送礼
   eSnowTrading = 7, -- 雪地通商
   eSpringFestivalWish = 8, -- 辞旧迎新
+  eNewYear = 9, -- 新年活动
+  eSpecialEquip = 10, -- 铸造
 }

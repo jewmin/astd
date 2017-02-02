@@ -8569,6 +8569,19 @@ namespace com.lover.astd.common.logic
             }
         }
 
+        public bool ticketExchangeMoney(ProtocolMgr protocol, ILogger logger)
+        {
+            string url = "/root/tickets!getTicketsReward.action";
+            string data = string.Format("rewardId={0}&num={1}", 2, 10);
+            ServerResult xml = protocol.postXml(url, data, "点券兑换银币");
+            if (xml != null && xml.CmdSucceed)
+            {
+                logInfo(logger, string.Format("点券兑换银币10000000, 消耗点券10000"));
+                return true;
+            }
+            return false;
+        }
+
         public int ticketExchangeWeapon(ProtocolMgr protocol, ILogger logger, int rewardId, string rewardName, int count)
         {
             string url = "/root/tickets!getTicketsReward.action";

@@ -34,7 +34,9 @@ namespace com.lover.astd.common.model
 
         public double GetDoubleValue(string fullpath)
         {
-            return lua_state_.GetNumber(fullpath);
+            string value = GetStringValue(fullpath);
+            if (value.Equals("")) return 0.0;
+            else return double.Parse(value);
         }
 
         public string GetStringValue(string fullpath)

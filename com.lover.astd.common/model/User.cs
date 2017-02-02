@@ -391,6 +391,10 @@ namespace com.lover.astd.common.model
 		public List<Equipment> _mhEquips;
 
 		public List<Equipment> _storeEquips;
+        /// <summary>
+        /// 专属铸造
+        /// </summary>
+        public SkillInfo _specialEquipSkillInfo;
 
 		public string _weapon_info;
 
@@ -1606,6 +1610,7 @@ namespace com.lover.astd.common.model
 			this._storeEquips = new List<Equipment>();
 			this._weapon_info = "";
 			this._army_reach = "";
+            this._specialEquipSkillInfo = new SkillInfo();
 			this._factory = factory;
 		}
 	}

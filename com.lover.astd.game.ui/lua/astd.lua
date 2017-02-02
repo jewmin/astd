@@ -45,6 +45,8 @@ require("exe.training") -- 大练兵
 require("exe.moral") -- 赏月送礼
 require("exe.snowtrading") -- 雪地通商
 require("exe.springfestivalwish") -- 辞旧迎新
+require("exe.newyearactivity") -- 新年活动
+require("exe.specialequip") -- 铸造
 
 -- 执行execute
 function OnLuaExecute(exeId)
@@ -95,6 +97,16 @@ function OnAddExe(exeMgr)
 	SpringFestivalWishExe.exe:setOtherConf(exeMgr._otherConf);
 	SpringFestivalWishExe.exe:init_data()
 	exeMgr:addExe(SpringFestivalWishExe.exe)
+
+	NewYearActivityExe.exe:setVariables(exeMgr._proto, exeMgr._logger, exeMgr._server, exeMgr._user, exeMgr._conf, exeMgr._factory)
+	NewYearActivityExe.exe:setOtherConf(exeMgr._otherConf);
+	NewYearActivityExe.exe:init_data()
+	exeMgr:addExe(NewYearActivityExe.exe)
+
+	SpecialEquipExe.exe:setVariables(exeMgr._proto, exeMgr._logger, exeMgr._server, exeMgr._user, exeMgr._conf, exeMgr._factory)
+	SpecialEquipExe.exe:setOtherConf(exeMgr._otherConf);
+	SpecialEquipExe.exe:init_data()
+	exeMgr:addExe(SpecialEquipExe.exe)
 end
 
 -- 删除exe
@@ -108,6 +120,8 @@ function OnDelExe(exeMgr)
 	exeMgr:removeExe(MoralExe.exe)
 	exeMgr:removeExe(SnowTradingExe.exe)
 	exeMgr:removeExe(SpringFestivalWishExe.exe)
+	exeMgr:removeExe(NewYearActivityExe.exe)
+	exeMgr:removeExe(SpecialEquipExe.exe)
 end
 
 -- 初始化函数
