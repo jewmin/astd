@@ -2926,6 +2926,10 @@ namespace com.lover.astd.common.logic
         public long handleSpecialEquipInfo(ProtocolMgr protocol, ILogger logger, User user)
         {
             List<SheetInfo> list = getSpecialEquipInfo(protocol, logger, user);
+            if (list.Count == 0)
+            {
+                return next_day();
+            }
             if (user._specialEquipSkillInfo.makestate == 1)
             {
                 if (!judgeSpecialEquip(protocol, logger, user))
