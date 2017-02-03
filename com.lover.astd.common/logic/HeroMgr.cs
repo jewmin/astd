@@ -967,5 +967,158 @@ namespace com.lover.astd.common.logic
                 }
             }
 		}
+
+        public long handleXiZhuge(ProtocolMgr proto, ILogger logger, User user)
+        {
+            string url = "/root/equip!getEquip.action";
+            ServerResult xml = proto.getXml(url, "武将装备");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return next_halfhour();
+            }
+            XmlNodeList xmlnodelist = xml.CmdResult.SelectNodes("/results/general");
+            if (xmlnodelist == null || xmlnodelist.Count == 0)
+            {
+                return next_halfhour();
+            }
+            Dictionary<int, int> generals = new Dictionary<int, int>();
+            foreach (XmlNode xmlnode in xmlnodelist)
+            {
+                AstdLuaObject lua = new AstdLuaObject();
+                lua.ParseXml(xmlnode);
+                int generalid = lua.GetIntValue("general.generalid");
+                int zhugeid = lua.GetIntValue("general.zhugeid");
+                int zhugetimes = lua.GetIntValue("general.zhugetimes");
+                if (zhugeid > 0 && zhugetimes > 0)
+                {
+                    generals.Add(generalid, zhugeid);
+                }
+            }
+            if (generals.Count == 0)
+            {
+                return next_day();
+            }
+            bool finish = true;
+            foreach (KeyValuePair<int, int> kvp in generals)
+            {
+                int result = getXiZhugeInfo(proto, logger, user, kvp.Key, kvp.Value);
+                if (result != 2)
+                {
+                    finish = false;
+                }
+            }
+            if (finish)
+            {
+                return next_day();
+            }
+            return immediate();
+        }
+
+        public int getXiZhugeInfo(ProtocolMgr proto, ILogger logger, User user, int generalId, int zhugeid)
+        {
+            string url = "/root/equip!getXiZhugeInfo.action";
+            string data = string.Format("generalId={0}", generalId);
+            ServerResult xml = proto.postXml(url, data, "潜能");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return 1;
+            }
+            AstdLuaObject lua = new AstdLuaObject();
+            lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+            int maxattr = lua.GetIntValue("results.maxattr");
+            int freenum = lua.GetIntValue("results.freenum");
+            int curattr_lea = lua.GetIntValue("results.curattr.lea");
+            int curattr_int = lua.GetIntValue("results.curattr.int");
+            int curattr_str = lua.GetIntValue("results.curattr.str");
+            int newattr_lea = lua.GetIntValue("results.newattr.lea");
+            int newattr_int = lua.GetIntValue("results.newattr.int");
+            int newattr_str = lua.GetIntValue("results.newattr.str");
+            int resetattr_lea = lua.GetIntValue("results.resetattr.lea");
+            int resetattr_int = lua.GetIntValue("results.resetattr.int");
+            int resetattr_str = lua.GetIntValue("results.resetattr.str");
+            if (newattr_lea != 0 && newattr_int != 0 && newattr_str != 0)
+            {
+                int total_cur = curattr_lea + curattr_int + curattr_str;
+                int total_new = newattr_lea + newattr_int + newattr_str;
+                int type = 2;
+                if (total_new > total_cur)
+                {
+                    type = 1;
+                }
+                if (!xiZhugeConfirm(proto, logger, user, zhugeid, type, curattr_lea, curattr_int, curattr_str, newattr_lea, newattr_int, newattr_str))
+                {
+                    return 1;
+                }
+                return 0;
+            }
+            if (curattr_lea == maxattr && curattr_int == maxattr && curattr_str == maxattr)
+            {
+                return 2;
+            }
+            if (freenum == 0)
+            {
+                return 2;
+            }
+            return xiZhuge(proto, logger, user, zhugeid, curattr_lea, curattr_int, curattr_str);
+        }
+
+        public int xiZhuge(ProtocolMgr proto, ILogger logger, User user, int storeId, int curattr_lea, int curattr_int, int curattr_str)
+        {
+            string url = "/root/equip!xiZhuge.action";
+            string data = string.Format("storeId={0}", storeId);
+            ServerResult xml = proto.postXml(url, data, "潜能淬炼");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return 1;
+            }
+            AstdLuaObject lua = new AstdLuaObject();
+            lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+            string newattr = lua.GetStringValue("results.newattr");
+            string[] attrs = newattr.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            if (attrs.Length != 3)
+            {
+                return 1;
+            }
+            int newattr_lea = int.Parse(attrs[0]);
+            int newattr_int = int.Parse(attrs[1]);
+            int newattr_str = int.Parse(attrs[2]);
+            int total_cur = curattr_lea + curattr_int + curattr_str;
+            int total_new = newattr_lea + newattr_int + newattr_str;
+            int type = 2;
+            if (total_new > total_cur)
+            {
+                type = 1;
+            }
+            if (!xiZhugeConfirm(proto, logger, user, storeId, type, curattr_lea, curattr_int, curattr_str, newattr_lea, newattr_int, newattr_str))
+            {
+                return 1;
+            }
+            return 0;
+        }
+
+        /// <summary>
+        /// 潜能淬炼确认
+        /// </summary>
+        /// <param name="proto"></param>
+        /// <param name="logger"></param>
+        /// <param name="user"></param>
+        /// <param name="storeId"></param>
+        /// <param name="type">1:替换 2:维持</param>
+        /// <returns></returns>
+        public bool xiZhugeConfirm(ProtocolMgr proto, ILogger logger, User user, int storeId, int type, int curattr_lea, int curattr_int, int curattr_str, int newattr_lea, int newattr_int, int newattr_str)
+        {
+            string url = "/root/equip!xiZhugeConfirm.action";
+            string data = string.Format("type={0}&storeId={1}", type, storeId);
+            ServerResult xml = proto.postXml(url, data, "潜能淬炼确认");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return false;
+            }
+            logInfo(logger, string.Format("免费潜能淬炼,原属性:统+{0},勇+{1},智+{2},新属性:统+{3},勇+{4},智+{5},{6}",
+                curattr_lea, curattr_int, curattr_str,
+                newattr_lea, newattr_int, newattr_str,
+                (type == 2 ? "维持" : "替换")));
+            return true;
+        }
 	}
 }

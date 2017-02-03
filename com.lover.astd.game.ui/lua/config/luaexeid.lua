@@ -11,4 +11,5 @@ LuaExeId =
   eSpringFestivalWish = 8, -- 辞旧迎新
   eNewYear = 9, -- 新年活动
   eSpecialEquip = 10, -- 铸造
+  eZhuge = 11, -- 潜能淬炼
 }

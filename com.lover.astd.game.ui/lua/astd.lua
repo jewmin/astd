@@ -26,6 +26,7 @@ XmlNodeType = luanet.import_type("System.Xml.XmlNodeType") -- xml节点类型
 
 InitFnTable = {}
 FinaFnTable = {}
+ExeTable = {}
 
 require("config.luaexeid") -- lua执行事件Id
 require("config.activity") -- 活动配置
@@ -47,6 +48,7 @@ require("exe.snowtrading") -- 雪地通商
 require("exe.springfestivalwish") -- 辞旧迎新
 require("exe.newyearactivity") -- 新年活动
 require("exe.specialequip") -- 铸造
+require("exe.zhuge") -- 潜能淬炼
 
 -- 执行execute
 function OnLuaExecute(exeId)
@@ -58,70 +60,20 @@ end
 -- 添加exe
 function OnAddExe(exeMgr)
 	ILogger():logInfo("OnAddExe")
-	BaijiayanExe.exe:setVariables(exeMgr._proto, exeMgr._logger, exeMgr._server, exeMgr._user, exeMgr._conf, exeMgr._factory)
-	BaijiayanExe.exe:setOtherConf(exeMgr._otherConf);
-	BaijiayanExe.exe:init_data()
-	exeMgr:addExe(BaijiayanExe.exe)
-
-	MovableExe.exe:setVariables(exeMgr._proto, exeMgr._logger, exeMgr._server, exeMgr._user, exeMgr._conf, exeMgr._factory)
-	MovableExe.exe:setOtherConf(exeMgr._otherConf);
-	MovableExe.exe:init_data()
-	exeMgr:addExe(MovableExe.exe)
-
-	EquipmentExe.exe:setVariables(exeMgr._proto, exeMgr._logger, exeMgr._server, exeMgr._user, exeMgr._conf, exeMgr._factory)
-	EquipmentExe.exe:setOtherConf(exeMgr._otherConf);
-	EquipmentExe.exe:init_data()
-	exeMgr:addExe(EquipmentExe.exe)
-
-	WorldExe.exe:setVariables(exeMgr._proto, exeMgr._logger, exeMgr._server, exeMgr._user, exeMgr._conf, exeMgr._factory)
-	WorldExe.exe:setOtherConf(exeMgr._otherConf);
-	WorldExe.exe:init_data()
-	exeMgr:addExe(WorldExe.exe)
-
-	TrainingExe.exe:setVariables(exeMgr._proto, exeMgr._logger, exeMgr._server, exeMgr._user, exeMgr._conf, exeMgr._factory)
-	TrainingExe.exe:setOtherConf(exeMgr._otherConf);
-	TrainingExe.exe:init_data()
-	exeMgr:addExe(TrainingExe.exe)
-
-	MoralExe.exe:setVariables(exeMgr._proto, exeMgr._logger, exeMgr._server, exeMgr._user, exeMgr._conf, exeMgr._factory)
-	MoralExe.exe:setOtherConf(exeMgr._otherConf);
-	MoralExe.exe:init_data()
-	exeMgr:addExe(MoralExe.exe)
-
-	SnowTradingExe.exe:setVariables(exeMgr._proto, exeMgr._logger, exeMgr._server, exeMgr._user, exeMgr._conf, exeMgr._factory)
-	SnowTradingExe.exe:setOtherConf(exeMgr._otherConf);
-	SnowTradingExe.exe:init_data()
-	exeMgr:addExe(SnowTradingExe.exe)
-
-	SpringFestivalWishExe.exe:setVariables(exeMgr._proto, exeMgr._logger, exeMgr._server, exeMgr._user, exeMgr._conf, exeMgr._factory)
-	SpringFestivalWishExe.exe:setOtherConf(exeMgr._otherConf);
-	SpringFestivalWishExe.exe:init_data()
-	exeMgr:addExe(SpringFestivalWishExe.exe)
-
-	NewYearActivityExe.exe:setVariables(exeMgr._proto, exeMgr._logger, exeMgr._server, exeMgr._user, exeMgr._conf, exeMgr._factory)
-	NewYearActivityExe.exe:setOtherConf(exeMgr._otherConf);
-	NewYearActivityExe.exe:init_data()
-	exeMgr:addExe(NewYearActivityExe.exe)
-
-	SpecialEquipExe.exe:setVariables(exeMgr._proto, exeMgr._logger, exeMgr._server, exeMgr._user, exeMgr._conf, exeMgr._factory)
-	SpecialEquipExe.exe:setOtherConf(exeMgr._otherConf);
-	SpecialEquipExe.exe:init_data()
-	exeMgr:addExe(SpecialEquipExe.exe)
+	for i = 1, table.getn(ExeTable) do
+		ExeTable[i]:setVariables(exeMgr._proto, exeMgr._logger, exeMgr._server, exeMgr._user, exeMgr._conf, exeMgr._factory)
+		ExeTable[i]:setOtherConf(exeMgr._otherConf)
+		ExeTable[i]:init_data()
+		exeMgr:addExe(ExeTable[i])
+	end
 end
 
 -- 删除exe
 function OnDelExe(exeMgr)
 	ILogger():logInfo("OnDelExe")
-	exeMgr:removeExe(BaijiayanExe.exe)
-	exeMgr:removeExe(MovableExe.exe)
-	exeMgr:removeExe(EquipmentExe.exe)
-	exeMgr:removeExe(WorldExe.exe)
-	exeMgr:removeExe(TrainingExe.exe)
-	exeMgr:removeExe(MoralExe.exe)
-	exeMgr:removeExe(SnowTradingExe.exe)
-	exeMgr:removeExe(SpringFestivalWishExe.exe)
-	exeMgr:removeExe(NewYearActivityExe.exe)
-	exeMgr:removeExe(SpecialEquipExe.exe)
+	for i = 1, table.getn(ExeTable) do
+		exeMgr:removeExe(ExeTable[i])
+	end
 end
 
 -- 初始化函数
@@ -140,3 +92,15 @@ end
 
 table.insert(InitFnTable, OnAddExe)
 table.insert(FinaFnTable, OnDelExe)
+
+table.insert(ExeTable, BaijiayanExe.exe)
+table.insert(ExeTable, MovableExe.exe)
+table.insert(ExeTable, EquipmentExe.exe)
+table.insert(ExeTable, WorldExe.exe)
+table.insert(ExeTable, TrainingExe.exe)
+table.insert(ExeTable, MoralExe.exe)
+table.insert(ExeTable, SnowTradingExe.exe)
+table.insert(ExeTable, SpringFestivalWishExe.exe)
+table.insert(ExeTable, NewYearActivityExe.exe)
+table.insert(ExeTable, SpecialEquipExe.exe)
+table.insert(ExeTable, ZhugeExe.exe)

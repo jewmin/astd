@@ -53,6 +53,7 @@
     <Compile Include="http\HttpSocket.cs" />
     <Compile Include="http\HttpWebSocket.cs" />
     <Compile Include="LocMgr.cs" />
+    <Compile Include="MiniDump.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SockStateObject.cs" />
     <Compile Include="TransferMgr.cs" />
