@@ -44,6 +44,16 @@ namespace com.lover.astd.common.logic
             public string name;
 
             public int gold;
+
+            public int upgradestate;
+
+            public double succprob;
+
+            public int eventsrc;
+
+            public int quality;
+
+            public string generalname;
         }
 
         private class Officer
@@ -827,7 +837,7 @@ namespace com.lover.astd.common.logic
             {
                 return 1;
             }
-            if (!xml.CmdSucceed)
+            else if (!xml.CmdSucceed)
             {
                 return 10;
             }
@@ -845,6 +855,8 @@ namespace com.lover.astd.common.logic
                 int.TryParse(xmlNode2.InnerText, out level);
             }
             List<EquipMgr.Decoration> list = new List<EquipMgr.Decoration>();
+            List<Decoration> equipList = new List<Decoration>();
+            List<Decoration> upgradeList = new List<Decoration>();
             XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/baowu");
             foreach (XmlNode xmlNode3 in xmlNodeList)
             {
@@ -872,10 +884,47 @@ namespace com.lover.astd.common.logic
                     {
                         decoration.name = xmlNode4.InnerText;
                     }
+                    else if (xmlNode4.Name == "quality")
+                    {
+                        decoration.quality = int.Parse(xmlNode4.InnerText);
+                    }
+                    else if (xmlNode4.Name == "upgradestate")
+                    {
+                        decoration.upgradestate = int.Parse(xmlNode4.InnerText);
+                    }
+                    else if (xmlNode4.Name == "eventsrc")
+                    {
+                        decoration.eventsrc = int.Parse(xmlNode4.InnerText);
+                    }
+                    else if (xmlNode4.Name == "succprob")
+                    {
+                        decoration.succprob = double.Parse(xmlNode4.InnerText);
+                    }
+                    else if (xmlNode4.Name == "generalname")
+                    {
+                        decoration.generalname = xmlNode4.InnerText;
+                    }
                 }
                 if (decoration.polishtimes < 10)
                 {
                     list.Add(decoration);
+                }
+                else if (decoration.upgradestate >= 2 && decoration.succprob > 0.1)
+                {
+                    equipList.Add(decoration);
+                }
+                else if (decoration.eventsrc == 1)
+                {
+                    upgradeList.Add(decoration);
+                }
+            }
+            //宝物升级
+            if (upgradeList.Count > 0 && equipList.Count > 0)
+            {
+                while (upgradeList.Count > 0)
+                {
+                    upgradeBaowu(protocol, logger, equipList[0], upgradeList[0]);
+                    upgradeList.RemoveAt(0);
                 }
             }
             //保留炼化次数
@@ -962,6 +1011,24 @@ namespace com.lover.astd.common.logic
                 }
             }
             return 2;
+        }
+
+        public bool upgradeBaowu(ProtocolMgr protocol, ILogger logger, Decoration dst, Decoration src)
+        {
+            string url = "/root/polish!upgradeBaowu.action";
+            string data = string.Format("storeId={0}&storeId2={1}", dst.storeid, src.storeid);
+            ServerResult xml = protocol.postXml(url, data, "宝物升级");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return false;
+            }
+            AstdLuaObject lua = new AstdLuaObject();
+            lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+            int succlea = lua.GetIntValue("results.baowu.succlea");
+            int succstr = lua.GetIntValue("results.baowu.succstr");
+            int succint = lua.GetIntValue("results.baowu.succint");
+            logInfo(logger, string.Format("升级宝物[{0}({1})],统+{2},勇+{3},智+{4}", dst.name, dst.generalname, succlea, succstr, succint));
+            return true;
         }
 
         public void qiling()

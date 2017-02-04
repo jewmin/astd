@@ -10041,32 +10041,51 @@ namespace com.lover.astd.common.logic
             lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
             int haschoose = lua.GetIntValue("results.haschoose");
             int nowevent = lua.GetIntValue("results.nowevent");
-            if (haschoose == 0)
-            {
-                if (!hangInTheTree(protocol, logger, user))
-                {
-                    return 10;
-                }
-                return 0;
-            }
+            string wishstate = lua.GetStringValue("results.wishstate");
             int cangetreward = lua.GetIntValue("results.cangetreward");
-            if (cangetreward == 0)
+            if (nowevent == 1)
             {
-                if (nowevent == 2)
+                if (haschoose == 0)
                 {
-                    if (!openYinxingReward(protocol, logger, user))
+                    if (!hangInTheTree(protocol, logger, user))
                     {
                         return 10;
                     }
+                    return 0;
                 }
-                else
+                else if (cangetreward == 0)
                 {
                     if (!openCijiuReward(protocol, logger, user))
                     {
                         return 10;
                     }
+                    return 0;
                 }
-                return 0;
+            }
+            else if (nowevent == 2)
+            {
+                if (cangetreward == 0)
+                {
+                    if (!openYinxingReward(protocol, logger, user))
+                    {
+                        return 10;
+                    }
+                    return 0;
+                }
+            }
+            else if (nowevent == 3)
+            {
+                string[] wishs = wishstate.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < wishs.Length; i++)
+                {
+                    if (wishs[i] == "0")
+                    {
+                        if (!receiveWishReward(protocol, logger, user, i + 1))
+                        {
+                            return 10;
+                        }
+                    }
+                }
             }
             return 2;
         }
@@ -10106,6 +10125,21 @@ namespace com.lover.astd.common.logic
                 RewardInfo reward = new RewardInfo();
                 reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
                 logInfo(logger, string.Format("迎新，获得{0}", reward.ToString()));
+                return true;
+            }
+            return false;
+        }
+
+        public bool receiveWishReward(ProtocolMgr protocol, ILogger logger, User user, int id)
+        {
+            string url = "/root/springFestivalWish!receiveWishReward.action";
+            string data = string.Format("id={0}", id);
+            ServerResult xml = protocol.postXml(url, data, "领取愿望奖励");
+            if (xml != null && xml.CmdSucceed)
+            {
+                RewardInfo reward = new RewardInfo();
+                reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
+                logInfo(logger, string.Format("愿望，获得{0}", reward.ToString()));
                 return true;
             }
             return false;

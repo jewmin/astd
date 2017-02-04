@@ -1028,30 +1028,30 @@ namespace com.lover.astd.common.logic
             int maxattr = lua.GetIntValue("results.maxattr");
             int freenum = lua.GetIntValue("results.freenum");
             int curattr_lea = lua.GetIntValue("results.curattr.lea");
-            int curattr_int = lua.GetIntValue("results.curattr.int");
             int curattr_str = lua.GetIntValue("results.curattr.str");
+            int curattr_int = lua.GetIntValue("results.curattr.int");
             int newattr_lea = lua.GetIntValue("results.newattr.lea");
-            int newattr_int = lua.GetIntValue("results.newattr.int");
             int newattr_str = lua.GetIntValue("results.newattr.str");
+            int newattr_int = lua.GetIntValue("results.newattr.int");
             int resetattr_lea = lua.GetIntValue("results.resetattr.lea");
-            int resetattr_int = lua.GetIntValue("results.resetattr.int");
             int resetattr_str = lua.GetIntValue("results.resetattr.str");
-            if (newattr_lea != 0 && newattr_int != 0 && newattr_str != 0)
+            int resetattr_int = lua.GetIntValue("results.resetattr.int");
+            if (newattr_lea != 0 && newattr_str != 0 && newattr_int != 0)
             {
-                int total_cur = curattr_lea + curattr_int + curattr_str;
-                int total_new = newattr_lea + newattr_int + newattr_str;
+                int total_cur = curattr_lea + curattr_str + curattr_int;
+                int total_new = newattr_lea + newattr_str + newattr_int;
                 int type = 2;
                 if (total_new > total_cur)
                 {
                     type = 1;
                 }
-                if (!xiZhugeConfirm(proto, logger, user, zhugeid, type, curattr_lea, curattr_int, curattr_str, newattr_lea, newattr_int, newattr_str))
+                if (!xiZhugeConfirm(proto, logger, user, zhugeid, type, curattr_lea, curattr_str, curattr_int, newattr_lea, newattr_str, newattr_int))
                 {
                     return 1;
                 }
                 return 0;
             }
-            if (curattr_lea == maxattr && curattr_int == maxattr && curattr_str == maxattr)
+            if (curattr_lea == maxattr && curattr_str == maxattr && curattr_int == maxattr)
             {
                 return 2;
             }
@@ -1059,10 +1059,10 @@ namespace com.lover.astd.common.logic
             {
                 return 2;
             }
-            return xiZhuge(proto, logger, user, zhugeid, curattr_lea, curattr_int, curattr_str);
+            return xiZhuge(proto, logger, user, zhugeid, curattr_lea, curattr_str, curattr_int);
         }
 
-        public int xiZhuge(ProtocolMgr proto, ILogger logger, User user, int storeId, int curattr_lea, int curattr_int, int curattr_str)
+        public int xiZhuge(ProtocolMgr proto, ILogger logger, User user, int storeId, int curattr_lea, int curattr_str, int curattr_int)
         {
             string url = "/root/equip!xiZhuge.action";
             string data = string.Format("storeId={0}", storeId);
@@ -1080,16 +1080,16 @@ namespace com.lover.astd.common.logic
                 return 1;
             }
             int newattr_lea = int.Parse(attrs[0]);
-            int newattr_int = int.Parse(attrs[1]);
-            int newattr_str = int.Parse(attrs[2]);
-            int total_cur = curattr_lea + curattr_int + curattr_str;
-            int total_new = newattr_lea + newattr_int + newattr_str;
+            int newattr_str = int.Parse(attrs[1]);
+            int newattr_int = int.Parse(attrs[2]);
+            int total_cur = curattr_lea + curattr_str + curattr_int;
+            int total_new = newattr_lea + newattr_str + newattr_int;
             int type = 2;
             if (total_new > total_cur)
             {
                 type = 1;
             }
-            if (!xiZhugeConfirm(proto, logger, user, storeId, type, curattr_lea, curattr_int, curattr_str, newattr_lea, newattr_int, newattr_str))
+            if (!xiZhugeConfirm(proto, logger, user, storeId, type, curattr_lea, curattr_str, curattr_int, newattr_lea, newattr_str, newattr_int))
             {
                 return 1;
             }
@@ -1105,7 +1105,7 @@ namespace com.lover.astd.common.logic
         /// <param name="storeId"></param>
         /// <param name="type">1:替换 2:维持</param>
         /// <returns></returns>
-        public bool xiZhugeConfirm(ProtocolMgr proto, ILogger logger, User user, int storeId, int type, int curattr_lea, int curattr_int, int curattr_str, int newattr_lea, int newattr_int, int newattr_str)
+        public bool xiZhugeConfirm(ProtocolMgr proto, ILogger logger, User user, int storeId, int type, int curattr_lea, int curattr_str, int curattr_int, int newattr_lea, int newattr_str, int newattr_int)
         {
             string url = "/root/equip!xiZhugeConfirm.action";
             string data = string.Format("type={0}&storeId={1}", type, storeId);
@@ -1115,8 +1115,8 @@ namespace com.lover.astd.common.logic
                 return false;
             }
             logInfo(logger, string.Format("免费潜能淬炼,原属性:统+{0},勇+{1},智+{2},新属性:统+{3},勇+{4},智+{5},{6}",
-                curattr_lea, curattr_int, curattr_str,
-                newattr_lea, newattr_int, newattr_str,
+                curattr_lea, curattr_str, curattr_int,
+                newattr_lea, newattr_str, newattr_int,
                 (type == 2 ? "维持" : "替换")));
             return true;
         }
