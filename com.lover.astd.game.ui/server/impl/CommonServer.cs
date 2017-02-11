@@ -2,6 +2,7 @@ using com.lover.astd.common.config;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using com.lover.astd.common;
 
 namespace com.lover.astd.game.ui.server.impl
 {
@@ -108,6 +109,7 @@ namespace com.lover.astd.game.ui.server.impl
 			bool checked5 = mainForm.chk_auto_hide_flash.Checked;
 			mainForm.Auto_hide_flash = checked5;
 			config.setConfig(this.ServerName, "auto_hide_flash", checked5.ToString());
+            config.setConfig(this.ServerName, ConfigStrings.ticket_bighero, mainForm.num_ticket_bighero.Value.ToString());
 		}
 
 		public override void renderSettings()
@@ -204,6 +206,11 @@ namespace com.lover.astd.game.ui.server.impl
 			bool flag5 = config.ContainsKey("auto_hide_flash") && config["auto_hide_flash"].ToLower().Equals("true");
             _mainForm.Auto_hide_flash = flag5;
             _mainForm.chk_auto_hide_flash.Checked = flag5;
+            if (config.ContainsKey(ConfigStrings.ticket_bighero) && config[ConfigStrings.ticket_bighero] != "")
+            {
+                int ticket = int.Parse(config[ConfigStrings.ticket_bighero]);
+                _mainForm.num_ticket_bighero.Value = ticket;
+            }
 		}
 
 		public override void loadDefaultSettings()
@@ -223,6 +230,7 @@ namespace com.lover.astd.game.ui.server.impl
 			expr_06.setConfig(this.ServerName, "boss_alt", "false");
 			expr_06.setConfig(this.ServerName, "boss_key", "");
 			expr_06.setConfig(this.ServerName, "auto_hide_flash", "false");
+            expr_06.setConfig(this.ServerName, ConfigStrings.ticket_bighero, "0");
 			this.renderSettings();
 		}
 	}

@@ -499,5 +499,7 @@ namespace com.lover.astd.common
         public const string jailwork_type = "jailwork_type";
 
         public const string weave_item = "weave_item";
+
+        public const string ticket_bighero = "ticket_bighero";
 	}
 }

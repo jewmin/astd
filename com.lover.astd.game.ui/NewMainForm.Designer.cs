@@ -357,6 +357,8 @@ namespace com.lover.astd.game.ui
             this.chk_global_boss_key_alt = new System.Windows.Forms.CheckBox();
             this.chk_global_boss_key_ctrl = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label75 = new System.Windows.Forms.Label();
+            this.combo_movable_weave_like = new System.Windows.Forms.ComboBox();
             this.num_movable_reserve = new System.Windows.Forms.NumericUpDown();
             this.label45 = new System.Windows.Forms.Label();
             this.num_movable_refine_factory_gold = new System.Windows.Forms.NumericUpDown();
@@ -468,8 +470,8 @@ namespace com.lover.astd.game.ui
             this.lbl_playerinfo = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lbl_time = new System.Windows.Forms.Label();
-            this.combo_movable_weave_like = new System.Windows.Forms.ComboBox();
-            this.label75 = new System.Windows.Forms.Label();
+            this.label76 = new System.Windows.Forms.Label();
+            this.num_ticket_bighero = new System.Windows.Forms.NumericUpDown();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_6)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
@@ -578,6 +580,7 @@ namespace com.lover.astd.game.ui
             ((System.ComponentModel.ISupportInitialize)(this.num_kf_banquet_buygold)).BeginInit();
             this.logPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.subBrowser)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_ticket_bighero)).BeginInit();
             this.SuspendLayout();
             // 
             // mainMenu
@@ -2844,9 +2847,9 @@ namespace com.lover.astd.game.ui
             this.groupBox6.Controls.Add(this.combo_hero_wash);
             this.groupBox6.Controls.Add(this.chk_hero_wash_enable);
             this.groupBox6.Controls.Add(this.chk_hero_tufei_enable);
-            this.groupBox6.Location = new System.Drawing.Point(214, 292);
+            this.groupBox6.Location = new System.Drawing.Point(214, 312);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(200, 309);
+            this.groupBox6.Size = new System.Drawing.Size(200, 288);
             this.groupBox6.TabIndex = 5;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "武将管理";
@@ -2898,7 +2901,7 @@ namespace com.lover.astd.game.ui
             this.dg_heros.Name = "dg_heros";
             this.dg_heros.RowHeadersWidth = 30;
             this.dg_heros.RowTemplate.Height = 23;
-            this.dg_heros.Size = new System.Drawing.Size(190, 170);
+            this.dg_heros.Size = new System.Drawing.Size(190, 147);
             this.dg_heros.TabIndex = 17;
             this.dg_heros.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dg_CellMouseDown);
             this.dg_heros.CellMouseMove += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dg_CellMouseMove);
@@ -2934,7 +2937,7 @@ namespace com.lover.astd.game.ui
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(7, 279);
+            this.label3.Location = new System.Drawing.Point(7, 266);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(53, 12);
             this.label3.TabIndex = 16;
@@ -2943,7 +2946,7 @@ namespace com.lover.astd.game.ui
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(7, 258);
+            this.label2.Location = new System.Drawing.Point(7, 245);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(53, 12);
             this.label2.TabIndex = 15;
@@ -2952,7 +2955,7 @@ namespace com.lover.astd.game.ui
             // chk_hero_wash_zhi
             // 
             this.chk_hero_wash_zhi.AutoSize = true;
-            this.chk_hero_wash_zhi.Location = new System.Drawing.Point(155, 277);
+            this.chk_hero_wash_zhi.Location = new System.Drawing.Point(155, 264);
             this.chk_hero_wash_zhi.Name = "chk_hero_wash_zhi";
             this.chk_hero_wash_zhi.Size = new System.Drawing.Size(36, 16);
             this.chk_hero_wash_zhi.TabIndex = 14;
@@ -2962,7 +2965,7 @@ namespace com.lover.astd.game.ui
             // chk_hero_wash_yong
             // 
             this.chk_hero_wash_yong.AutoSize = true;
-            this.chk_hero_wash_yong.Location = new System.Drawing.Point(113, 277);
+            this.chk_hero_wash_yong.Location = new System.Drawing.Point(113, 264);
             this.chk_hero_wash_yong.Name = "chk_hero_wash_yong";
             this.chk_hero_wash_yong.Size = new System.Drawing.Size(36, 16);
             this.chk_hero_wash_yong.TabIndex = 13;
@@ -2972,7 +2975,7 @@ namespace com.lover.astd.game.ui
             // chk_hero_wash_tong
             // 
             this.chk_hero_wash_tong.AutoSize = true;
-            this.chk_hero_wash_tong.Location = new System.Drawing.Point(71, 277);
+            this.chk_hero_wash_tong.Location = new System.Drawing.Point(71, 264);
             this.chk_hero_wash_tong.Name = "chk_hero_wash_tong";
             this.chk_hero_wash_tong.Size = new System.Drawing.Size(36, 16);
             this.chk_hero_wash_tong.TabIndex = 12;
@@ -2984,7 +2987,7 @@ namespace com.lover.astd.game.ui
             this.combo_hero_wash.DisplayMember = "Desc";
             this.combo_hero_wash.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_hero_wash.FormattingEnabled = true;
-            this.combo_hero_wash.Location = new System.Drawing.Point(70, 251);
+            this.combo_hero_wash.Location = new System.Drawing.Point(70, 238);
             this.combo_hero_wash.Name = "combo_hero_wash";
             this.combo_hero_wash.Size = new System.Drawing.Size(121, 20);
             this.combo_hero_wash.TabIndex = 6;
@@ -2993,7 +2996,7 @@ namespace com.lover.astd.game.ui
             // chk_hero_wash_enable
             // 
             this.chk_hero_wash_enable.AutoSize = true;
-            this.chk_hero_wash_enable.Location = new System.Drawing.Point(7, 232);
+            this.chk_hero_wash_enable.Location = new System.Drawing.Point(7, 219);
             this.chk_hero_wash_enable.Name = "chk_hero_wash_enable";
             this.chk_hero_wash_enable.Size = new System.Drawing.Size(192, 16);
             this.chk_hero_wash_enable.TabIndex = 4;
@@ -3016,9 +3019,9 @@ namespace com.lover.astd.game.ui
             this.groupBox5.Controls.Add(this.chk_selAll_building);
             this.groupBox5.Controls.Add(this.dg_buildings);
             this.groupBox5.Controls.Add(this.chk_building_enable);
-            this.groupBox5.Location = new System.Drawing.Point(8, 292);
+            this.groupBox5.Location = new System.Drawing.Point(8, 312);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(200, 309);
+            this.groupBox5.Size = new System.Drawing.Size(200, 289);
             this.groupBox5.TabIndex = 4;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "升级建筑";
@@ -3060,7 +3063,7 @@ namespace com.lover.astd.game.ui
             this.dg_buildings.Name = "dg_buildings";
             this.dg_buildings.RowHeadersWidth = 30;
             this.dg_buildings.RowTemplate.Height = 23;
-            this.dg_buildings.Size = new System.Drawing.Size(190, 241);
+            this.dg_buildings.Size = new System.Drawing.Size(190, 221);
             this.dg_buildings.TabIndex = 3;
             this.dg_buildings.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dg_CellMouseDown);
             this.dg_buildings.CellMouseMove += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dg_CellMouseMove);
@@ -3103,7 +3106,9 @@ namespace com.lover.astd.game.ui
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.label76);
             this.groupBox4.Controls.Add(this.num_get_baoshi_stone);
+            this.groupBox4.Controls.Add(this.num_ticket_bighero);
             this.groupBox4.Controls.Add(this.chk_get_baoshi_stone);
             this.groupBox4.Controls.Add(this.chk_secretary_giftbox);
             this.groupBox4.Controls.Add(this.num_secretary_open_treasure);
@@ -3127,7 +3132,7 @@ namespace com.lover.astd.game.ui
             this.groupBox4.Controls.Add(this.chk_dinner);
             this.groupBox4.Location = new System.Drawing.Point(214, 57);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(200, 229);
+            this.groupBox4.Size = new System.Drawing.Size(200, 249);
             this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "小秘书";
@@ -3644,7 +3649,7 @@ namespace com.lover.astd.game.ui
             this.setPage2.Location = new System.Drawing.Point(4, 22);
             this.setPage2.Name = "setPage2";
             this.setPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.setPage2.Size = new System.Drawing.Size(1052, 607);
+            this.setPage2.Size = new System.Drawing.Size(1156, 607);
             this.setPage2.TabIndex = 3;
             this.setPage2.Text = "设置2";
             // 
@@ -4396,6 +4401,28 @@ namespace com.lover.astd.game.ui
             this.groupBox2.TabIndex = 50;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "行动力";
+            // 
+            // label75
+            // 
+            this.label75.AutoSize = true;
+            this.label75.Location = new System.Drawing.Point(25, 149);
+            this.label75.Name = "label75";
+            this.label75.Size = new System.Drawing.Size(53, 12);
+            this.label75.TabIndex = 63;
+            this.label75.Text = "纺织布匹";
+            // 
+            // combo_movable_weave_like
+            // 
+            this.combo_movable_weave_like.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.combo_movable_weave_like.FormattingEnabled = true;
+            this.combo_movable_weave_like.Items.AddRange(new object[] {
+            "孔羽缭绫",
+            "虎纹亚麻",
+            "流云壮锦"});
+            this.combo_movable_weave_like.Location = new System.Drawing.Point(83, 145);
+            this.combo_movable_weave_like.Name = "combo_movable_weave_like";
+            this.combo_movable_weave_like.Size = new System.Drawing.Size(61, 20);
+            this.combo_movable_weave_like.TabIndex = 62;
             // 
             // num_movable_reserve
             // 
@@ -5569,7 +5596,7 @@ namespace com.lover.astd.game.ui
             this.logPage.Location = new System.Drawing.Point(4, 22);
             this.logPage.Name = "logPage";
             this.logPage.Padding = new System.Windows.Forms.Padding(3);
-            this.logPage.Size = new System.Drawing.Size(1052, 607);
+            this.logPage.Size = new System.Drawing.Size(1156, 607);
             this.logPage.TabIndex = 1;
             this.logPage.Text = "日志";
             this.logPage.UseVisualStyleBackColor = true;
@@ -5698,27 +5725,27 @@ namespace com.lover.astd.game.ui
             this.lbl_time.Size = new System.Drawing.Size(0, 12);
             this.lbl_time.TabIndex = 8;
             // 
-            // combo_movable_weave_like
+            // label76
             // 
-            this.combo_movable_weave_like.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.combo_movable_weave_like.FormattingEnabled = true;
-            this.combo_movable_weave_like.Items.AddRange(new object[] {
-            "孔羽缭绫",
-            "虎纹亚麻",
-            "流云壮锦"});
-            this.combo_movable_weave_like.Location = new System.Drawing.Point(83, 145);
-            this.combo_movable_weave_like.Name = "combo_movable_weave_like";
-            this.combo_movable_weave_like.Size = new System.Drawing.Size(61, 20);
-            this.combo_movable_weave_like.TabIndex = 62;
+            this.label76.AutoSize = true;
+            this.label76.Location = new System.Drawing.Point(47, 228);
+            this.label76.Name = "label76";
+            this.label76.Size = new System.Drawing.Size(101, 12);
+            this.label76.TabIndex = 31;
+            this.label76.Text = "大将令兑换点券≤";
             // 
-            // label75
+            // num_ticket_bighero
             // 
-            this.label75.AutoSize = true;
-            this.label75.Location = new System.Drawing.Point(25, 149);
-            this.label75.Name = "label75";
-            this.label75.Size = new System.Drawing.Size(53, 12);
-            this.label75.TabIndex = 63;
-            this.label75.Text = "纺织布匹";
+            this.num_ticket_bighero.Location = new System.Drawing.Point(151, 223);
+            this.num_ticket_bighero.Maximum = new decimal(new int[] {
+            999999999,
+            0,
+            0,
+            0});
+            this.num_ticket_bighero.Name = "num_ticket_bighero";
+            this.num_ticket_bighero.Size = new System.Drawing.Size(46, 21);
+            this.num_ticket_bighero.TabIndex = 30;
+            this.tip_msg.SetToolTip(this.num_ticket_bighero, "0为不大祭祀");
             // 
             // NewMainForm
             // 
@@ -5878,6 +5905,7 @@ namespace com.lover.astd.game.ui
             this.logPage.ResumeLayout(false);
             this.logPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.subBrowser)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_ticket_bighero)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -6324,6 +6352,8 @@ namespace com.lover.astd.game.ui
         public System.Windows.Forms.ComboBox combo_jailwork_type;
         private System.Windows.Forms.Label label75;
         public System.Windows.Forms.ComboBox combo_movable_weave_like;
+        private System.Windows.Forms.Label label76;
+        public System.Windows.Forms.NumericUpDown num_ticket_bighero;
 
     }
 }

@@ -1,6 +1,7 @@
 using com.lover.astd.common.model;
 using System;
 using System.Collections.Generic;
+using com.lover.astd.common.model.misc;
 
 namespace com.lover.astd.common.logicexe.temp
 {
@@ -52,7 +53,8 @@ namespace com.lover.astd.common.logicexe.temp
             else
             {
                 int total_ticket = 0;
-                int result = this._factory.getMiscManager().ticketGetInfo(this._proto, this._logger, ref total_ticket);
+                TicketItem item = new TicketItem();
+                int result = this._factory.getMiscManager().ticketGetInfo(this._proto, this._logger, ref total_ticket, ref item);
                 if (result == 1)
                 {
                     return 60000L;

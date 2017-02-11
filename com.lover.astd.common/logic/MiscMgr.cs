@@ -8545,7 +8545,7 @@ namespace com.lover.astd.common.logic
         }
 
         #region 点券商城
-        public int ticketGetInfo(ProtocolMgr protocol, ILogger logger, ref int total_ticket)
+        public int ticketGetInfo(ProtocolMgr protocol, ILogger logger, ref int total_ticket, ref TicketItem item)
         {
             string url = "/root/tickets.action";
             ServerResult xml = protocol.getXml(url, "获取玩家点券信息");
@@ -8565,6 +8565,41 @@ namespace com.lover.astd.common.logic
                 {
                     int.TryParse(xmlNode.InnerText, out total_ticket);
                 }
+                XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/rewards/reward");
+                foreach (XmlNode node in xmlNodeList)
+                {
+                    int id = 0;
+                    XmlNode childnode = node.SelectSingleNode("id");
+                    if (childnode != null)
+                    {
+                        id = int.Parse(childnode.InnerText);
+                    }
+                    if (id == -1)
+                    {
+                        item.id = id;
+                        childnode = node.SelectSingleNode("playerlevel");
+                        if (childnode != null)
+                        {
+                            item.playerlevel = int.Parse(childnode.InnerText);
+                        }
+                        childnode = node.SelectSingleNode("tickets");
+                        if (childnode != null)
+                        {
+                            item.tickets = int.Parse(childnode.InnerText);
+                        }
+                        childnode = node.SelectSingleNode("item/name");
+                        if (childnode != null)
+                        {
+                            item.itemname = childnode.InnerText;
+                        }
+                        childnode = node.SelectSingleNode("item/num");
+                        if (childnode != null)
+                        {
+                            item.itemcount = int.Parse(childnode.InnerText);
+                        }
+                        break;
+                    }
+                }
                 return 0;
             }
         }
@@ -8577,6 +8612,19 @@ namespace com.lover.astd.common.logic
             if (xml != null && xml.CmdSucceed)
             {
                 logInfo(logger, string.Format("点券兑换银币10000000, 消耗点券10000"));
+                return true;
+            }
+            return false;
+        }
+
+        public bool ticketExchangeBigHero(ProtocolMgr protocol, ILogger logger, TicketItem item)
+        {
+            string url = "/root/tickets!getTicketsReward.action";
+            string data = string.Format("rewardId={0}&num={1}", item.id, item.itemcount);
+            ServerResult xml = protocol.postXml(url, data, "点券兑换大将令");
+            if (xml != null && xml.CmdSucceed)
+            {
+                logInfo(logger, string.Format("点券兑换大将令[{0}]x{1}, 消耗点券{2}", item.itemname, item.itemcount, item.tickets));
                 return true;
             }
             return false;

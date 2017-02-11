@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using com.lover.astd.common.model.misc;
 
 namespace com.lover.astd.common.logicexe
 {
@@ -44,6 +45,18 @@ namespace com.lover.astd.common.logicexe
             if (this._user.Silver < 10000000)
             {
                 this._factory.getMiscManager().ticketExchangeMoney(this._proto, this._logger);
+            }
+            int ticket = 0;
+            int total_ticket = 0;
+            TicketItem item = new TicketItem();
+            if (config.ContainsKey(ConfigStrings.ticket_bighero) && config[ConfigStrings.ticket_bighero] != "")
+            {
+                ticket = int.Parse(config[ConfigStrings.ticket_bighero]);
+            }
+            this._factory.getMiscManager().ticketGetInfo(this._proto, this._logger, ref total_ticket, ref item);
+            if (item.id == -1 && item.tickets <= ticket && item.playerlevel <= this._user.Level)
+            {
+                this._factory.getMiscManager().ticketExchangeBigHero(this._proto, this._logger, item);
             }
 			this.refreshUi();
 		}

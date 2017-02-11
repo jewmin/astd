@@ -10,7 +10,7 @@ namespace com.lover.astd.common.logic
 {
     public class BigHeroMgr : MgrBase
     {
-        private Dictionary<string, int> indexs_ = new Dictionary<string, int>();
+        public Dictionary<string, int> indexs_ = new Dictionary<string, int>();
         public List<BigHero> heros_ = new List<BigHero>();
 
         public BigHeroMgr(TimeMgr tmrMgr, ServiceFactory factory)

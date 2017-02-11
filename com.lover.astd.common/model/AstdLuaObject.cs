@@ -63,6 +63,12 @@ namespace com.lover.astd.common.model
             return lua_state_.GetTableDict(table);
         }
 
+        public bool IsNull(string fullpath)
+        {
+            object value = lua_state_[fullpath];
+            return value == null;
+        }
+
         public void DumpLuaStack(ILogger logger)
         {
             LuaTable table = lua_state_.GetTable(root_);

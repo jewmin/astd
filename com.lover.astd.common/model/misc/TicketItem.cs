@@ -13,5 +13,14 @@ namespace com.lover.astd.common.model.misc
 		public string itemname;
 
 		public int itemcount;
+
+        public TicketItem()
+        {
+            id = 0;
+            playerlevel = 0;
+            tickets = 0;
+            itemname = "";
+            itemcount = 0;
+        }
 	}
 }

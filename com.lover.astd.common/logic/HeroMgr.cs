@@ -16,196 +16,166 @@ namespace com.lover.astd.common.logic
 			this._tmrMgr = tmrMgr;
 			this._factory = factory;
 		}
-
+        /// <summary>
+        /// 开始洗属性 0:成功 1:不需要洗 2:出错 3:没免费次数
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="logger"></param>
+        /// <param name="user"></param>
+        /// <param name="hero_id"></param>
+        /// <param name="wash_what"></param>
+        /// <param name="only_free"></param>
+        /// <param name="totalCredit"></param>
+        /// <param name="wash_count"></param>
+        /// <param name="old_attrib"></param>
+        /// <returns></returns>
 		public int startWash(ProtocolMgr protocol, ILogger logger, User user, int hero_id, string wash_what, bool only_free, int totalCredit, int wash_count, ref int[] old_attrib)
 		{
-			int num = 0;
+			int has_wash_count = 0;
 			this.getWashInfo(protocol, logger, user);
 			List<Hero> heroes = user.Heroes;
 			Hero hero = null;
 			foreach (Hero current in heroes)
 			{
-				bool flag = current.Id == hero_id;
-				if (flag)
+				if (current.Id == hero_id)
 				{
 					hero = current;
 					break;
 				}
 			}
-			bool flag2 = hero == null;
-			int result;
-			if (flag2)
+			if (hero == null)
 			{
 				base.logInfo(logger, "未找到要洗点的将, ID为" + hero_id);
-				result = 2;
+				return 2;
 			}
-			else
-			{
-				int level = hero.Level;
-				int[] array = new int[3];
-				int[] array2 = array;
-				int num2 = 0;
-				int i = 0;
-				int num3 = 0;
-				int heroAttributes = this.getHeroAttributes(protocol, logger, hero, ref level, ref old_attrib, ref array2);
-				bool flag3 = heroAttributes == 0;
-				if (flag3)
-				{
-					base.logInfo(logger, "出现未知错误");
-					result = 2;
-				}
-				else
-				{
-					bool flag4 = heroAttributes == 1;
-					if (flag4)
-					{
-						this.confirmHeroAttrib(protocol, logger, hero.Id, false);
-					}
-					this.getWashModes(protocol, logger, ref num2, ref i, ref num3);
-					bool flag5 = !this.isHeroNeedWash(wash_what, only_free, level, old_attrib);
-					if (flag5)
-					{
-						base.logInfo(logger, "该武将不需要洗属性");
-						result = 1;
-					}
-					else if (only_free)
-					{
-						bool flag6 = i == 0 && num3 == 0;
-						if (flag6)
-						{
-							base.logInfo(logger, "没有免费的洗将次数了");
-							result = 3;
-						}
-						else
-						{
-							while (i > 0)
-							{
-								bool flag7 = num >= wash_count;
-								if (flag7)
-								{
-									break;
-								}
-								int num4 = this.doWash(protocol, logger, hero, 2, wash_what, ref old_attrib, ref array2);
-								bool flag8 = num4 == 1;
-								if (flag8)
-								{
-									result = 2;
-									return result;
-								}
-								bool flag9 = num4 == 2;
-								if (flag9)
-								{
-									result = 1;
-									return result;
-								}
-								int num5 = i;
-								i = num5 - 1;
-								num5 = num;
-								num = num5 + 1;
-							}
-							while (num3 > 0 && num < wash_count)
-							{
-								int num6 = this.doWash(protocol, logger, hero, 3, wash_what, ref old_attrib, ref array2);
-								bool flag10 = num6 == 1;
-								if (flag10)
-								{
-									result = 2;
-									return result;
-								}
-								bool flag11 = num6 == 2;
-								if (flag11)
-								{
-									result = 1;
-									return result;
-								}
-								int num5 = num3;
-								num3 = num5 - 1;
-								num5 = num;
-								num = num5 + 1;
-							}
-							result = 0;
-						}
-					}
-					else
-					{
-						bool flag12 = totalCredit < num2;
-						if (flag12)
-						{
-							base.logInfo(logger, "洗将军工不足");
-							result = 2;
-						}
-						else
-						{
-							int num7 = totalCredit;
-							while (num7 >= num2 && num < wash_count)
-							{
-								int num8 = this.doWash(protocol, logger, hero, 0, wash_what, ref old_attrib, ref array2);
-								bool flag13 = num8 == 1;
-								if (flag13)
-								{
-									result = 2;
-									return result;
-								}
-								bool flag14 = num8 == 2;
-								if (flag14)
-								{
-									result = 1;
-									return result;
-								}
-								num7 -= num2;
-								int num5 = num;
-								num = num5 + 1;
-							}
-							result = 0;
-						}
-					}
-				}
-			}
-			return result;
-		}
 
-		private int doWash(ProtocolMgr protocol, ILogger logger, Hero hero, int wash_mode, string wash_what, ref int[] old_attrib, ref int[] new_attrib)
-		{
-			string text = "";
-			bool flag = wash_mode == 0;
-			if (flag)
-			{
-				text = "军功";
-			}
-			else
-			{
-				bool flag2 = wash_mode == 1;
-				if (flag2)
-				{
-					text = "加强";
-				}
-				else
-				{
-					bool flag3 = wash_mode == 2;
-					if (flag3)
-					{
-						text = "白金";
-					}
-					else
-					{
-						bool flag4 = wash_mode == 3;
-						if (flag4)
-						{
-							text = "至尊";
-						}
-					}
-				}
-			}
-			bool flag5 = !this.washHero(protocol, logger, hero, wash_mode, ref new_attrib);
-			int result;
-			if (flag5)
-			{
-				base.logInfo(logger, "洗属性失败, 稍等几秒钟");
-				result = 1;
-			}
-			else
-			{
-				string text2 = string.Format("为武将[{0}]{1}洗属性, 获得属性[统:{2}, 勇:{3}, 智:{4}], 原属性为[统:{5}, 勇:{6}, 智:{7}]", new object[]
+            int level = hero.Level;
+            int[] new_attrib = new int[3];
+            int creditCostToWash = 0;
+            int goldWashCount = 0;
+            int superWashCount = 0;
+            int heroAttributes = this.getHeroAttributes(protocol, logger, hero, ref level, ref old_attrib, ref new_attrib);
+            if (heroAttributes == 0)
+            {
+                base.logInfo(logger, "出现未知错误");
+                return 2;
+            }
+            else if (heroAttributes == 1)
+            {
+                this.confirmHeroAttrib(protocol, logger, hero.Id, false);
+            }
+            this.getWashModes(protocol, logger, ref creditCostToWash, ref goldWashCount, ref superWashCount);
+            if (level > user.Level)
+            {
+                level = user.Level;
+            }
+            if (!this.isHeroNeedWash(wash_what, only_free, level, old_attrib))
+            {
+                base.logInfo(logger, "该武将不需要洗属性");
+                return 1;
+            }
+            else if (only_free)
+            {
+                if (goldWashCount == 0 && superWashCount == 0)
+                {
+                    base.logInfo(logger, "没有免费的洗将次数了");
+                    return 3;
+                }
+
+                while (goldWashCount > 0 && has_wash_count < wash_count)
+                {
+                    int result = this.doWash(protocol, logger, hero, level, 2, wash_what, ref old_attrib, ref new_attrib);
+                    if (result == 1)
+                    {
+                        return 2;
+                    }
+                    else if (result == 2)
+                    {
+                        return 1;
+                    }
+                    goldWashCount--;
+                    has_wash_count++;
+                }
+
+                while (superWashCount > 0 && has_wash_count < wash_count)
+                {
+                    int result = this.doWash(protocol, logger, hero, level, 3, wash_what, ref old_attrib, ref new_attrib);
+                    if (result == 1)
+                    {
+                        return 2;
+                    }
+                    else if (result == 2)
+                    {
+                        return 1;
+                    }
+                    superWashCount--;
+                    has_wash_count++;
+                }
+
+                return 0;
+            }
+            else if (totalCredit < creditCostToWash)
+            {
+                base.logInfo(logger, "洗将军工不足");
+                return 2;
+            }
+            else
+            {
+                while (totalCredit >= creditCostToWash && has_wash_count < wash_count)
+                {
+                    int result = this.doWash(protocol, logger, hero, level, 0, wash_what, ref old_attrib, ref new_attrib);
+                    if (result == 1)
+                    {
+                        return 2;
+                    }
+                    else if (result == 2)
+                    {
+                        return 1;
+                    }
+                    totalCredit -= creditCostToWash;
+                    has_wash_count++;
+                }
+
+                return 0;
+            }
+		}
+        /// <summary>
+        /// 执行洗属性 0:成功 1:出错 2:完成
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="logger"></param>
+        /// <param name="hero"></param>
+        /// <param name="wash_mode"></param>
+        /// <param name="wash_what"></param>
+        /// <param name="old_attrib"></param>
+        /// <param name="new_attrib"></param>
+        /// <returns></returns>
+        private int doWash(ProtocolMgr protocol, ILogger logger, Hero hero, int herolevel, int wash_mode, string wash_what, ref int[] old_attrib, ref int[] new_attrib)
+        {
+            string text = "";
+            if (wash_mode == 0)
+            {
+                text = "军功";
+            }
+            else if (wash_mode == 1)
+            {
+                text = "加强";
+            }
+            else if (wash_mode == 2)
+            {
+                text = "白金";
+            }
+            else if (wash_mode == 3)
+            {
+                text = "至尊";
+            }
+            if (!this.washHero(protocol, logger, hero, wash_mode, ref new_attrib))
+            {
+                base.logInfo(logger, "洗属性失败, 稍等几秒钟");
+                return 1;
+            }
+
+            string text2 = string.Format("为武将[{0}]{1}洗属性, 获得属性[统:{2}, 勇:{3}, 智:{4}], 原属性为[统:{5}, 勇:{6}, 智:{7}]", new object[]
 				{
 					hero.Name,
 					text,
@@ -216,258 +186,275 @@ namespace com.lover.astd.common.logic
 					old_attrib[1],
 					old_attrib[2]
 				});
-				base.logInfo(logger, text2);
-				bool only_free = wash_mode != 0;
-				bool flag6 = this.isNewAttribBetter(logger, wash_what, only_free, old_attrib, new_attrib);
-				if (flag6)
-				{
-					this.confirmHeroAttrib(protocol, logger, hero.Id, true);
-					int num;
-					for (int i = 0; i < 3; i = num + 1)
-					{
-						old_attrib[i] = new_attrib[i];
-						num = i;
-					}
-					bool flag7 = !this.isHeroNeedWash(wash_what, only_free, hero.Level, old_attrib);
-					if (flag7)
-					{
-						base.logInfo(logger, string.Format("武将[{0}]洗属性完毕", hero.Name));
-						result = 2;
-						return result;
-					}
-				}
-				else
-				{
-					this.confirmHeroAttrib(protocol, logger, hero.Id, false);
-				}
-				result = 0;
-			}
-			return result;
-		}
-
+            base.logInfo(logger, text2);
+            bool only_free = wash_mode != 0;
+            if (this.isNewAttribBetter(logger, wash_what, only_free, old_attrib, new_attrib))
+            {
+                this.confirmHeroAttrib(protocol, logger, hero.Id, true);
+                for (int i = 0; i < 3; i++)
+                {
+                    old_attrib[i] = new_attrib[i];
+                }
+                if (!this.isHeroNeedWash(wash_what, only_free, herolevel, old_attrib))
+                {
+                    base.logInfo(logger, string.Format("武将[{0}]洗属性完毕", hero.Name));
+                    return 2;
+                }
+            }
+            else
+            {
+                this.confirmHeroAttrib(protocol, logger, hero.Id, false);
+            }
+            return 0;
+        }
+        /// <summary>
+        /// 还需要洗?
+        /// </summary>
+        /// <param name="wash_attrib"></param>
+        /// <param name="only_free"></param>
+        /// <param name="hero_level"></param>
+        /// <param name="old_attrib"></param>
+        /// <returns></returns>
 		private bool isHeroNeedWash(string wash_attrib, bool only_free, int hero_level, int[] old_attrib)
 		{
-			int num = hero_level + 20;
-			bool flag = true;
-			int num2;
-			for (int i = 0; i < wash_attrib.Length; i = num2 + 1)
+			int maxattr = hero_level + 19;
+			bool no_wash = true;
+			for (int i = 0; i < wash_attrib.Length; i++)
 			{
-				bool flag2 = wash_attrib[i].Equals('1') && old_attrib[i] < num;
-				if (flag2)
+				if (wash_attrib[i].Equals('1') && old_attrib[i] < maxattr)
 				{
-					flag = false;
+					no_wash = false;
 					break;
 				}
-				num2 = i;
 			}
-			return !flag;
+			return !no_wash;
 		}
-
+        /// <summary>
+        /// 新属性更好?
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="wash_attrib">111</param>
+        /// <param name="only_free"></param>
+        /// <param name="old_attrib"></param>
+        /// <param name="new_attrib"></param>
+        /// <returns></returns>
 		private bool isNewAttribBetter(ILogger logger, string wash_attrib, bool only_free, int[] old_attrib, int[] new_attrib)
 		{
-			int[] array = new int[3];
-			int num;
-			for (int i = 0; i < wash_attrib.Length; i = num + 1)
+			int[] attr = new int[3];
+			for (int i = 0; i < wash_attrib.Length; i++)
 			{
-				bool flag = wash_attrib[i].Equals('1');
-				if (flag)
+				if (wash_attrib[i].Equals('1'))
 				{
-					array[i] = new_attrib[i] - old_attrib[i];
+					attr[i] = new_attrib[i] - old_attrib[i];
 				}
 				else
 				{
-					array[i] = 0;
+					attr[i] = 0;
 				}
-				num = i;
 			}
-			int num2 = array[0] + array[1] + array[2];
-			bool result;
+			int total = attr[0] + attr[1] + attr[2];
 			if (only_free)
 			{
-				result = (num2 > 0);
+                return (total > 0);
 			}
-			else
-			{
-				bool flag2 = new_attrib[0] >= old_attrib[0] && new_attrib[1] >= old_attrib[1] && new_attrib[2] >= old_attrib[2];
-				if (flag2)
-				{
-					result = true;
-				}
-				else
-				{
-					int num3 = -1;
-					int num4 = 10000;
-					int num5 = -1;
-					for (int j = 0; j < 3; j = num + 1)
-					{
-						bool flag3 = wash_attrib[j].Equals('1') && old_attrib[j] > num3;
-						if (flag3)
-						{
-							num3 = old_attrib[j];
-						}
-						bool flag4 = wash_attrib[j].Equals('1') && old_attrib[j] < num4;
-						if (flag4)
-						{
-							num4 = old_attrib[j];
-							num5 = j;
-						}
-						num = j;
-					}
-					bool flag5 = num3 - num4 < 20;
-					if (flag5)
-					{
-						result = (num2 > 0);
-					}
-					else
-					{
-						base.logInfo(logger, "需要洗的属性值中最大最小值相差已经大于20, 必须最小属性提升了并且总和增加才能替换");
-						result = (array[num5] > 0 && num2 > 0);
-					}
-				}
-			}
-			return result;
-		}
 
-		public void getWashModes(ProtocolMgr protocol, ILogger logger, ref int creditCostToWash, ref int goldWashCount, ref int superWashCount)
+            if (new_attrib[0] >= old_attrib[0] && new_attrib[1] >= old_attrib[1] && new_attrib[2] >= old_attrib[2])
+            {
+                return true;
+            }
+
+            int max = -1;
+            int min = 10000;
+            int minidx = -1;
+            for (int j = 0; j < 3; j++)
+            {
+                if (wash_attrib[j].Equals('1') && old_attrib[j] > max)
+                {
+                    max = old_attrib[j];
+                }
+                if (wash_attrib[j].Equals('1') && old_attrib[j] < min)
+                {
+                    min = old_attrib[j];
+                    minidx = j;
+                }
+            }
+            if (max - min < 20)
+            {
+                return (total > 0);
+            }
+
+            base.logInfo(logger, "需要洗的属性值中最大最小值相差已经大于20, 必须最小属性提升了并且总和增加才能替换");
+            return (attr[minidx] > 0 && total > 0);
+		}
+        /// <summary>
+        /// 获得洗属性模式
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="logger"></param>
+        /// <param name="creditCostToWash">军功消耗</param>
+        /// <param name="goldWashCount">免费白金洗</param>
+        /// <param name="superWashCount">免费至尊洗</param>
+		public List<BigHero> getWashModes(ProtocolMgr protocol, ILogger logger, ref int creditCostToWash, ref int goldWashCount, ref int superWashCount)
 		{
+            List<BigHero> list = new List<BigHero>();
 			string url = "/root/general!getRefreshGeneralInfo.action";
 			ServerResult xml = protocol.getXml(url, "获取武将洗属性参数");
-			bool flag = xml == null || !xml.CmdSucceed;
-			if (!flag)
+			if (xml == null || !xml.CmdSucceed)
 			{
-				XmlDocument cmdResult = xml.CmdResult;
-				XmlNode xmlNode = cmdResult.SelectSingleNode("/results/freebaijintime");
-				bool flag2 = xmlNode != null;
-				if (flag2)
-				{
-					int.TryParse(xmlNode.InnerText, out goldWashCount);
-				}
-				else
-				{
-					goldWashCount = 0;
-				}
-				XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/freezizuntime");
-				bool flag3 = xmlNode2 != null;
-				if (flag3)
-				{
-					int.TryParse(xmlNode2.InnerText, out superWashCount);
-				}
-				else
-				{
-					superWashCount = 0;
-				}
-				XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/refreshmodel");
-				foreach (XmlNode xmlNode3 in xmlNodeList)
-				{
-					XmlNodeList childNodes = xmlNode3.ChildNodes;
-					string text = "";
-					string text2 = "";
-					int num = 0;
-					foreach (XmlNode xmlNode4 in childNodes)
-					{
-						bool flag4 = xmlNode4.Name == "name";
-						if (flag4)
-						{
-							text = xmlNode4.InnerText;
-						}
-						else
-						{
-							bool flag5 = xmlNode4.Name == "cost";
-							if (flag5)
-							{
-								text2 = xmlNode4.InnerText;
-							}
-							else
-							{
-								bool flag6 = xmlNode4.Name == "freetimes";
-								if (flag6)
-								{
-									int.TryParse(xmlNode4.InnerText, out num);
-								}
-							}
-						}
-					}
-					bool flag7 = text.Contains("普通洗属性") || text.Contains("普通洗屬性");
-					if (flag7)
-					{
-						string s = text2.Replace("军功", "");
-						int.TryParse(s, out creditCostToWash);
-					}
-				}
+                return list;
 			}
+            XmlDocument cmdResult = xml.CmdResult;
+            XmlNode xmlNode = cmdResult.SelectSingleNode("/results/freebaijintime");
+            if (xmlNode != null)
+            {
+                int.TryParse(xmlNode.InnerText, out goldWashCount);
+            }
+            else
+            {
+                goldWashCount = 0;
+            }
+            XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/freezizuntime");
+            if (xmlNode2 != null)
+            {
+                int.TryParse(xmlNode2.InnerText, out superWashCount);
+            }
+            else
+            {
+                superWashCount = 0;
+            }
+            XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/refreshmodel");
+            foreach (XmlNode xmlNode3 in xmlNodeList)
+            {
+                XmlNodeList childNodes = xmlNode3.ChildNodes;
+                string name = "";
+                string cost = "";
+                int freetimes = 0;
+                foreach (XmlNode xmlNode4 in childNodes)
+                {
+                    if (xmlNode4.Name == "name")
+                    {
+                        name = xmlNode4.InnerText;
+                    }
+                    else if (xmlNode4.Name == "cost")
+                    {
+                        cost = xmlNode4.InnerText;
+                    }
+                    else if (xmlNode4.Name == "freetimes")
+                    {
+                        int.TryParse(xmlNode4.InnerText, out freetimes);
+                    }
+                }
+                if (name.Contains("普通洗属性") || name.Contains("普通洗屬性"))
+                {
+                    string s = cost.Replace("军功", "");
+                    int.TryParse(s, out creditCostToWash);
+                }
+            }
+            Dictionary<string, int> indexs_ = this._factory.getBigHeroManager().indexs_;
+            XmlNodeList generalList = cmdResult.SelectNodes("/results/general");
+            foreach (XmlNode general in generalList)
+            {
+                BigHero hero = new BigHero();
+                XmlNodeList generalattrs = general.ChildNodes;
+                foreach (XmlNode attrs in generalattrs)
+                {
+                    if (attrs.Name == "generalname")
+                    {
+                        hero.Name = attrs.InnerText;
+                    }
+                    else if (attrs.Name == "generalid")
+                    {
+                        hero.Id = int.Parse(attrs.InnerText);
+                    }
+                }
+                if (hero.Id > 0 && hero.Name != null)
+                {
+                    if (indexs_.ContainsKey(hero.Name))
+                    {
+                        hero.Index = indexs_[hero.Name];
+                    }
+                    else
+                    {
+                        hero.Index = 9999;
+                    }
+                    list.Add(hero);
+                }
+            }
+            return list;
 		}
+        /// <summary>
+        /// 获得所有武将信息
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="logger"></param>
+        /// <param name="user"></param>
+        public void getWashInfo(ProtocolMgr protocol, ILogger logger, User user)
+        {
+            string url = "/root/general!getTrainGeneralInfo.action";
+            ServerResult xml = protocol.getXml(url, "获取武将信息");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return;
+            }
 
-		public void getWashInfo(ProtocolMgr protocol, ILogger logger, User user)
-		{
-			string url = "/root/general!getTrainGeneralInfo.action";
-			ServerResult xml = protocol.getXml(url, "获取武将信息");
-			bool flag = xml == null || !xml.CmdSucceed;
-			if (!flag)
-			{
-				XmlDocument cmdResult = xml.CmdResult;
-				XmlNode xmlNode = cmdResult.SelectSingleNode("/results");
-				XmlNodeList childNodes = xmlNode.ChildNodes;
-				List<Hero> heroes = user.Heroes;
-				List<int> list = new List<int>();
-				foreach (XmlNode xmlNode2 in childNodes)
-				{
-					bool flag2 = xmlNode2.Name == "general";
-					if (flag2)
-					{
-						int num = 0;
-						XmlNode xmlNode3 = xmlNode2.SelectSingleNode("generalid");
-						bool flag3 = xmlNode3 != null;
-						if (flag3)
-						{
-							int.TryParse(xmlNode3.InnerText, out num);
-						}
-						bool flag4 = num != 0;
-						if (flag4)
-						{
-							list.Add(num);
-							XmlNodeList childNodes2 = xmlNode2.ChildNodes;
-							Hero hero = this.getHero(heroes, num);
-							bool flag5 = hero == null;
-							if (flag5)
-							{
-								hero = new Hero();
-								heroes.Add(hero);
-							}
-							hero.fillValues(childNodes2);
-						}
-					}
-				}
-				int num2;
-				for (int i = 0; i < heroes.Count; i = num2 + 1)
-				{
-					int id = heroes[i].Id;
-					bool flag6 = !list.Contains(id);
-					if (flag6)
-					{
-						heroes.RemoveAt(i);
-						num2 = i;
-						i = num2 - 1;
-					}
-					num2 = i;
-				}
-				for (int j = 0; j < heroes.Count - 1; j = num2 + 1)
-				{
-					for (int k = j + 1; k < heroes.Count; k = num2 + 1)
-					{
-						bool flag7 = heroes[j].Level < heroes[k].Level;
-						if (flag7)
-						{
-							Hero value = heroes[j];
-							heroes[j] = heroes[k];
-							heroes[k] = value;
-						}
-						num2 = k;
-					}
-					num2 = j;
-				}
-			}
-		}
+            XmlDocument cmdResult = xml.CmdResult;
+            XmlNode xmlNode = cmdResult.SelectSingleNode("/results");
+            XmlNodeList childNodes = xmlNode.ChildNodes;
+            List<Hero> heroes = user.Heroes;
+            List<int> list = new List<int>();
+            foreach (XmlNode xmlNode2 in childNodes)
+            {
+                if (xmlNode2.Name == "general")
+                {
+                    int generalid = 0;
+                    XmlNode xmlNode3 = xmlNode2.SelectSingleNode("generalid");
+                    if (xmlNode3 != null)
+                    {
+                        int.TryParse(xmlNode3.InnerText, out generalid);
+                    }
+                    if (generalid != 0)
+                    {
+                        list.Add(generalid);
+                        XmlNodeList childNodes2 = xmlNode2.ChildNodes;
+                        Hero hero = this.getHero(heroes, generalid);
+                        if (hero == null)
+                        {
+                            hero = new Hero();
+                            heroes.Add(hero);
+                        }
+                        hero.fillValues(childNodes2);
+                    }
+                }
+            }
 
+            for (int i = 0; i < heroes.Count; i++)
+            {
+                if (!list.Contains(heroes[i].Id))
+                {
+                    heroes.RemoveAt(i);
+                    i--;
+                }
+            }
+
+            for (int j = 0; j < heroes.Count - 1; j++)
+            {
+                for (int k = j + 1; k < heroes.Count; k++)
+                {
+                    if (heroes[j].Level < heroes[k].Level)
+                    {
+                        Hero value = heroes[j];
+                        heroes[j] = heroes[k];
+                        heroes[k] = value;
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 根据武将id获得武将
+        /// </summary>
+        /// <param name="heroes"></param>
+        /// <param name="heroId"></param>
+        /// <returns></returns>
 		private Hero getHero(List<Hero> heroes, int heroId)
 		{
             for (int i = 0; i < heroes.Count; i++)
@@ -479,194 +466,131 @@ namespace com.lover.astd.common.logic
 			}
             return null;
 		}
-
-		private int getHeroAttributes(ProtocolMgr protocol, ILogger logger, Hero h, ref int heroLevel, ref int[] old_attrib, ref int[] new_attrib)
+        /// <summary>
+        /// 获取武将属性 0:出错 1:有新属性 2:无新属性
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="logger"></param>
+        /// <param name="hero"></param>
+        /// <param name="heroLevel"></param>
+        /// <param name="old_attrib"></param>
+        /// <param name="new_attrib"></param>
+        /// <returns></returns>
+		private int getHeroAttributes(ProtocolMgr protocol, ILogger logger, Hero hero, ref int heroLevel, ref int[] old_attrib, ref int[] new_attrib)
 		{
-			bool flag = h == null;
-			int result;
-			if (flag)
+			if (hero == null)
 			{
-				result = 0;
+                return 0;
 			}
-			else
-			{
-				string url = "/root/general!getRefreshGeneralDetailInfo.action";
-				string data = "generalId=" + h.Id;
-				ServerResult serverResult = protocol.postXml(url, data, "获取武将洗属性信息");
-				bool flag2 = serverResult == null || !serverResult.CmdSucceed;
-				if (flag2)
-				{
-					result = 0;
-				}
-				else
-				{
-					XmlDocument cmdResult = serverResult.CmdResult;
-					XmlNode xmlNode = cmdResult.SelectSingleNode("/results/generaldto/generallevel");
-					bool flag3 = xmlNode != null;
-					if (flag3)
-					{
-						int num = 0;
-						bool flag4 = int.TryParse(xmlNode.InnerText, out num);
-						if (flag4)
-						{
-							h.Level = num;
-							heroLevel = num;
-						}
-					}
-					bool flag5 = cmdResult.SelectSingleNode("/results/general") == null;
-					if (flag5)
-					{
-						result = 0;
-					}
-					else
-					{
-						XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/general/originalattr");
-						foreach (XmlNode xmlNode3 in xmlNode2.ChildNodes)
-						{
-							bool flag6 = xmlNode3.Name == "plusleader";
-							if (flag6)
-							{
-								old_attrib[0] = int.Parse(xmlNode3.InnerText);
-							}
-							else
-							{
-								bool flag7 = xmlNode3.Name == "plusforces";
-								if (flag7)
-								{
-									old_attrib[1] = int.Parse(xmlNode3.InnerText);
-								}
-								else
-								{
-									bool flag8 = xmlNode3.Name == "plusintelligence";
-									if (flag8)
-									{
-										old_attrib[2] = int.Parse(xmlNode3.InnerText);
-									}
-								}
-							}
-						}
-						XmlNode xmlNode4 = cmdResult.SelectSingleNode("/results/general/newattr");
-						bool flag9 = xmlNode4 != null;
-						if (flag9)
-						{
-							foreach (XmlNode xmlNode5 in xmlNode4.ChildNodes)
-							{
-								bool flag10 = xmlNode5.Name == "plusleader";
-								if (flag10)
-								{
-									new_attrib[0] = int.Parse(xmlNode5.InnerText);
-								}
-								else
-								{
-									bool flag11 = xmlNode5.Name == "plusforces";
-									if (flag11)
-									{
-										new_attrib[1] = int.Parse(xmlNode5.InnerText);
-									}
-									else
-									{
-										bool flag12 = xmlNode5.Name == "plusintelligence";
-										if (flag12)
-										{
-											new_attrib[2] = int.Parse(xmlNode5.InnerText);
-										}
-									}
-								}
-							}
-							result = 1;
-						}
-						else
-						{
-							result = 2;
-						}
-					}
-				}
-			}
-			return result;
-		}
 
-		private bool washHero(ProtocolMgr protocol, ILogger logger, Hero h, int washMode, ref int[] new_attrib)
-		{
-			bool flag = h == null;
-			bool result;
-			if (flag)
-			{
-				result = false;
-			}
-			else
-			{
-				string url = "/root/general!refreshGeneral.action";
-				string data = string.Format("generalId={0}&refreshModel={1}", h.Id, washMode);
-				ServerResult serverResult = protocol.postXml(url, data, string.Format("为[{0}]洗属性", h.Name));
-				bool flag2 = serverResult == null || !serverResult.CmdSucceed;
-				if (flag2)
-				{
-					result = false;
-				}
-				else
-				{
-					XmlDocument cmdResult = serverResult.CmdResult;
-					XmlNode xmlNode = cmdResult.SelectSingleNode("/results/general");
-					bool flag3 = xmlNode == null;
-					if (flag3)
-					{
-						result = false;
-					}
-					else
-					{
-						XmlNodeList childNodes = xmlNode.ChildNodes;
-						foreach (XmlNode xmlNode2 in childNodes)
-						{
-							bool flag4 = xmlNode2.Name == "plusleader";
-							if (flag4)
-							{
-								new_attrib[0] = int.Parse(xmlNode2.InnerText);
-							}
-							else
-							{
-								bool flag5 = xmlNode2.Name == "plusforces";
-								if (flag5)
-								{
-									new_attrib[1] = int.Parse(xmlNode2.InnerText);
-								}
-								else
-								{
-									bool flag6 = xmlNode2.Name == "plusintelligence";
-									if (flag6)
-									{
-										new_attrib[2] = int.Parse(xmlNode2.InnerText);
-									}
-								}
-							}
-						}
-						result = true;
-					}
-				}
-			}
-			return result;
-		}
+            string url = "/root/general!getRefreshGeneralDetailInfo.action";
+            string data = string.Format("generalId={0}", hero.Id);
+            ServerResult xml = protocol.postXml(url, data, "获取武将洗属性信息");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return 0;
+            }
+            
+            AstdLuaObject lua = new AstdLuaObject();
+            lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+            int level = lua.GetIntValue("results.generaldto.generallevel");
+            if (level > 0)
+            {
+                hero.Level = heroLevel = level;
+            }
+            if (lua.IsNull("results.general"))
+            {
+                return 0;
+            }
 
+            old_attrib[0] = lua.GetIntValue("results.general.originalattr.plusleader");
+            old_attrib[1] = lua.GetIntValue("results.general.originalattr.plusforces");
+            old_attrib[2] = lua.GetIntValue("results.general.originalattr.plusintelligence");
+            if (lua.IsNull("results.general.newattr"))
+            {
+                return 2;
+            }
+
+            new_attrib[0] = lua.GetIntValue("results.general.newattr.plusleader");
+            new_attrib[1] = lua.GetIntValue("results.general.newattr.plusforces");
+            new_attrib[2] = lua.GetIntValue("results.general.newattr.plusintelligence");
+            return 1;
+		}
+        /// <summary>
+        /// 洗属性
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="logger"></param>
+        /// <param name="hero"></param>
+        /// <param name="washMode"></param>
+        /// <param name="new_attrib"></param>
+        /// <returns></returns>
+        private bool washHero(ProtocolMgr protocol, ILogger logger, Hero hero, int washMode, ref int[] new_attrib)
+        {
+            if (hero == null)
+            {
+                return false;
+            }
+
+            string url = "/root/general!refreshGeneral.action";
+            string data = string.Format("generalId={0}&refreshModel={1}", hero.Id, washMode);
+            ServerResult xml = protocol.postXml(url, data, string.Format("为[{0}]洗属性", hero.Name));
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return false;
+            }
+
+            XmlDocument cmdResult = xml.CmdResult;
+            XmlNode xmlNode = cmdResult.SelectSingleNode("/results/general");
+            if (xmlNode == null)
+            {
+                return false;
+            }
+
+            XmlNodeList childNodes = xmlNode.ChildNodes;
+            foreach (XmlNode xmlNode2 in childNodes)
+            {
+                if (xmlNode2.Name == "plusleader")
+                {
+                    new_attrib[0] = int.Parse(xmlNode2.InnerText);
+                }
+                else if (xmlNode2.Name == "plusforces")
+                {
+                    new_attrib[1] = int.Parse(xmlNode2.InnerText);
+                }
+                else if (xmlNode2.Name == "plusintelligence")
+                {
+                    new_attrib[2] = int.Parse(xmlNode2.InnerText);
+                }
+            }
+            return true;
+        }
+        /// <summary>
+        /// 确认洗属性结果
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="logger"></param>
+        /// <param name="heroId"></param>
+        /// <param name="accept"></param>
 		private void confirmHeroAttrib(ProtocolMgr protocol, ILogger logger, int heroId, bool accept)
 		{
 			string url = "/root/general!refreshGeneralConfirm.action";
 			string data = string.Format("choose={0}&generalId={1}", accept ? 1 : 0, heroId);
 			ServerResult serverResult = protocol.postXml(url, data, "确认武将洗属性信息");
-			bool flag = serverResult == null || !serverResult.CmdSucceed;
-			if (!flag)
+			if (serverResult == null || !serverResult.CmdSucceed)
 			{
-				XmlDocument cmdResult = serverResult.CmdResult;
-				if (accept)
-				{
-					XmlNode xmlNode = cmdResult.SelectSingleNode("/results/message");
-					base.logInfo(logger, xmlNode.InnerText);
-				}
-				else
-				{
-					base.logInfo(logger, "保持原有属性不变");
-				}
+                return;
 			}
+            if (accept)
+            {
+                XmlNode xmlNode = serverResult.CmdResult.SelectSingleNode("/results/message");
+                base.logInfo(logger, xmlNode.InnerText);
+            }
+            else
+            {
+                base.logInfo(logger, "保持原有属性不变");
+            }
 		}
-
         /// <summary>
         /// 获取武将信息
         /// </summary>
@@ -967,7 +891,13 @@ namespace com.lover.astd.common.logic
                 }
             }
 		}
-
+        /// <summary>
+        /// 潜能淬炼
+        /// </summary>
+        /// <param name="proto"></param>
+        /// <param name="logger"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public long handleXiZhuge(ProtocolMgr proto, ILogger logger, User user)
         {
             string url = "/root/equip!getEquip.action";
@@ -1013,7 +943,15 @@ namespace com.lover.astd.common.logic
             }
             return immediate();
         }
-
+        /// <summary>
+        /// 获取诸葛套装
+        /// </summary>
+        /// <param name="proto"></param>
+        /// <param name="logger"></param>
+        /// <param name="user"></param>
+        /// <param name="generalId"></param>
+        /// <param name="zhugeid"></param>
+        /// <returns></returns>
         public int getXiZhugeInfo(ProtocolMgr proto, ILogger logger, User user, int generalId, int zhugeid)
         {
             string url = "/root/equip!getXiZhugeInfo.action";
@@ -1061,7 +999,17 @@ namespace com.lover.astd.common.logic
             }
             return xiZhuge(proto, logger, user, zhugeid, curattr_lea, curattr_str, curattr_int);
         }
-
+        /// <summary>
+        /// 淬炼
+        /// </summary>
+        /// <param name="proto"></param>
+        /// <param name="logger"></param>
+        /// <param name="user"></param>
+        /// <param name="storeId"></param>
+        /// <param name="curattr_lea"></param>
+        /// <param name="curattr_str"></param>
+        /// <param name="curattr_int"></param>
+        /// <returns></returns>
         public int xiZhuge(ProtocolMgr proto, ILogger logger, User user, int storeId, int curattr_lea, int curattr_str, int curattr_int)
         {
             string url = "/root/equip!xiZhuge.action";
@@ -1095,7 +1043,6 @@ namespace com.lover.astd.common.logic
             }
             return 0;
         }
-
         /// <summary>
         /// 潜能淬炼确认
         /// </summary>
