@@ -188,7 +188,7 @@ namespace com.lover.astd.common.logic
 				});
             base.logInfo(logger, text2);
             bool only_free = wash_mode != 0;
-            if (this.isNewAttribBetter(logger, wash_what, only_free, old_attrib, new_attrib))
+            if (this.isNewAttribBetter(logger, wash_what, only_free, herolevel, old_attrib, new_attrib))
             {
                 this.confirmHeroAttrib(protocol, logger, hero.Id, true);
                 for (int i = 0; i < 3; i++)
@@ -238,14 +238,25 @@ namespace com.lover.astd.common.logic
         /// <param name="old_attrib"></param>
         /// <param name="new_attrib"></param>
         /// <returns></returns>
-		private bool isNewAttribBetter(ILogger logger, string wash_attrib, bool only_free, int[] old_attrib, int[] new_attrib)
+        private bool isNewAttribBetter(ILogger logger, string wash_attrib, bool only_free, int hero_level, int[] old_attrib, int[] new_attrib)
 		{
+            int maxattr = hero_level + 19;
+            int oldmaxdiff = 0;
+            int newmaxdiff = 0;
 			int[] attr = new int[3];
 			for (int i = 0; i < wash_attrib.Length; i++)
 			{
 				if (wash_attrib[i].Equals('1'))
 				{
 					attr[i] = new_attrib[i] - old_attrib[i];
+                    if (maxattr - old_attrib[i] > oldmaxdiff)
+                    {
+                        oldmaxdiff = maxattr - old_attrib[i];
+                    }
+                    if (maxattr - new_attrib[i] > newmaxdiff)
+                    {
+                        newmaxdiff = maxattr - new_attrib[i];
+                    }
 				}
 				else
 				{
@@ -255,7 +266,14 @@ namespace com.lover.astd.common.logic
 			int total = attr[0] + attr[1] + attr[2];
 			if (only_free)
 			{
-                return (total > 0);
+                if (total == 0 && newmaxdiff < oldmaxdiff)
+                {
+                    return true;
+                }
+                else
+                {
+                    return (total > 0);
+                }
 			}
 
             if (new_attrib[0] >= old_attrib[0] && new_attrib[1] >= old_attrib[1] && new_attrib[2] >= old_attrib[2])
