@@ -2990,7 +2990,7 @@ namespace com.lover.astd.common.logic
         }
 
         #region 专属
-        public long handleSpecialEquipInfo(ProtocolMgr protocol, ILogger logger, User user)
+        public long handleSpecialEquipInfo(ProtocolMgr protocol, ILogger logger, User user, float prob)
         {
             List<SheetInfo> list = getSpecialEquipInfo(protocol, logger, user);
             if (list.Count == 0)
@@ -3010,7 +3010,7 @@ namespace com.lover.astd.common.logic
             }
             foreach (SheetInfo item in list)
             {
-                if (item.succprob + user._specialEquipSkillInfo.addprob >= 1.0 && item.material2num <= user._specialEquipSkillInfo.material2num && item.material1num <= item.goodsnum)
+                if (item.succprob + user._specialEquipSkillInfo.addprob >= prob && item.material2num <= user._specialEquipSkillInfo.material2num && item.material1num <= item.goodsnum)
                 {
                     if (!makeSpecialEquip(protocol, logger, user, item))
                     {

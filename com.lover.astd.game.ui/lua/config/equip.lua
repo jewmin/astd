@@ -6,4 +6,7 @@ equipConfig =
 
   -- 强化到use_tickets点券
   use_tickets = 300000,
+
+  -- 专属铸造概率>=
+  special_equip_prop = 0.7,
 }
