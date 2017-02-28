@@ -12,4 +12,5 @@ LuaExeId =
   eNewYear = 9, -- 新年活动
   eSpecialEquip = 10, -- 铸造
   eZhuge = 11, -- 潜能淬炼
+  eTech = 12, -- 新科技
 }

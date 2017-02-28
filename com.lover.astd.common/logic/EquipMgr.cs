@@ -909,7 +909,11 @@ namespace com.lover.astd.common.logic
                 {
                     list.Add(decoration);
                 }
-                else if (decoration.upgradestate >= 2 && decoration.succprob > 0.1)
+                else if (decoration.upgradestate == 2 && decoration.succprob > 0.1)
+                {
+                    equipList.Add(decoration);
+                }
+                else if (decoration.upgradestate == 4 && decoration.succprob > 0.01)
                 {
                     equipList.Add(decoration);
                 }
@@ -3092,6 +3096,72 @@ namespace com.lover.astd.common.logic
             user._specialEquipSkillInfo.handle2(xml.CmdResult.SelectSingleNode("/results"));
             logInfo(logger, string.Format("铸造{0}lv.{1}, 消耗镔铁*{2}, {3}*{4}", sheetinfo.name, sheetinfo.lv, sheetinfo.material2num, sheetinfo.goodsname, sheetinfo.material1num));
             return true;
+        }
+        #endregion
+
+        #region 新科技
+        public long handleNewTech(ProtocolMgr protocol, ILogger logger, User user, int availablebintie, int consumebintie)
+        {
+            if (user._specialEquipSkillInfo.material2num <= availablebintie)
+            {
+                return next_hour();
+            }
+            bool action = false;
+            List<Technology> list = getNewTech(protocol, logger);
+            foreach (Technology item in list)
+            {
+                if (item.progress_ < item.requireprogress_ && item.consumebintie_ <= consumebintie)
+                {
+                    researchNewTech(protocol, logger, item);
+                    action = true;
+                }
+            }
+            if (action)
+            {
+                return immediate();
+            }
+            return next_hour();
+        }
+
+        public List<Technology> getNewTech(ProtocolMgr protocol, ILogger logger)
+        {
+            List<Technology> list = new List<Technology>();
+            string url = "/root/tech!getNewTech.action";
+            ServerResult xml = protocol.getXml(url, "新科技信息");
+            if (xml != null && xml.CmdSucceed)
+            {
+                XmlNodeList xmlNodeList = xml.CmdResult.SelectNodes("/results/technology");
+                foreach (XmlNode item in xmlNodeList)
+                {
+                    Technology tech = new Technology();
+                    tech.handle(item);
+                    if (tech.techid_ > 0)
+                    {
+                        list.Add(tech);
+                    }
+                }
+            }
+            return list;
+        }
+
+        public bool researchNewTech(ProtocolMgr protocol, ILogger logger, Technology tech)
+        {
+            bool result = false;
+            string url = "/root/tech!researchNewTech.action";
+            string data = string.Format("techId={0}", tech.techid_);
+            ServerResult xml = protocol.postXml(url, data, "研究新科技");
+            if (xml != null && xml.CmdSucceed)
+            {
+                result = true;
+                AstdLuaObject lua = new AstdLuaObject();
+                lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+                int currentconsume = lua.GetIntValue("results.currentconsume");
+                int addprogress = lua.GetIntValue("results.addprogress");
+                int progress = lua.GetIntValue("results.progress");
+                tech.progress_ = progress;
+                logInfo(logger, string.Format("研究新科技[{0} lv.{1}], 消耗镔铁*{2}, 进度+{3}, 当前进度{4}/{5}", tech.techname_, tech.techlevel_, currentconsume, addprogress, tech.progress_, tech.requireprogress_));
+            }
+            return result;
         }
         #endregion
     }
