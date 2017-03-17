@@ -8,7 +8,7 @@ namespace com.lover.astd.common.model
     /// <summary>
     /// 专属
     /// </summary>
-    public class SheetInfo
+    public class SheetInfo : IComparable
     {
         /// <summary>
         /// id
@@ -101,6 +101,18 @@ namespace com.lover.astd.common.model
             goodsnum = lua.GetIntValue("sheetinfo.goodsnum");
             src = lua.GetStringValue("sheetinfo.src");
             preid = lua.GetIntValue("sheetinfo.preid");
+        }
+        /// <summary>
+        /// 排序，从大到小
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public int CompareTo(object obj)
+        {
+            SheetInfo info = obj as SheetInfo;
+            if (this.lv > info.lv) return -1;
+            else if (this.lv < info.lv) return 1;
+            else return 0;
         }
     }
 

@@ -2994,9 +2994,10 @@ namespace com.lover.astd.common.logic
         }
 
         #region 专属
-        public long handleSpecialEquipInfo(ProtocolMgr protocol, ILogger logger, User user, float prob)
+        public long handleSpecialEquipInfo(ProtocolMgr protocol, ILogger logger, User user, double prob)
         {
             List<SheetInfo> list = getSpecialEquipInfo(protocol, logger, user);
+            list.Sort();
             if (list.Count == 0)
             {
                 return next_day();

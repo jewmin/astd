@@ -8,7 +8,7 @@ equipConfig =
   use_tickets = 300000,
 
   -- 专属铸造概率>=
-  special_equip_prop = 0.3,
+  special_equip_prop = 0.25,
 
   -- 新科技保留镔铁
   tech_availablebintie = 100000,
