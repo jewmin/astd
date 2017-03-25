@@ -40,6 +40,7 @@ namespace com.lover.astd.game.ui.server.impl.battle
             _mainForm.chk_attack_player_move_tokenfull.Checked = (config.ContainsKey("auto_move") && config["auto_move"].ToLower().Equals("true"));
             _mainForm.chk_attack_not_injail.Checked = (config.ContainsKey("not_injail") && config["not_injail"].ToLower().Equals("true"));
             _mainForm.chk_attack_jail_tech.Checked = (config.ContainsKey("jail_tech") && config["jail_tech"].ToLower().Equals("true"));
+            _mainForm.chk_attack_before_22.Checked = (config.ContainsKey(ConfigStrings.attack_before_22) && config[ConfigStrings.attack_before_22].ToLower().Equals("true"));
             int level_min = 0;
             int level_max = 0;
 			int min_score = 5000;
@@ -122,6 +123,7 @@ namespace com.lover.astd.game.ui.server.impl.battle
             expr_0D.setConfig(this.ServerName, "attack_filter_content", _mainForm.txt_attack_filter_content.Text);//攻击目标
             expr_0D.setConfig(this.ServerName, ConfigStrings.juedou, _mainForm.chk_juedou.Checked.ToString());//决斗
             expr_0D.setConfig(this.ServerName, ConfigStrings.jailwork_type, _mainForm.combo_jailwork_type.SelectedIndex.ToString());//监狱劳作类型:0宝石1镔铁
+            expr_0D.setConfig(this.ServerName, ConfigStrings.attack_before_22, _mainForm.chk_attack_before_22.Checked.ToString());//10点过休息
 		}
 
 		public override void loadDefaultSettings()
@@ -150,6 +152,7 @@ namespace com.lover.astd.game.ui.server.impl.battle
 			expr_06.setConfig(this.ServerName, "attack_filter_content", "");
             expr_06.setConfig(this.ServerName, ConfigStrings.juedou, "false");
             expr_06.setConfig(this.ServerName, ConfigStrings.jailwork_type, "0");
+            expr_06.setConfig(this.ServerName, ConfigStrings.attack_before_22, "false");
 			this.renderSettings();
 		}
 	}

@@ -657,6 +657,7 @@ namespace com.lover.astd.common.logicexe.battle
 			{
 				return base.an_hour_later();
 			}
+            bool attack_before_22 = config.ContainsKey(ConfigStrings.attack_before_22) && config[ConfigStrings.attack_before_22].ToLower().Equals("true");
             bool city_event = config.ContainsKey("city_event") && config["city_event"].ToLower().Equals("true");
             bool nation_event = config.ContainsKey("nation_event") && config["nation_event"].ToLower().Equals("true");
             bool gongjian = config.ContainsKey("gongjian") && config["gongjian"].ToLower().Equals("true");
@@ -972,11 +973,17 @@ namespace com.lover.astd.common.logicexe.battle
                 transfer_cd = this._next_move_exetime - this._factory.TmrMgr.TimeStamp;
             }
 
+            DateTime now = this._factory.TmrMgr.DateTimeNow;
+
             //决斗
             long juedou_exetime = 300000;//5分钟
             if (auto_juedou)
             {
-                if (this._factory.TmrMgr.TimeStamp >= this._next_daoju_exetime)
+                if (attack_before_22 && (now.Hour >= 22 || now.Hour <= 5))
+                {
+                    juedou_exetime = next_day();
+                }
+                else if (this._factory.TmrMgr.TimeStamp >= this._next_daoju_exetime)
                 {
                     juedou_exetime = do_juedou_attack(min_level, max_level);
                     this._next_daoju_exetime = this._factory.TmrMgr.TimeStamp + juedou_exetime;
@@ -992,7 +999,11 @@ namespace com.lover.astd.common.logicexe.battle
             bool is_moving = areaInfo != null;
             if (enable_attack)
             {
-                if (this._factory.TmrMgr.TimeStamp >= this._next_attack_exetime)
+                if (attack_before_22 && (now.Hour >= 22 || now.Hour <= 5))
+                {
+                    attack_exetime = next_day();
+                }
+                else if (this._factory.TmrMgr.TimeStamp >= this._next_attack_exetime)
                 {
                     attack_exetime = this.do_normal_attack(is_moving);
                     this._next_attack_exetime = this._factory.TmrMgr.TimeStamp + attack_exetime;

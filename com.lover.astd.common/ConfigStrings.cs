@@ -501,5 +501,7 @@ namespace com.lover.astd.common
         public const string weave_item = "weave_item";
 
         public const string ticket_bighero = "ticket_bighero";
+
+        public const string attack_before_22 = "attack_before_22";
 	}
 }

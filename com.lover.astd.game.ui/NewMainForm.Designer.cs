@@ -69,6 +69,7 @@ namespace com.lover.astd.game.ui
             this.chk_kfzb_market_ignore = new System.Windows.Forms.CheckBox();
             this.chk_kfzb_market = new System.Windows.Forms.CheckBox();
             this.chk_crossplatm_compete = new System.Windows.Forms.CheckBox();
+            this.num_ticket_bighero = new System.Windows.Forms.NumericUpDown();
             this.notify_icon = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -254,6 +255,7 @@ namespace com.lover.astd.game.ui
             this.col_level_building = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.chk_building_enable = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label76 = new System.Windows.Forms.Label();
             this.num_get_baoshi_stone = new System.Windows.Forms.NumericUpDown();
             this.chk_get_baoshi_stone = new System.Windows.Forms.CheckBox();
             this.chk_secretary_giftbox = new System.Windows.Forms.CheckBox();
@@ -470,10 +472,10 @@ namespace com.lover.astd.game.ui
             this.lbl_playerinfo = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lbl_time = new System.Windows.Forms.Label();
-            this.label76 = new System.Windows.Forms.Label();
-            this.num_ticket_bighero = new System.Windows.Forms.NumericUpDown();
+            this.chk_attack_before_22 = new System.Windows.Forms.CheckBox();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_ticket_bighero)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.mainTab.SuspendLayout();
             this.gamePage.SuspendLayout();
@@ -580,7 +582,6 @@ namespace com.lover.astd.game.ui
             ((System.ComponentModel.ISupportInitialize)(this.num_kf_banquet_buygold)).BeginInit();
             this.logPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.subBrowser)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.num_ticket_bighero)).BeginInit();
             this.SuspendLayout();
             // 
             // mainMenu
@@ -601,76 +602,76 @@ namespace com.lover.astd.game.ui
             this.menu_lua});
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.Name = "mainMenu";
-            this.mainMenu.Size = new System.Drawing.Size(1064, 25);
+            this.mainMenu.Size = new System.Drawing.Size(1064, 24);
             this.mainMenu.TabIndex = 2;
             // 
             // menu_login
             // 
             this.menu_login.Name = "menu_login";
-            this.menu_login.Size = new System.Drawing.Size(44, 21);
+            this.menu_login.Size = new System.Drawing.Size(45, 20);
             this.menu_login.Text = "登录";
             this.menu_login.Click += new System.EventHandler(this.menu_login_Click);
             // 
             // menu_init
             // 
             this.menu_init.Name = "menu_init";
-            this.menu_init.Size = new System.Drawing.Size(68, 21);
+            this.menu_init.Size = new System.Drawing.Size(71, 20);
             this.menu_init.Text = "读取数据";
             this.menu_init.Click += new System.EventHandler(this.menu_init_Click);
             // 
             // menu_saveSettings
             // 
             this.menu_saveSettings.Name = "menu_saveSettings";
-            this.menu_saveSettings.Size = new System.Drawing.Size(68, 21);
+            this.menu_saveSettings.Size = new System.Drawing.Size(71, 20);
             this.menu_saveSettings.Text = "保存设置";
             this.menu_saveSettings.Click += new System.EventHandler(this.menu_saveSettings_Click);
             // 
             // menu_relogin
             // 
             this.menu_relogin.Name = "menu_relogin";
-            this.menu_relogin.Size = new System.Drawing.Size(68, 21);
+            this.menu_relogin.Size = new System.Drawing.Size(71, 20);
             this.menu_relogin.Text = "重新登录";
             this.menu_relogin.Click += new System.EventHandler(this.menu_relogin_Click);
             // 
             // menu_refresh
             // 
             this.menu_refresh.Name = "menu_refresh";
-            this.menu_refresh.Size = new System.Drawing.Size(68, 21);
+            this.menu_refresh.Size = new System.Drawing.Size(71, 20);
             this.menu_refresh.Text = "刷新界面";
             this.menu_refresh.Click += new System.EventHandler(this.menu_refresh_Click);
             // 
             // menu_startServer
             // 
             this.menu_startServer.Name = "menu_startServer";
-            this.menu_startServer.Size = new System.Drawing.Size(68, 21);
+            this.menu_startServer.Size = new System.Drawing.Size(71, 20);
             this.menu_startServer.Text = "开始挂机";
             this.menu_startServer.Click += new System.EventHandler(this.menu_startServer_Click);
             // 
             // menu_stopServer
             // 
             this.menu_stopServer.Name = "menu_stopServer";
-            this.menu_stopServer.Size = new System.Drawing.Size(68, 21);
+            this.menu_stopServer.Size = new System.Drawing.Size(71, 20);
             this.menu_stopServer.Text = "停止挂机";
             this.menu_stopServer.Click += new System.EventHandler(this.menu_stopServer_Click);
             // 
             // menu_clearLog
             // 
             this.menu_clearLog.Name = "menu_clearLog";
-            this.menu_clearLog.Size = new System.Drawing.Size(68, 21);
+            this.menu_clearLog.Size = new System.Drawing.Size(71, 20);
             this.menu_clearLog.Text = "清空日志";
             this.menu_clearLog.Click += new System.EventHandler(this.menu_clearLog_Click);
             // 
             // menu_exit
             // 
             this.menu_exit.Name = "menu_exit";
-            this.menu_exit.Size = new System.Drawing.Size(44, 21);
+            this.menu_exit.Size = new System.Drawing.Size(45, 20);
             this.menu_exit.Text = "退出";
             this.menu_exit.Click += new System.EventHandler(this.menu_exit_Click);
             // 
             // menu_test
             // 
             this.menu_test.Name = "menu_test";
-            this.menu_test.Size = new System.Drawing.Size(41, 21);
+            this.menu_test.Size = new System.Drawing.Size(38, 20);
             this.menu_test.Text = "test";
             this.menu_test.Click += new System.EventHandler(this.menu_test_Click);
             // 
@@ -683,55 +684,55 @@ namespace com.lover.astd.game.ui
             this.menu_protocol_viewer,
             this.练将计算器ToolStripMenuItem});
             this.menu_more.Name = "menu_more";
-            this.menu_more.Size = new System.Drawing.Size(53, 21);
+            this.menu_more.Size = new System.Drawing.Size(54, 20);
             this.menu_more.Text = "更多...";
             // 
             // menu_default
             // 
             this.menu_default.Name = "menu_default";
-            this.menu_default.Size = new System.Drawing.Size(177, 22);
+            this.menu_default.Size = new System.Drawing.Size(183, 22);
             this.menu_default.Text = "默认设置";
             this.menu_default.Click += new System.EventHandler(this.menu_default_Click);
             // 
             // menu_hideGame
             // 
             this.menu_hideGame.Name = "menu_hideGame";
-            this.menu_hideGame.Size = new System.Drawing.Size(177, 22);
+            this.menu_hideGame.Size = new System.Drawing.Size(183, 22);
             this.menu_hideGame.Text = "隐藏/显示游戏界面";
             this.menu_hideGame.Click += new System.EventHandler(this.menu_hideGame_Click);
             // 
             // menu_reportViewer
             // 
             this.menu_reportViewer.Name = "menu_reportViewer";
-            this.menu_reportViewer.Size = new System.Drawing.Size(177, 22);
+            this.menu_reportViewer.Size = new System.Drawing.Size(183, 22);
             this.menu_reportViewer.Text = "战报分析器";
             this.menu_reportViewer.Click += new System.EventHandler(this.menu_reportViewer_Click);
             // 
             // menu_protocol_viewer
             // 
             this.menu_protocol_viewer.Name = "menu_protocol_viewer";
-            this.menu_protocol_viewer.Size = new System.Drawing.Size(177, 22);
+            this.menu_protocol_viewer.Size = new System.Drawing.Size(183, 22);
             this.menu_protocol_viewer.Text = "协议分析器";
             this.menu_protocol_viewer.Click += new System.EventHandler(this.menu_protocol_viewer_Click);
             // 
             // 练将计算器ToolStripMenuItem
             // 
             this.练将计算器ToolStripMenuItem.Name = "练将计算器ToolStripMenuItem";
-            this.练将计算器ToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.练将计算器ToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
             this.练将计算器ToolStripMenuItem.Text = "练将计算器";
             this.练将计算器ToolStripMenuItem.Click += new System.EventHandler(this.menu_train_hero_Click);
             // 
             // menu_about
             // 
             this.menu_about.Name = "menu_about";
-            this.menu_about.Size = new System.Drawing.Size(44, 21);
+            this.menu_about.Size = new System.Drawing.Size(45, 20);
             this.menu_about.Text = "关于";
             this.menu_about.Click += new System.EventHandler(this.menu_about_Click);
             // 
             // menu_lua
             // 
             this.menu_lua.Name = "menu_lua";
-            this.menu_lua.Size = new System.Drawing.Size(61, 21);
+            this.menu_lua.Size = new System.Drawing.Size(61, 20);
             this.menu_lua.Text = "刷新lua";
             this.menu_lua.Click += new System.EventHandler(this.menu_lua_Click);
             // 
@@ -904,6 +905,19 @@ namespace com.lover.astd.game.ui
             this.chk_crossplatm_compete.Text = "争霸赛献花,如果支持所需金币≤";
             this.tip_msg.SetToolTip(this.chk_crossplatm_compete, "级别高+6分, 攻方+2分, 每次复仇+1分, 支持分高的, 如果分一样则支持攻方");
             this.chk_crossplatm_compete.UseVisualStyleBackColor = true;
+            // 
+            // num_ticket_bighero
+            // 
+            this.num_ticket_bighero.Location = new System.Drawing.Point(151, 223);
+            this.num_ticket_bighero.Maximum = new decimal(new int[] {
+            999999999,
+            0,
+            0,
+            0});
+            this.num_ticket_bighero.Name = "num_ticket_bighero";
+            this.num_ticket_bighero.Size = new System.Drawing.Size(46, 21);
+            this.num_ticket_bighero.TabIndex = 30;
+            this.tip_msg.SetToolTip(this.num_ticket_bighero, "0为不大祭祀");
             // 
             // notify_icon
             // 
@@ -2426,6 +2440,7 @@ namespace com.lover.astd.game.ui
             // tabPage7
             // 
             this.tabPage7.BackColor = System.Drawing.Color.DarkSeaGreen;
+            this.tabPage7.Controls.Add(this.chk_attack_before_22);
             this.tabPage7.Controls.Add(this.combo_jailwork_type);
             this.tabPage7.Controls.Add(this.chk_juedou);
             this.tabPage7.Controls.Add(this.label67);
@@ -2762,7 +2777,7 @@ namespace com.lover.astd.game.ui
             // chk_attack_player_move_tokenfull
             // 
             this.chk_attack_player_move_tokenfull.AutoSize = true;
-            this.chk_attack_player_move_tokenfull.Location = new System.Drawing.Point(69, 33);
+            this.chk_attack_player_move_tokenfull.Location = new System.Drawing.Point(96, 31);
             this.chk_attack_player_move_tokenfull.Name = "chk_attack_player_move_tokenfull";
             this.chk_attack_player_move_tokenfull.Size = new System.Drawing.Size(72, 16);
             this.chk_attack_player_move_tokenfull.TabIndex = 9;
@@ -3136,6 +3151,15 @@ namespace com.lover.astd.game.ui
             this.groupBox4.TabIndex = 3;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "小秘书";
+            // 
+            // label76
+            // 
+            this.label76.AutoSize = true;
+            this.label76.Location = new System.Drawing.Point(47, 228);
+            this.label76.Name = "label76";
+            this.label76.Size = new System.Drawing.Size(101, 12);
+            this.label76.TabIndex = 31;
+            this.label76.Text = "大将令兑换点券≤";
             // 
             // num_get_baoshi_stone
             // 
@@ -3649,7 +3673,7 @@ namespace com.lover.astd.game.ui
             this.setPage2.Location = new System.Drawing.Point(4, 22);
             this.setPage2.Name = "setPage2";
             this.setPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.setPage2.Size = new System.Drawing.Size(1156, 607);
+            this.setPage2.Size = new System.Drawing.Size(1052, 607);
             this.setPage2.TabIndex = 3;
             this.setPage2.Text = "设置2";
             // 
@@ -5596,7 +5620,7 @@ namespace com.lover.astd.game.ui
             this.logPage.Location = new System.Drawing.Point(4, 22);
             this.logPage.Name = "logPage";
             this.logPage.Padding = new System.Windows.Forms.Padding(3);
-            this.logPage.Size = new System.Drawing.Size(1156, 607);
+            this.logPage.Size = new System.Drawing.Size(1052, 607);
             this.logPage.TabIndex = 1;
             this.logPage.Text = "日志";
             this.logPage.UseVisualStyleBackColor = true;
@@ -5725,27 +5749,15 @@ namespace com.lover.astd.game.ui
             this.lbl_time.Size = new System.Drawing.Size(0, 12);
             this.lbl_time.TabIndex = 8;
             // 
-            // label76
+            // chk_attack_before_22
             // 
-            this.label76.AutoSize = true;
-            this.label76.Location = new System.Drawing.Point(47, 228);
-            this.label76.Name = "label76";
-            this.label76.Size = new System.Drawing.Size(101, 12);
-            this.label76.TabIndex = 31;
-            this.label76.Text = "大将令兑换点券≤";
-            // 
-            // num_ticket_bighero
-            // 
-            this.num_ticket_bighero.Location = new System.Drawing.Point(151, 223);
-            this.num_ticket_bighero.Maximum = new decimal(new int[] {
-            999999999,
-            0,
-            0,
-            0});
-            this.num_ticket_bighero.Name = "num_ticket_bighero";
-            this.num_ticket_bighero.Size = new System.Drawing.Size(46, 21);
-            this.num_ticket_bighero.TabIndex = 30;
-            this.tip_msg.SetToolTip(this.num_ticket_bighero, "0为不大祭祀");
+            this.chk_attack_before_22.AutoSize = true;
+            this.chk_attack_before_22.Location = new System.Drawing.Point(6, 31);
+            this.chk_attack_before_22.Name = "chk_attack_before_22";
+            this.chk_attack_before_22.Size = new System.Drawing.Size(84, 16);
+            this.chk_attack_before_22.TabIndex = 63;
+            this.chk_attack_before_22.Text = "10点后消息";
+            this.chk_attack_before_22.UseVisualStyleBackColor = true;
             // 
             // NewMainForm
             // 
@@ -5766,6 +5778,7 @@ namespace com.lover.astd.game.ui
             this.mainMenu.ResumeLayout(false);
             this.mainMenu.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_ticket_bighero)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
             this.mainTab.ResumeLayout(false);
             this.gamePage.ResumeLayout(false);
@@ -5905,7 +5918,6 @@ namespace com.lover.astd.game.ui
             this.logPage.ResumeLayout(false);
             this.logPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.subBrowser)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.num_ticket_bighero)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -6354,6 +6366,7 @@ namespace com.lover.astd.game.ui
         public System.Windows.Forms.ComboBox combo_movable_weave_like;
         private System.Windows.Forms.Label label76;
         public System.Windows.Forms.NumericUpDown num_ticket_bighero;
+        public System.Windows.Forms.CheckBox chk_attack_before_22;
 
     }
 }
