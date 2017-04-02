@@ -22,6 +22,10 @@ namespace com.lover.astd.common.logic
         /// 雪地通商
         /// </summary>
         private ActivitySnowTrading snowTrading_;
+        /// <summary>
+        /// 草船借箭
+        /// </summary>
+        private BorrowingArrowsEvent borrowingArrows_;
 
         public class KfzbItem
         {
@@ -283,6 +287,7 @@ namespace com.lover.astd.common.logic
             this._tmrMgr = tmrMgr;
             this._factory = factory;
             snowTrading_ = new ActivitySnowTrading(tmrMgr, factory);
+            borrowingArrows_ = new BorrowingArrowsEvent(tmrMgr, factory);
         }
 
         private bool doSilverFlopStep(char[,] s, int pos)
@@ -10025,6 +10030,13 @@ namespace com.lover.astd.common.logic
         public int snowTradingGetSnowTradingInfo(ProtocolMgr protocol, ILogger logger, User user, int buyroundcostlimit, int goldavailable, bool isreinforce, int reinforcecostlimit)
         {
             return snowTrading_.getSnowTradingInfo(protocol, logger, user, buyroundcostlimit, goldavailable, isreinforce, reinforcecostlimit);
+        }
+        #endregion
+
+        #region 草船借箭
+        public long borrowingArrowsExecute(ProtocolMgr protocol, ILogger logger, User user, int goldavailable, int buyboatcostlimit, bool calculatestream, int calculatestreamcostlimit, int costlimit, float percent)
+        {
+            return borrowingArrows_.execute(protocol, logger, user, goldavailable, buyboatcostlimit, calculatestream, calculatestreamcostlimit, costlimit, percent);
         }
         #endregion
 

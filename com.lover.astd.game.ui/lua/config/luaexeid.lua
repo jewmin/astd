@@ -13,4 +13,5 @@ LuaExeId =
   eSpecialEquip = 10, -- 铸造
   eZhuge = 11, -- 潜能淬炼
   eTech = 12, -- 新科技
+  eBorrowingArrows = 13, -- 草船借箭
 }

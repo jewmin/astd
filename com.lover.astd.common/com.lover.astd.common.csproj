@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="activity\ActivitySnowTrading.cs" />
+    <Compile Include="activity\BorrowingArrowsEvent.cs" />
     <Compile Include="ClientCache.cs" />
     <Compile Include="CommonReceiver.cs" />
     <Compile Include="ConfigStrings.cs" />

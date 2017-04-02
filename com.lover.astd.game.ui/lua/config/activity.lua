@@ -76,3 +76,17 @@ snowTradingConfig =
   -- 加固雪橇费用
   reinforcecost = 20,
 }
+
+borrowingArrowsConfig =
+{
+  -- 发船费用
+  buyboatcostlimit = 5,
+  -- 是否使用神机妙算
+  calculatestream = false,
+  -- 神机妙算费用
+  calculatestreamcostlimit = 20,
+  -- 邀功费用
+  costlimit = 150000,
+  -- 承重百分比
+  percent = 0.8,
+}

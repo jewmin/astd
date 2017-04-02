@@ -14,5 +14,5 @@ equipConfig =
   tech_availablebintie = 100000,
 
   -- 新科技研究消耗镔铁上限
-  tech_consumebintie = 500,
+  tech_consumebintie = 50,
 }
