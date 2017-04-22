@@ -14,6 +14,7 @@ namespace com.lover.astd.common.model
         private int exp_;
         private int max_exp_;
         private int pos_;
+        private int change_;
         private int index_;
         /// <summary>
         /// 武将等级
@@ -70,6 +71,14 @@ namespace com.lover.astd.common.model
         {
             get { return pos_; }
             set { pos_ = value; }
+        }
+        /// <summary>
+        /// 大将晋升
+        /// </summary>
+        public int Change
+        {
+            get { return change_; }
+            set { change_ = value; }
         }
         /// <summary>
         /// 优先级

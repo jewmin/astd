@@ -6388,7 +6388,7 @@ namespace com.lover.astd.common.logic
             return list;
         }
 
-        public int handleRefineInfo(EquipMgr equipMgr, ProtocolMgr protocol, ILogger logger, User user, double goldPerGem, int gold_available, int reserve_count, bool do_tired_refine = false)
+        public int handleRefineInfo(EquipMgr equipMgr, ProtocolMgr protocol, ILogger logger, User user, double goldPerGem, int gold_available, int reserve_count, bool do_tired_refine = false, bool do_high_refine = false)
         {
             if (user.Level < 130)
             {
@@ -6552,6 +6552,11 @@ namespace com.lover.astd.common.logic
                             {
                                 return 0;
                             }
+                        }
+                        else if (do_high_refine)
+                        {
+                            base.logInfo(logger, string.Format("余料: {0}/{1} 当前精炼队伍: {2} {3} {4}", refinenum, maxrefinenum, refinerList[0].Color, refinerList[1].Color, refinerList[2].Color));
+                            return this.refine(protocol, logger);
                         }
                         return 2;
                     }

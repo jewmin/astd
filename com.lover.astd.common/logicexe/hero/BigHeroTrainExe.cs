@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Text;
 using com.lover.astd.common.model;
+using com.lover.astd.common.logic;
 
 namespace com.lover.astd.common.logicexe.hero
 {
     public class BigHeroTrainExe : ExeBase
     {
+        private const int change_big_level_ = 100;
         private int max_big_level_;
         private int total_pos_;
+        private BigHeroMgr mgr_;
         public BigHeroTrainExe()
 		{
 			this._name = ConfigStrings.S_BigHeroTrain;
@@ -17,8 +20,9 @@ namespace com.lover.astd.common.logicexe.hero
 
         public void getAllBigGenerals()
         {
-            _factory.getBigHeroManager().getAllBigGenerals(_proto, _logger);
-            _factory.getBigHeroManager().getBigTrainInfo(_proto, _logger, out max_big_level_, out total_pos_);
+            mgr_ = _factory.getBigHeroManager();
+            mgr_.getAllBigGenerals(_proto, _logger);
+            mgr_.getBigTrainInfo(_proto, _logger, out max_big_level_, out total_pos_);
         }
 
         public override void init_data()
@@ -34,35 +38,52 @@ namespace com.lover.astd.common.logicexe.hero
                 return an_hour_later();
             }
             getAllBigGenerals();
-            List<BigHero> heros = _factory.getBigHeroManager().heros_;
+            List<BigHero> heros = mgr_.heros_;
             heros.Sort();
             foreach (BigHero hero in heros)
             {
+                bool canChange = max_big_level_ >= change_big_level_ && hero.BigLevel >= max_big_level_;
                 if (hero.Big == 0)
                 {
-                    if (_factory.getBigHeroManager().toBigGeneral(_proto, _logger, hero.Id))
+                    if (mgr_.toBigGeneral(_proto, _logger, hero.Id))
                     {
                         logInfo(string.Format("{0} 转成大将", hero.Name));
                     }
-                    continue;
-                }
-                if (hero.BigLevel >= max_big_level_)
-                {
                     continue;
                 }
                 if (hero.TuFei <= 0)
                 {
                     continue;
                 }
-                if (!_factory.getBigHeroManager().startBigTrain(_proto, _logger, 1, hero.Id))
+                if (!mgr_.startBigTrain(_proto, _logger, 1, hero.Id))
                 {
                     continue;
                 }
-                logInfo(string.Format("开始训练大将 {0}", hero.Name));
+                if (canChange && hero.Change == 0)
+                {
+                    if (mgr_.bigGeneralChange(_proto, _logger, hero.Id))
+                    {
+                        logInfo(string.Format("大将【{0}】Lv.{1}晋升", hero.Name, hero.BigLevel));
+                    }
+                }
+                logInfo(string.Format("开始大将{0} {1}", canChange ? "突破" : "突飞", hero.Name));
                 int use_tu_fei = 0;
+                int cost = 0;
                 while (hero.TuFei > 0)
                 {
-                    if (_factory.getBigHeroManager().fastTrainBigGeneral(_proto, _logger, hero.Id))
+                    if (canChange)
+                    {
+                        if (mgr_.newTrainBigGeneral(_proto, _logger, hero.Id, out cost))
+                        {
+                            use_tu_fei += cost;
+                            hero.TuFei -= cost;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    else if (mgr_.fastTrainBigGeneral(_proto, _logger, hero.Id))
                     {
                         use_tu_fei++;
                         hero.TuFei--;
@@ -74,7 +95,7 @@ namespace com.lover.astd.common.logicexe.hero
                 }
                 if (use_tu_fei > 0)
                 {
-                    logInfo(string.Format("使用{0}个大将令突飞大将 {1}", use_tu_fei, hero.Name));
+                    logInfo(string.Format("使用{0}个大将令对大将【{1}】进行{2}", use_tu_fei, hero.Name, canChange ? "突破" : "突飞"));
                 }
             }
             getAllBigGenerals();

@@ -113,6 +113,8 @@
     <Compile Include="logicexe\temp\JuedouExe.cs" />
     <Compile Include="logicexe\temp\OpenAllTrainerExe.cs" />
     <Compile Include="logicexe\temp\RawStoneExe.cs" />
+    <Compile Include="logicexe\temp\RefineExe.cs" />
+    <Compile Include="logicexe\temp\TechnologyExe.cs" />
     <Compile Include="logicexe\temp\TempExeBase.cs" />
     <Compile Include="logicexe\temp\TicketExchangeExe.cs" />
     <Compile Include="logicexe\secretary\SecretaryExe.cs" />

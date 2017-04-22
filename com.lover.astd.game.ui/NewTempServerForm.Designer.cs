@@ -70,8 +70,15 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.btn_doRefine = new System.Windows.Forms.Button();
             this.btn_hongbao = new System.Windows.Forms.Button();
             this.btn_juedou = new System.Windows.Forms.Button();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.technology = new System.Windows.Forms.Button();
+            this.num_bintiecost = new System.Windows.Forms.NumericUpDown();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.num_bintie = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.num_ticketWeapons)).BeginInit();
             this.groupBox4.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -81,6 +88,9 @@
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox6.SuspendLayout();
+            this.groupBox7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_bintiecost)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_bintie)).BeginInit();
             this.SuspendLayout();
             // 
             // btn_ticketWeapon
@@ -532,6 +542,7 @@
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.btn_doRefine);
             this.groupBox6.Controls.Add(this.btn_hongbao);
             this.groupBox6.Controls.Add(this.btn_juedou);
             this.groupBox6.Controls.Add(this.btn_doStore);
@@ -542,6 +553,16 @@
             this.groupBox6.TabIndex = 23;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "其他";
+            // 
+            // btn_doRefine
+            // 
+            this.btn_doRefine.Location = new System.Drawing.Point(6, 13);
+            this.btn_doRefine.Name = "btn_doRefine";
+            this.btn_doRefine.Size = new System.Drawing.Size(61, 23);
+            this.btn_doRefine.TabIndex = 25;
+            this.btn_doRefine.Text = "精炼";
+            this.btn_doRefine.UseVisualStyleBackColor = true;
+            this.btn_doRefine.Click += new System.EventHandler(this.btn_doRefine_Click);
             // 
             // btn_hongbao
             // 
@@ -563,11 +584,98 @@
             this.btn_juedou.UseVisualStyleBackColor = true;
             this.btn_juedou.Click += new System.EventHandler(this.btn_juedou_Click);
             // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.num_bintie);
+            this.groupBox7.Controls.Add(this.technology);
+            this.groupBox7.Controls.Add(this.num_bintiecost);
+            this.groupBox7.Controls.Add(this.label11);
+            this.groupBox7.Controls.Add(this.label12);
+            this.groupBox7.Location = new System.Drawing.Point(614, 38);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(259, 90);
+            this.groupBox7.TabIndex = 20;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "新科技";
+            // 
+            // technology
+            // 
+            this.technology.Location = new System.Drawing.Point(201, 60);
+            this.technology.Name = "technology";
+            this.technology.Size = new System.Drawing.Size(52, 23);
+            this.technology.TabIndex = 12;
+            this.technology.Text = "开始";
+            this.technology.UseVisualStyleBackColor = true;
+            this.technology.Click += new System.EventHandler(this.technology_Click);
+            // 
+            // num_bintiecost
+            // 
+            this.num_bintiecost.Location = new System.Drawing.Point(81, 60);
+            this.num_bintiecost.Maximum = new decimal(new int[] {
+            500000,
+            0,
+            0,
+            0});
+            this.num_bintiecost.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.num_bintiecost.Name = "num_bintiecost";
+            this.num_bintiecost.Size = new System.Drawing.Size(114, 21);
+            this.num_bintiecost.TabIndex = 11;
+            this.num_bintiecost.Value = new decimal(new int[] {
+            300,
+            0,
+            0,
+            0});
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(9, 64);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(65, 12);
+            this.label11.TabIndex = 10;
+            this.label11.Text = "消耗限制：";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(10, 37);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(65, 12);
+            this.label12.TabIndex = 8;
+            this.label12.Text = "保留镔铁：";
+            // 
+            // num_bintie
+            // 
+            this.num_bintie.Location = new System.Drawing.Point(81, 33);
+            this.num_bintie.Maximum = new decimal(new int[] {
+            500000,
+            0,
+            0,
+            0});
+            this.num_bintie.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.num_bintie.Name = "num_bintie";
+            this.num_bintie.Size = new System.Drawing.Size(114, 21);
+            this.num_bintie.TabIndex = 13;
+            this.num_bintie.Value = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            // 
             // NewTempServerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(614, 342);
+            this.ClientSize = new System.Drawing.Size(878, 342);
+            this.Controls.Add(this.groupBox7);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox1);
@@ -592,6 +700,10 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox6.ResumeLayout(false);
+            this.groupBox7.ResumeLayout(false);
+            this.groupBox7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_bintiecost)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_bintie)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -642,5 +754,12 @@
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.Button btn_juedou;
         private System.Windows.Forms.Button btn_hongbao;
+        private System.Windows.Forms.Button btn_doRefine;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.NumericUpDown num_bintie;
+        private System.Windows.Forms.Button technology;
+        private System.Windows.Forms.NumericUpDown num_bintiecost;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label12;
     }
 }

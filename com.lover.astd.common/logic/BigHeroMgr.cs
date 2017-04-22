@@ -168,6 +168,11 @@ namespace com.lover.astd.common.logic
                             {
                                 hero.TuFei = int.Parse(xmlNode4.InnerText);
                             }
+                            xmlNode4 = xmlNode2.SelectSingleNode("change");
+                            if (xmlNode4 != null)
+                            {
+                                hero.Change = int.Parse(xmlNode4.InnerText);
+                            }
                         }
                     }
                 }
@@ -225,6 +230,48 @@ namespace com.lover.astd.common.logic
             if (xml == null || !xml.CmdSucceed)
             {
                 return false;
+            }
+            return true;
+        }
+        /// <summary>
+        /// 大将晋升
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="logger"></param>
+        /// <param name="generalId"></param>
+        /// <returns></returns>
+        public bool bigGeneralChange(ProtocolMgr protocol, ILogger logger, int generalId)
+        {
+            string url = "/root/general!bigGeneralChange.action";
+            string data = string.Format("generalId={0}", generalId);
+            ServerResult xml = protocol.postXml(url, data, "大将晋升");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return false;
+            }
+            return true;
+        }
+        /// <summary>
+        /// 大将突破
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="logger"></param>
+        /// <param name="generalId"></param>
+        /// <returns></returns>
+        public bool newTrainBigGeneral(ProtocolMgr protocol, ILogger logger, int generalId, out int cost)
+        {
+            cost = 0;
+            string url = "/root/general!newTrainBigGeneral.action";
+            string data = string.Format("generalId={0}", generalId);
+            ServerResult xml = protocol.postXml(url, data, "大将突破");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return false;
+            }
+            XmlNode xmlNode = xml.CmdResult.SelectSingleNode("/results/newtufei/cost");
+            if (xmlNode != null)
+            {
+                int.TryParse(xmlNode.InnerText, out cost);
             }
             return true;
         }

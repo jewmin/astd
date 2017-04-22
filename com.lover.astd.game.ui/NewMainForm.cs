@@ -386,6 +386,14 @@ namespace com.lover.astd.game.ui
             {
                 _tempExe = new OpenAllTrainerExe();
             }
+            else if (type.Equals("refine"))
+            {
+                _tempExe = new RefineExe();
+            }
+            else if (type.Equals("technology"))
+            {
+                _tempExe = new TechnologyExe();
+            }
             if (_tempExe == null)
             {
                 return;

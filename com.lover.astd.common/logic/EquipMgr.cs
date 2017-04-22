@@ -2932,14 +2932,27 @@ namespace com.lover.astd.common.logic
                     WarChariot warChariot = new WarChariot();
                     warChariot.fillValues(childNodes);
                     user.Stone = warChariot.Bowlder;
-                    if (user.Stone >= warChariot.Needbowlder)
+                    while (user.Stone < warChariot.Needbowlder)
                     {
-                        if (warChariot.Needtofull > 0 && warChariot.Equipitemnum >= warChariot.Needequipitem && (warChariot.Chuizi > 0 || notChuizi))
+                        if (this._factory.getMiscManager().ticketExchangeWeapon(protocol, logger, 3, "玉石", 10) != 0)
                         {
-                            if (upgradeWarChariot(protocol, logger, warChariot.Chuizi))
-                            {
-                                return 0;
-                            }
+                            return 3;
+                        }
+                        user.Stone += 30000;
+                    }
+                    while (warChariot.Equipitemnum < warChariot.Needequipitem)
+                    {
+                        if (this._factory.getMiscManager().ticketExchangeWeapon(protocol, logger, 17, "蟠龙华盖", 10000) != 0)
+                        {
+                            return 3;
+                        }
+                        warChariot.Equipitemnum += 50000;
+                    }
+                    if (warChariot.Needtofull > 0 && (warChariot.Chuizi > 0 || notChuizi))
+                    {
+                        if (upgradeWarChariot(protocol, logger, warChariot.Chuizi))
+                        {
+                            return 0;
                         }
                     }
                     return 2;
@@ -3164,6 +3177,290 @@ namespace com.lover.astd.common.logic
             }
             return result;
         }
+        #endregion
+
+        #region 猴子套装
+        /*
+         * <results>
+         *  <state>1</state>
+         *  <taozhuang>
+         *      <zhugenum>5</zhugenum>
+         *      <toukuinum>5</toukuinum>
+         *      <toukui>
+         *          <have>1</have>
+         *          <name>无双·百军令</name>
+         *          <pic>baijunling6</pic>
+         *          <intro>军令出，兵戈起，血漂橹，尸填海！</intro>
+         *          <type>1</type>
+         *      </toukui>
+         *      <toukui>
+         *          <have>1</have>
+         *          <name>无双·万军行</name>
+         *          <pic>wanjunxing6</pic>
+         *          <intro>刀剑风中铮铮鸣，飚骑猎猎万军行！万军出，谁争锋？</intro>
+         *          <type>2</type>
+         *      </toukui>
+         *      <toukui>
+         *          <have>1</have>
+         *          <name>无双·春秋史</name>
+         *          <pic>chunqiushi6</pic>
+         *          <intro>文王拘而演周易，仲尼厄而作春秋。</intro>
+         *          <type>3</type>
+         *      </toukui>
+         *      <toukui>
+         *          <have>1</have>
+         *          <name>无双·杀破狼</name>
+         *          <pic>shapolang6</pic>
+         *          <intro>紫薇命格之一，有该命格者多为征战沙场的大将军。</intro>
+         *          <type>4</type>
+         *      </toukui>
+         *      <toukui>
+         *          <have>1</have>
+         *          <name>无双·磐石盔</name>
+         *          <pic>panshikui6</pic>
+         *          <intro>磐石方且厚，千年当不朽。</intro>
+         *          <type>5</type>
+         *      </toukui>
+         *      <tunum>5</tunum>
+         *      <cantomonkey>3</cantomonkey>
+         *      <elitemassacrenum>0,0,0,0,0</elitemassacrenum>
+         *      <tucitydam>40</tucitydam>
+         *      <maxtaozhuanglv>7</maxtaozhuanglv>
+         *  </taozhuang>
+         *  <playerequipdto>
+         *      <equipname>传奇·大圣套装</equipname>
+         *      <canmoli>0</canmoli>
+         *      <generalname>王翦</generalname>
+         *      <enchanting>0</enchanting>
+         *      <bindstatus>0</bindstatus>
+         *      <powerstr>0;0</powerstr>
+         *      <attfull>100000</attfull>
+         *      <deffull>50000</deffull>
+         *      <cbtime>0</cbtime>
+         *      <status>0</status>
+         *      <reallevel>0</reallevel>
+         *      <holelevel>0</holelevel>
+         *      <holeenchanting>0</holeenchanting>
+         *      <attr1>att=27936;def=19658;satt=52954;sdef=33434;stgatt=16584;stgdef=6000;hp=95926</attr1>
+         *      <attr2>att=72040;def=48000;satt=115100;sdef=72020;stgatt=48000;stgdef=24000;hp=120000</attr2>
+         *      <attr3>att=132500;def=95000;satt=195000;sdef=132500;stgatt=95000;stgdef=57500;hp=207500</attr3>
+         *      <composite>908</composite>
+         *      <leaadd>45</leaadd>
+         *      <stradd>42</stradd>
+         *      <intadd>37</intadd>
+         *      <monkeylv>6</monkeylv>
+         *      <lveffect>att=192000;def=128000;satt=320000;sdef=192000;stgatt=128000;stgdef=64000;hp=320000;alldame=0.06;allddame=0.06</lveffect>
+         *      <lvfull>att=72000;def=48000;satt=120000;sdef=72000;stgatt=48000;stgdef=24000;hp=120000</lvfull>
+         *      <canupgrade>0</canupgrade>
+         *      <tickets>400000</tickets>
+         *      <ticketsstatus>3</ticketsstatus>
+         *      <freenum>0</freenum>
+         *      <xuli>2</xuli>
+         *      <maxxuli>3</maxxuli>
+         *      <highnum>0</highnum>
+         *  </playerequipdto>
+         *  <playerequipdto>
+         *      <equipname>史诗·大圣套装</equipname>
+         *      <canmoli>0</canmoli>
+         *      <generalname>荆轲</generalname>
+         *      <enchanting>0</enchanting>
+         *      <bindstatus>0</bindstatus>
+         *      <powerstr>0;0</powerstr>
+         *      <attfull>100000</attfull>
+         *      <deffull>50000</deffull>
+         *      <cbtime>0</cbtime>
+         *      <status>0</status>
+         *      <reallevel>0</reallevel>
+         *      <holelevel>0</holelevel>
+         *      <holeenchanting>0</holeenchanting>
+         *      <attr1>att=27936;def=19658;satt=52954;sdef=33434;stgatt=16584;stgdef=6000;hp=95926</attr1>
+         *      <attr3>att=132500;def=95000;satt=195000;sdef=132500;stgatt=95000;stgdef=57500;hp=207500</attr3>
+         *      <composite>770</composite>
+         *      <leaadd>45</leaadd>
+         *      <stradd>36</stradd>
+         *      <intadd>40</intadd>
+         *      <monkeylv>7</monkeylv>
+         *      <lveffect>att=264000;def=176000;satt=440000;sdef=264000;stgatt=176000;stgdef=88000;hp=440000;alldame=0.07;allddame=0.07</lveffect>
+         *      <lvfull>att=96000;def=64000;satt=160000;sdef=96000;stgatt=64000;stgdef=32000;hp=160000</lvfull>
+         *      <canupgrade>0</canupgrade>
+         *      <tickets>200000</tickets>
+         *      <ticketsstatus>1</ticketsstatus>
+         *      <freenum>3</freenum>
+         *      <xuli>2</xuli>
+         *      <maxxuli>3</maxxuli>
+         *      <highnum>3</highnum>
+         *  </playerequipdto>
+         *  <playerequipdto>
+         *      <equipname>史诗·大圣套装</equipname>
+         *      <canmoli>0</canmoli>
+         *      <generalname>夏桀</generalname>
+         *      <enchanting>0</enchanting>
+         *      <bindstatus>0</bindstatus>
+         *      <powerstr>0;0</powerstr>
+         *      <attfull>100000</attfull>
+         *      <deffull>50000</deffull>
+         *      <cbtime>0</cbtime>
+         *      <status>0</status>
+         *      <reallevel>0</reallevel>
+         *      <holelevel>0</holelevel>
+         *      <holeenchanting>0</holeenchanting>
+         *      <attr1>att=27936;def=19658;satt=52954;sdef=33434;stgatt=16584;stgdef=6000;hp=95926</attr1>
+         *      <attr3>att=132500;def=95000;satt=195000;sdef=132500;stgatt=95000;stgdef=57500;hp=207500</attr3>
+         *      <composite>771</composite>
+         *      <leaadd>47</leaadd>
+         *      <stradd>40</stradd>
+         *      <intadd>39</intadd>
+         *      <monkeylv>7</monkeylv>
+         *      <lveffect>att=264000;def=176000;satt=440000;sdef=264000;stgatt=176000;stgdef=88000;hp=440000;alldame=0.07;allddame=0.07</lveffect>
+         *      <lvfull>att=96000;def=64000;satt=160000;sdef=96000;stgatt=64000;stgdef=32000;hp=160000</lvfull>
+         *      <canupgrade>0</canupgrade>
+         *      <tickets>200000</tickets>
+         *      <ticketsstatus>1</ticketsstatus>
+         *      <freenum>3</freenum>
+         *      <xuli>0</xuli>
+         *      <maxxuli>3</maxxuli>
+         *      <highnum>20</highnum>
+         *  </playerequipdto>
+         *  <playerequipdto>
+         *      <equipname>史诗·大圣套装</equipname>
+         *      <canmoli>0</canmoli>
+         *      <generalname>秦始皇</generalname>
+         *      <enchanting>0</enchanting>
+         *      <bindstatus>0</bindstatus>
+         *      <powerstr>0;0</powerstr>
+         *      <attfull>100000</attfull>
+         *      <deffull>50000</deffull>
+         *      <cbtime>0</cbtime>
+         *      <status>0</status>
+         *      <reallevel>0</reallevel>
+         *      <holelevel>0</holelevel>
+         *      <holeenchanting>0</holeenchanting>
+         *      <attr1>att=27936;def=19658;satt=52954;sdef=33434;stgatt=16584;stgdef=6000;hp=95926</attr1>
+         *      <attr3>att=132500;def=95000;satt=195000;sdef=132500;stgatt=95000;stgdef=57500;hp=207500</attr3>
+         *      <composite>769</composite>
+         *      <leaadd>47</leaadd>
+         *      <stradd>43</stradd>
+         *      <intadd>40</intadd>
+         *      <monkeylv>7</monkeylv>
+         *      <lveffect>att=264000;def=176000;satt=440000;sdef=264000;stgatt=176000;stgdef=88000;hp=440000;alldame=0.07;allddame=0.07</lveffect>
+         *      <lvfull>att=96000;def=64000;satt=160000;sdef=96000;stgatt=64000;stgdef=32000;hp=160000</lvfull>
+         *      <canupgrade>0</canupgrade>
+         *      <tickets>200000</tickets>
+         *      <ticketsstatus>1</ticketsstatus>
+         *      <freenum>3</freenum>
+         *      <xuli>0</xuli>
+         *      <maxxuli>3</maxxuli>
+         *      <highnum>20</highnum>
+         *  </playerequipdto>
+         *  <playerequipdto>
+         *      <equipname>史诗·大圣套装</equipname>
+         *      <canmoli>0</canmoli>
+         *      <generalname>姜子牙</generalname>
+         *      <enchanting>0</enchanting>
+         *      <bindstatus>0</bindstatus>
+         *      <powerstr>0;0</powerstr>
+         *      <attfull>100000</attfull>
+         *      <deffull>50000</deffull>
+         *      <cbtime>0</cbtime>
+         *      <status>0</status>
+         *      <reallevel>0</reallevel>
+         *      <holelevel>0</holelevel>
+         *      <holeenchanting>0</holeenchanting>
+         *      <attr1>att=27936;def=19658;satt=52954;sdef=33434;stgatt=16584;stgdef=6000;hp=95926</attr1>
+         *      <attr3>att=132500;def=95000;satt=195000;sdef=132500;stgatt=95000;stgdef=57500;hp=207500</attr3>
+         *      <composite>846</composite>
+         *      <leaadd>35</leaadd>
+         *      <stradd>44</stradd>
+         *      <intadd>44</intadd>
+         *      <monkeylv>7</monkeylv>
+         *      <lveffect>att=264000;def=176000;satt=440000;sdef=264000;stgatt=176000;stgdef=88000;hp=440000;alldame=0.07;allddame=0.07</lveffect>
+         *      <lvfull>att=96000;def=64000;satt=160000;sdef=96000;stgatt=64000;stgdef=32000;hp=160000</lvfull>
+         *      <canupgrade>0</canupgrade>
+         *      <tickets>200000</tickets>
+         *      <ticketsstatus>1</ticketsstatus>
+         *      <freenum>3</freenum>
+         *      <xuli>2</xuli>
+         *      <maxxuli>3</maxxuli>
+         *      <highnum>12</highnum>
+         *  </playerequipdto>
+         *  <ticketnumber>1892914385</ticketnumber>
+         *  <officerlist>
+         *      <officer><playerid>270431</playerid><playername>﹏遊龍天瀑</playername><pos>0</pos><nation>3</nation><playerlevel>438</playerlevel><ratio>46.00</ratio></officer>
+         *      <officer><playerid>333140</playerid><playername>pong</playername><pos>1</pos><nation>3</nation><playerlevel>436</playerlevel><ratio>36.60</ratio></officer>
+         *      <officer><playerid>120537</playerid><playername>烈长空</playername><pos>1</pos><nation>3</nation><playerlevel>430</playerlevel><ratio>36.00</ratio></officer>
+         *      <officer><playerid>377699</playerid><playername>我靠你是猪</playername><pos>1</pos><nation>3</nation><playerlevel>430</playerlevel><ratio>36.00</ratio></officer>
+         *      <officer><playerid>135576</playerid><playername>佩恩</playername><pos>1</pos><nation>3</nation><playerlevel>440</playerlevel><ratio>37.00</ratio></officer>
+         *      <officer><playerid>277444</playerid><playername>卍丶乱世</playername><pos>2</pos><nation>3</nation><playerlevel>418</playerlevel><ratio>26.10</ratio></officer>
+         *      <officer><playerid>318904</playerid><playername>宣战。风云</playername><pos>2</pos><nation>3</nation><playerlevel>410</playerlevel><ratio>25.50</ratio></officer>
+         *      <officer><playerid>120666</playerid><playername>无双☆圣经</playername><pos>2</pos><nation>3</nation><playerlevel>422</playerlevel><ratio>26.40</ratio></officer>
+         *      <officer><playerid>106793</playerid><playername>蓝黑军团</playername><pos>2</pos><nation>3</nation><playerlevel>414</playerlevel><ratio>25.80</ratio></officer>
+         *      <officer><playerid>25244</playerid><playername>都梁王</playername><pos>2</pos><nation>3</nation><playerlevel>412</playerlevel><ratio>25.65</ratio></officer>
+         *      <officer><playerid>273772</playerid><playername>江天一色</playername><pos>2</pos><nation>3</nation><playerlevel>424</playerlevel><ratio>26.55</ratio></officer>
+         *      <officer><playerid>358911</playerid><playername>黯之利刃</playername><pos>2</pos><nation>3</nation><playerlevel>418</playerlevel><ratio>26.10</ratio></officer>
+         *      <officer><playerid>294750</playerid><playername>权倾乄君临天下</playername><pos>2</pos><nation>3</nation><playerlevel>408</playerlevel><ratio>25.35</ratio></officer>
+         *      <officer><playerid>219091</playerid><playername>龍皇至尊</playername><pos>2</pos><nation>3</nation><playerlevel>408</playerlevel><ratio>25.35</ratio></officer>
+         *      <officer><playerid>277363</playerid><playername>无双★柳叶刀</playername><pos>2</pos><nation>3</nation><playerlevel>408</playerlevel><ratio>25.35</ratio></officer>
+         *      <officer><playerid>292371</playerid><playername>风飞乐</playername><pos>2</pos><nation>3</nation><playerlevel>394</playerlevel><ratio>24.30</ratio></officer>
+         *      <officer><playerid>96133</playerid><playername>無聊的人</playername><pos>2</pos><nation>3</nation><playerlevel>414</playerlevel><ratio>25.80</ratio></officer>
+         *      <officer><playerid>25813</playerid><playername>大卫</playername><pos>3</pos><nation>3</nation><playerlevel>396</playerlevel><ratio>16.30</ratio></officer>
+         *      <officer><playerid>200494</playerid><playername>真英雄</playername><pos>3</pos><nation>3</nation><playerlevel>408</playerlevel><ratio>16.90</ratio></officer>
+         *      <officer><playerid>225182</playerid><playername>柠乐乐</playername><pos>3</pos><nation>3</nation><playerlevel>380</playerlevel><ratio>15.50</ratio></officer>
+         *      <officer><playerid>22550</playerid><playername>小将</playername><pos>3</pos><nation>3</nation><playerlevel>400</playerlevel><ratio>16.50</ratio></officer>
+         *      <officer><playerid>209458</playerid><playername>水中月</playername><pos>3</pos><nation>3</nation><playerlevel>402</playerlevel><ratio>16.60</ratio></officer>
+         *      <officer><playerid>358820</playerid><playername>红尘ャ诸葛曹操</playername><pos>3</pos><nation>3</nation><playerlevel>394</playerlevel><ratio>16.20</ratio></officer>
+         *      <officer><playerid>344041</playerid><playername>莫追燕</playername><pos>3</pos><nation>3</nation><playerlevel>398</playerlevel><ratio>16.40</ratio></officer>
+         *      <officer><playerid>378576</playerid><playername>渴望传奇</playername><pos>3</pos><nation>3</nation><playerlevel>408</playerlevel><ratio>16.90</ratio></officer>
+         *      <officer><playerid>378459</playerid><playername>上穷碧落</playername><pos>3</pos><nation>3</nation><playerlevel>408</playerlevel><ratio>16.90</ratio></officer>
+         *      <officer><playerid>61818</playerid><playername>太上老君</playername><pos>3</pos><nation>3</nation><playerlevel>388</playerlevel><ratio>15.90</ratio></officer>
+         *      <officer><playerid>282112</playerid><playername>﹏焦嚸★瑝镞三哥</playername><pos>3</pos><nation>3</nation><playerlevel>400</playerlevel><ratio>16.50</ratio></officer>
+         *      <officer><playerid>75087</playerid><playername>和平年代</playername><pos>3</pos><nation>3</nation><playerlevel>386</playerlevel><ratio>15.80</ratio></officer>
+         *      <officer><playerid>199591</playerid><playername>无双★噁貫懑盈</playername><pos>3</pos><nation>3</nation><playerlevel>354</playerlevel><ratio>14.20</ratio></officer>
+         *      <officer><playerid>82468</playerid><playername>龍魂</playername><pos>3</pos><nation>3</nation><playerlevel>406</playerlevel><ratio>16.80</ratio></officer>
+         *      <officer><playerid>84358</playerid><playername>赤发鬼刘唐</playername><pos>3</pos><nation>3</nation><playerlevel>406</playerlevel><ratio>16.80</ratio></officer>
+         *      <officer><playerid>81906</playerid><playername>意绵绵静日玉生香</playername><pos>3</pos><nation>3</nation><playerlevel>386</playerlevel><ratio>15.80</ratio></officer>
+         *      <officer><playerid>122149</playerid><playername>灰诚勿鸟</playername><pos>3</pos><nation>3</nation><playerlevel>384</playerlevel><ratio>15.70</ratio></officer>
+         *      <officer><playerid>282200</playerid><playername>天下无我</playername><pos>3</pos><nation>3</nation><playerlevel>406</playerlevel><ratio>16.80</ratio></officer>
+         *      <officer><playerid>17094</playerid><playername>狮子王</playername><pos>3</pos><nation>3</nation><playerlevel>394</playerlevel><ratio>16.20</ratio></officer>
+         *      <officer><playerid>226494</playerid><playername>咔咔几下</playername><pos>3</pos><nation>3</nation><playerlevel>400</playerlevel><ratio>16.50</ratio></officer>
+         *      <officer><playerid>378542</playerid><playername>主宰メ佑手</playername><pos>3</pos><nation>3</nation><playerlevel>402</playerlevel><ratio>16.60</ratio></officer>
+         *      <officer><playerid>10684</playerid><playername>幻影</playername><pos>3</pos><nation>3</nation><playerlevel>400</playerlevel><ratio>16.50</ratio></officer>
+         *      <officer><playerid>292397</playerid><playername>风飞乐6</playername><pos>3</pos><nation>3</nation><playerlevel>394</playerlevel><ratio>16.20</ratio></officer>
+         *      <officer><playerid>271797</playerid><playername>乱世的英雄</playername><pos>3</pos><nation>3</nation><playerlevel>384</playerlevel><ratio>15.70</ratio></officer>
+         *  </officerlist>
+         *  <hasking>1</hasking>
+         *  <achievement><achid>129</achid><name>灵猴暴击</name><intro>猴套装强化有几率2倍暴击</intro><pic>s126</pic></achievement>
+         *  <achievement><achid>139</achid><name>灵猴进阶·二</name><intro>猴套装开放7级</intro><pic>s136</pic></achievement>
+         *  <achievement><achid>14</achid><name>天铸神兵</name><intro>给诸葛套装打孔，可镶嵌第二颗宝石</intro><pic>s10</pic></achievement>
+         *  <achievement><achid>127</achid><name>免费强化</name><intro>每件猴套装每天可免费强化3次</intro><pic>s124</pic></achievement>
+         *  <achievement><achid>3</achid><name>名匠传说</name><intro>强化装备暴击几率提升(未达到vip3也能获得)</intro><pic>sa2</pic></achievement>
+         *  <achievement><achid>117</achid><name>积少成多·五</name><intro>头盔每天免费强化5次(次日生效)</intro><pic>s114</pic></achievement>
+         *  <card><cardname>强化打折卡</cardname><cardtype>3</cardtype><cardintro>使用后下次强化所需银币减少20%，最多同时拥有5张。</cardintro><effect>equipcopper:0.8</effect><maxnum>5</maxnum><cardnum>0</cardnum><active>0</active></card>
+         *  <card><cardname>强化暴击卡</cardname><cardtype>2</cardtype><cardintro>使用后下次强化成功必定暴击，最多同时拥有5张。</cardintro><effect>equipcrit:2</effect><maxnum>5</maxnum><cardnum>0</cardnum><active>0</active></card>
+         *  <xilian>
+         *      <xilian>2</xilian>
+         *      <colorstate>0</colorstate>
+         *      <baoshixilian>10</baoshixilian>
+         *      <maxlv>5</maxlv>
+         *  </xilian>
+         *  <magic>97</magic>
+         *  <holecopper>3000000</holecopper>
+         *  <magicstate>1</magicstate>
+         *  <cd>-1</cd>
+         *  <cdflag>0</cdflag>
+         *  <canusegold>0</canusegold>
+         *  <cancrip>1</cancrip>
+         *  <cripconsumelv>4</cripconsumelv>
+         *  <isautoass>true</isautoass>
+         *  <limitlv>300</limitlv>
+         *  <canactive>1</canactive>
+         * </results>
+         */
+        //public int getUpgradeInfo(ProtocolMgr protocol, ILogger logger, User user)
+        //{
+        //    string url = "/root/equip!getUpgradeInfo.action";
+        //    ServerResult
+        //    return 0;
+        //}
         #endregion
     }
 }

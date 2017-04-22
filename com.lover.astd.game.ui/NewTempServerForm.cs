@@ -271,5 +271,23 @@ namespace com.lover.astd.game.ui
             _frm.addTempServer("hongbao", conf);
             Close();
         }
+
+        private void btn_doRefine_Click(object sender, EventArgs e)
+        {
+            Dictionary<string, string> conf = new Dictionary<string, string>();
+            _frm.addTempServer("refine", conf);
+            Close();
+        }
+
+        private void technology_Click(object sender, EventArgs e)
+        {
+            int left_bintie = (int)num_bintie.Value;
+            int cost_bintie = (int)num_bintiecost.Value;
+            Dictionary<string, string> dictionary = new Dictionary<string, string>();
+            dictionary.Add("left_bintie", left_bintie.ToString());
+            dictionary.Add("cost_bintie", cost_bintie.ToString());
+            _frm.addTempServer("technology", dictionary);
+            Close();
+        }
     }
 }
