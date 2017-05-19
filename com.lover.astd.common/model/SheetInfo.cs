@@ -112,6 +112,8 @@ namespace com.lover.astd.common.model
             SheetInfo info = obj as SheetInfo;
             if (this.lv > info.lv) return -1;
             else if (this.lv < info.lv) return 1;
+            else if (this.quality > info.quality) return -1;
+            else if (this.quality < info.quality) return 1;
             else return 0;
         }
     }

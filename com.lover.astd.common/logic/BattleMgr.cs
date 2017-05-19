@@ -4396,6 +4396,14 @@ namespace com.lover.astd.common.logic
         }
         #endregion
 
+        #region 屠城
+        /// <summary>
+        /// 屠城
+        /// </summary>
+        /// <param name="proto"></param>
+        /// <param name="logger"></param>
+        /// <param name="user"></param>
+        /// <param name="areaId"></param>
         public void tuCity(ProtocolMgr proto, ILogger logger, User user, int areaId)
         {
             string url = "/root/world!tuCity.action";
@@ -4409,5 +4417,6 @@ namespace com.lover.astd.common.logic
                 logInfo(logger, string.Format("发动屠城，获得宝石+{0}", baoshi));
             }
         }
+        #endregion
     }
 }

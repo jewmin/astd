@@ -2137,6 +2137,58 @@ namespace com.lover.astd.common.logic
         }
 
         #region 跨服竞技场
+        public void getWdMedalGift(ProtocolMgr protocol, ILogger logger)
+        {
+            string url = "/root/kfwd!getWdMedalGift.action";
+            ServerResult xml = protocol.getXml(url, "获取勋章信息");
+            if (xml == null || !xml.CmdSucceed) return;
+
+            XmlNodeList list = xml.CmdResult.SelectNodes("/results/message/medal");
+            if (list == null) return;
+
+            foreach (XmlNode node in list)
+            {
+                bool cangetreward = false;
+                XmlNode node1 = node.SelectSingleNode("cangetreward");
+                if (node1 != null)
+                {
+                    cangetreward = (node1.InnerText == "1");
+                }
+                if (cangetreward)
+                {
+                    XmlNode node2 = node.SelectSingleNode("id");
+                    if (node2 != null)
+                    {
+                        int medalId = int.Parse(node2.InnerText);
+                        if (recvWdMedalGift(protocol, logger, medalId) > 0) break;
+                    }
+                }
+            }
+        }
+
+        public int recvWdMedalGift(ProtocolMgr protocol, ILogger logger, int medalId)
+        {
+            string url = "/root/kfwd!recvWdMedalGift.action";
+            string data = string.Format("medalId={0}", medalId);
+            string text = "领取勋章奖励";
+            ServerResult xml = protocol.postXml(url, data, text);
+            if (xml == null || !xml.CmdSucceed) return 10;
+
+            int baoshilevel = 0, baoshinum = 0;
+            XmlNode node1 = xml.CmdResult.SelectSingleNode("/results/message/baoshi/baoshilevel");
+            if (node1 != null)
+            {
+                int.TryParse(node1.InnerText, out baoshilevel);
+            }
+            XmlNode node2 = xml.CmdResult.SelectSingleNode("/results/message/baoshi/baoshinum");
+            if (node2 != null)
+            {
+                int.TryParse(node2.InnerText, out baoshinum);
+            }
+            logInfo(logger, string.Format("{0}, 宝石lv.{1}+{2}", text, baoshilevel, baoshinum));
+            return 0;
+        }
+
         public int handleKfwdInfo(ProtocolMgr protocol, ILogger logger, int gold_available, out long cdMSeconds)
         {
             int num = 0;
@@ -2163,6 +2215,17 @@ namespace com.lover.astd.common.logic
             else
             {
                 XmlDocument cmdResult = xml.CmdResult;
+                bool scoreticketsreward = false;
+                XmlNode node = cmdResult.SelectSingleNode("/results/message/scoreticketsreward");
+                if (node != null)
+                {
+                    scoreticketsreward = (node.InnerText == "1");
+                }
+                if (scoreticketsreward)
+                {
+                    this.getScoreTicketReward(protocol, logger, false);
+                }
+
                 XmlNode xmlNode = cmdResult.SelectSingleNode("/results/message/winnerinfo");
                 if (xmlNode != null)
                 {
@@ -2374,6 +2437,7 @@ namespace com.lover.astd.common.logic
                 if (cd < 0)
                 {
                     this.getTributeDetail(protocol, logger, buy_reward, openbox, openbox_type, gold_available, isKfPvp);
+                    this.getWdMedalGift(protocol, logger);
                 }
                 return 0;
             }
@@ -10161,22 +10225,58 @@ namespace com.lover.astd.common.logic
         #region 抓年兽
         public int getBombNianInfo(ProtocolMgr protocol, ILogger logger, User user, int cost1, int cost5, int cost10)
         {
-            string url = "/root/bombNianEvent!getBombNianInfo.action";
-            ServerResult xml = protocol.getXml(url, "抓年兽");
-            if (xml != null && xml.CmdSucceed)
+            try
             {
-                AstdLuaObject lua = new AstdLuaObject();
-                lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
-                int niannum = lua.GetIntValue("results.playerbombnianeventinfo.niannum");
-                int nianhp = lua.GetIntValue("results.playerbombnianeventinfo.nianhp");
-                int nianmaxhp = lua.GetIntValue("results.playerbombnianeventinfo.nianmaxhp");
-                int firecrackersnum = lua.GetIntValue("results.playerbombnianeventinfo.firecrackersnum");
-                int stringfirecrackersnum = lua.GetIntValue("results.playerbombnianeventinfo.stringfirecrackersnum");
-                int springthundernum = lua.GetIntValue("results.playerbombnianeventinfo.springthundernum");
-                int niantype = lua.GetIntValue("results.playerbombnianeventinfo.niantype");
-                int firecrackerscost = lua.GetIntValue("results.cost.firecrackerscost");
-                int stringfirecrackerscost = lua.GetIntValue("results.cost.stringfirecrackerscost");
-                int springthundercost = lua.GetIntValue("results.cost.springthundercost");
+                string url = "/root/bombNianEvent!getBombNianInfo.action";
+                ServerResult xml = protocol.getXml(url, "抓年兽");
+                if (xml == null || !xml.CmdSucceed) return 10;
+
+                //logInfo(logger, xml.getDebugInfo());
+                //AstdLuaObject lua = new AstdLuaObject();
+                //lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+                //int niannum = lua.GetIntValue("results.playerbombnianeventinfo.niannum");
+                //int nianhp = lua.GetIntValue("results.playerbombnianeventinfo.nianhp");
+                //int nianmaxhp = lua.GetIntValue("results.playerbombnianeventinfo.nianmaxhp");
+                //int firecrackersnum = lua.GetIntValue("results.playerbombnianeventinfo.firecrackersnum");
+                //int stringfirecrackersnum = lua.GetIntValue("results.playerbombnianeventinfo.stringfirecrackersnum");
+                //int springthundernum = lua.GetIntValue("results.playerbombnianeventinfo.springthundernum");
+                //int niantype = lua.GetIntValue("results.playerbombnianeventinfo.niantype");
+                //int firecrackerscost = lua.GetIntValue("results.cost.firecrackerscost");
+                //int stringfirecrackerscost = lua.GetIntValue("results.cost.stringfirecrackerscost");
+                //int springthundercost = lua.GetIntValue("results.cost.springthundercost");
+                //int niannum = 0, niantype = 0, firecrackersnum = 0, stringfirecrackersnum = 0, springthundernum = 0;
+                int nianhp = 0, nianmaxhp = 0, firecrackerscost = 0, stringfirecrackerscost = 0, springthundercost = 0;
+                XmlNode node = xml.CmdResult.SelectSingleNode("/results/playerbombnianeventinfo/nianhp");
+                if (node != null)
+                {
+                    int.TryParse(node.InnerText, out nianhp);
+                }
+                node = xml.CmdResult.SelectSingleNode("/results/playerbombnianeventinfo/nianhp");
+                if (node != null)
+                {
+                    int.TryParse(node.InnerText, out nianhp);
+                }
+                node = xml.CmdResult.SelectSingleNode("/results/playerbombnianeventinfo/nianmaxhp");
+                if (node != null)
+                {
+                    int.TryParse(node.InnerText, out nianmaxhp);
+                }
+                node = xml.CmdResult.SelectSingleNode("/results/playerbombnianeventinfo/firecrackerscost");
+                if (node != null)
+                {
+                    int.TryParse(node.InnerText, out firecrackerscost);
+                }
+                node = xml.CmdResult.SelectSingleNode("/results/playerbombnianeventinfo/stringfirecrackerscost");
+                if (node != null)
+                {
+                    int.TryParse(node.InnerText, out stringfirecrackerscost);
+                }
+                node = xml.CmdResult.SelectSingleNode("/results/playerbombnianeventinfo/springthundercost");
+                if (node != null)
+                {
+                    int.TryParse(node.InnerText, out springthundercost);
+                }
+
                 float precent = (float)nianhp / (float)nianmaxhp;
                 bool result = false;
                 if (precent >= 0.75)
@@ -10244,13 +10344,15 @@ namespace com.lover.astd.common.logic
                 {
                     result = huntNian(protocol, logger, user);
                 }
-                if (!result)
-                {
-                    return 1;
-                }
+
+                if (!result) return 1;
                 return 0;
             }
-            return 10;
+            catch (Exception ex)
+            {
+                logInfo(logger, string.Format("getBombNianInfo error: {0}", ex.ToString()));
+                return 10;
+            }
         }
 
         public bool bombNian(ProtocolMgr protocol, ILogger logger, User user, int bombType)
@@ -10258,10 +10360,9 @@ namespace com.lover.astd.common.logic
             string url = "/root/bombNianEvent!bombNian.action";
             string data = string.Format("bombType={0}", bombType);
             ServerResult xml = protocol.postXml(url, data, "放鞭炮");
-            if (xml == null || !xml.CmdSucceed)
-            {
-                return false;
-            }
+            if (xml == null || !xml.CmdSucceed) return false;
+
+            logInfo(logger, xml.getDebugInfo());
             AstdLuaObject lua = new AstdLuaObject();
             lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
             int bombattack = lua.GetIntValue("results.bombattack");
@@ -10275,13 +10376,19 @@ namespace com.lover.astd.common.logic
         {
             string url = "/root/bombNianEvent!huntNian.action";
             ServerResult xml = protocol.getXml(url, "抓年兽");
-            if (xml == null || !xml.CmdSucceed)
+            if (xml == null || !xml.CmdSucceed) return false;
+
+            //logInfo(logger, xml.getDebugInfo());
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+            //int huntstate = lua.GetIntValue("results.huntstate");
+            int huntstate = 0;
+            XmlNode node = xml.CmdResult.SelectSingleNode("/results/huntstate");
+            if (node != null)
             {
-                return false;
+                int.TryParse(node.InnerText, out huntstate);
             }
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
-            int huntstate = lua.GetIntValue("results.huntstate");
+            
             if (huntstate == 1)
             {
                 RewardInfo reward = new RewardInfo();

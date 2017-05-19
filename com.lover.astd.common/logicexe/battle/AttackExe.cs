@@ -680,17 +680,17 @@ namespace com.lover.astd.common.logicexe.battle
                 config["not_injail"].ToLower().Equals("true");
             }
             int min_level = 0;
-            int max_level = 0;
+            int max_level = this._user.Level;
             int min_score = 10000;
             int attack_reserve_token = 0;
             if (config.ContainsKey("level_min"))
             {
                 int.TryParse(config["level_min"], out min_level);
             }
-            if (config.ContainsKey("level_max"))
-            {
-                int.TryParse(config["level_max"], out max_level);
-            }
+            //if (config.ContainsKey("level_max"))
+            //{
+            //    int.TryParse(config["level_max"], out max_level);
+            //}
             if (config.ContainsKey("min_score"))
             {
                 int.TryParse(config["min_score"], out min_score);
@@ -893,7 +893,8 @@ namespace com.lover.astd.common.logicexe.battle
             //悬赏
             bool is_doing_cityevent = false;
             long city_exetime = 600000;//10分钟
-            if (city_event && this._user.AttackOrders > 0 && this._user._attack_gongjian_status == -1)//悬赏
+            bool can_juedou = (this._user._attack_battleScore >= 10000);
+            if (can_juedou && city_event && this._user.AttackOrders > 0 && this._user._attack_gongjian_status == -1)//悬赏
             {
                 if (this._factory.TmrMgr.TimeStamp >= this._next_cityevent_exetime)
                 {

@@ -74,11 +74,21 @@
             this.btn_hongbao = new System.Windows.Forms.Button();
             this.btn_juedou = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.num_bintie = new System.Windows.Forms.NumericUpDown();
             this.technology = new System.Windows.Forms.Button();
             this.num_bintiecost = new System.Windows.Forms.NumericUpDown();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
-            this.num_bintie = new System.Windows.Forms.NumericUpDown();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.cb_ticket_item = new System.Windows.Forms.ComboBox();
+            this.num_ticket_num = new System.Windows.Forms.NumericUpDown();
+            this.btn_ticket_exchange = new System.Windows.Forms.Button();
+            this.label15 = new System.Windows.Forms.Label();
+            this.lbl_ticket = new System.Windows.Forms.Label();
+            this.num_ticket_total = new System.Windows.Forms.NumericUpDown();
+            this.label16 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.num_ticketWeapons)).BeginInit();
             this.groupBox4.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -89,8 +99,11 @@
             this.groupBox3.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox7.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.num_bintiecost)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_bintie)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_bintiecost)).BeginInit();
+            this.groupBox8.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_ticket_num)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_ticket_total)).BeginInit();
             this.SuspendLayout();
             // 
             // btn_ticketWeapon
@@ -598,6 +611,28 @@
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "新科技";
             // 
+            // num_bintie
+            // 
+            this.num_bintie.Location = new System.Drawing.Point(81, 33);
+            this.num_bintie.Maximum = new decimal(new int[] {
+            500000,
+            0,
+            0,
+            0});
+            this.num_bintie.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.num_bintie.Name = "num_bintie";
+            this.num_bintie.Size = new System.Drawing.Size(114, 21);
+            this.num_bintie.TabIndex = 13;
+            this.num_bintie.Value = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            // 
             // technology
             // 
             this.technology.Location = new System.Drawing.Point(201, 60);
@@ -648,33 +683,133 @@
             this.label12.TabIndex = 8;
             this.label12.Text = "保留镔铁：";
             // 
-            // num_bintie
+            // groupBox8
             // 
-            this.num_bintie.Location = new System.Drawing.Point(81, 33);
-            this.num_bintie.Maximum = new decimal(new int[] {
-            500000,
+            this.groupBox8.Controls.Add(this.num_ticket_total);
+            this.groupBox8.Controls.Add(this.label16);
+            this.groupBox8.Controls.Add(this.lbl_ticket);
+            this.groupBox8.Controls.Add(this.label15);
+            this.groupBox8.Controls.Add(this.btn_ticket_exchange);
+            this.groupBox8.Controls.Add(this.num_ticket_num);
+            this.groupBox8.Controls.Add(this.cb_ticket_item);
+            this.groupBox8.Controls.Add(this.label14);
+            this.groupBox8.Controls.Add(this.label13);
+            this.groupBox8.Location = new System.Drawing.Point(614, 134);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(259, 129);
+            this.groupBox8.TabIndex = 24;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "点券商城";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(34, 46);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(41, 12);
+            this.label13.TabIndex = 0;
+            this.label13.Text = "商品：";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(10, 74);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(89, 12);
+            this.label14.TabIndex = 1;
+            this.label14.Text = "每次兑换数量：";
+            // 
+            // cb_ticket_item
+            // 
+            this.cb_ticket_item.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cb_ticket_item.FormattingEnabled = true;
+            this.cb_ticket_item.Location = new System.Drawing.Point(73, 42);
+            this.cb_ticket_item.Name = "cb_ticket_item";
+            this.cb_ticket_item.Size = new System.Drawing.Size(135, 20);
+            this.cb_ticket_item.TabIndex = 2;
+            // 
+            // num_ticket_num
+            // 
+            this.num_ticket_num.Location = new System.Drawing.Point(98, 70);
+            this.num_ticket_num.Maximum = new decimal(new int[] {
+            1000000,
             0,
             0,
             0});
-            this.num_bintie.Minimum = new decimal(new int[] {
-            1,
+            this.num_ticket_num.Name = "num_ticket_num";
+            this.num_ticket_num.Size = new System.Drawing.Size(77, 21);
+            this.num_ticket_num.TabIndex = 3;
+            this.num_ticket_num.Value = new decimal(new int[] {
+            10,
             0,
             0,
             0});
-            this.num_bintie.Name = "num_bintie";
-            this.num_bintie.Size = new System.Drawing.Size(114, 21);
-            this.num_bintie.TabIndex = 13;
-            this.num_bintie.Value = new decimal(new int[] {
-            100000,
+            // 
+            // btn_ticket_exchange
+            // 
+            this.btn_ticket_exchange.Location = new System.Drawing.Point(181, 97);
+            this.btn_ticket_exchange.Name = "btn_ticket_exchange";
+            this.btn_ticket_exchange.Size = new System.Drawing.Size(71, 23);
+            this.btn_ticket_exchange.TabIndex = 4;
+            this.btn_ticket_exchange.Text = "兑换";
+            this.btn_ticket_exchange.UseVisualStyleBackColor = true;
+            this.btn_ticket_exchange.Click += new System.EventHandler(this.btn_ticket_exchange_Click);
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(34, 21);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(41, 12);
+            this.label15.TabIndex = 5;
+            this.label15.Text = "点券：";
+            // 
+            // lbl_ticket
+            // 
+            this.lbl_ticket.AutoSize = true;
+            this.lbl_ticket.Location = new System.Drawing.Point(73, 22);
+            this.lbl_ticket.Name = "lbl_ticket";
+            this.lbl_ticket.Size = new System.Drawing.Size(11, 12);
+            this.lbl_ticket.TabIndex = 6;
+            this.lbl_ticket.Text = "0";
+            // 
+            // num_ticket_total
+            // 
+            this.num_ticket_total.Increment = new decimal(new int[] {
+            10,
             0,
             0,
             0});
+            this.num_ticket_total.Location = new System.Drawing.Point(98, 98);
+            this.num_ticket_total.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
+            this.num_ticket_total.Name = "num_ticket_total";
+            this.num_ticket_total.Size = new System.Drawing.Size(77, 21);
+            this.num_ticket_total.TabIndex = 8;
+            this.num_ticket_total.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(34, 102);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(65, 12);
+            this.label16.TabIndex = 7;
+            this.label16.Text = "兑换次数：";
             // 
             // NewTempServerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(878, 342);
+            this.Controls.Add(this.groupBox8);
             this.Controls.Add(this.groupBox7);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox4);
@@ -686,6 +821,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "NewTempServerForm";
             this.Text = "临时任务管理";
+            this.Load += new System.EventHandler(this.NewTempServerForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.num_ticketWeapons)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
@@ -702,8 +838,12 @@
             this.groupBox6.ResumeLayout(false);
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.num_bintiecost)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_bintie)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_bintiecost)).EndInit();
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_ticket_num)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.num_ticket_total)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -761,5 +901,15 @@
         private System.Windows.Forms.NumericUpDown num_bintiecost;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.GroupBox groupBox8;
+        private System.Windows.Forms.Button btn_ticket_exchange;
+        private System.Windows.Forms.NumericUpDown num_ticket_num;
+        private System.Windows.Forms.ComboBox cb_ticket_item;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label lbl_ticket;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.NumericUpDown num_ticket_total;
+        private System.Windows.Forms.Label label16;
     }
 }

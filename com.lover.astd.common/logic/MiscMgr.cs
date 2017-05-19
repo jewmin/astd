@@ -8550,6 +8550,68 @@ namespace com.lover.astd.common.logic
         }
 
         #region 点券商城
+        public List<TicketItem> getTicketsInfo(ProtocolMgr protocol, ILogger logger, ref int tickets)
+        {
+            List<TicketItem> list = new List<TicketItem>();
+            string url = "/root/tickets.action";
+            ServerResult xml = protocol.getXml(url, "点券商城");
+            if (xml != null && xml.CmdSucceed)
+            {
+                XmlDocument cmdResult = xml.CmdResult;
+                XmlNode xmlNode = cmdResult.SelectSingleNode("/results/tickets");
+                if (xmlNode != null)
+                {
+                    int.TryParse(xmlNode.InnerText, out tickets);
+                }
+
+                XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/rewards/reward");
+                foreach (XmlNode node in xmlNodeList)
+                {
+                    TicketItem item = new TicketItem();
+                    XmlNode childnode = node.SelectSingleNode("id");
+                    if (childnode != null)
+                    {
+                        item.id = int.Parse(childnode.InnerText);
+                    }
+                    childnode = node.SelectSingleNode("playerlevel");
+                    if (childnode != null)
+                    {
+                        item.playerlevel = int.Parse(childnode.InnerText);
+                    }
+                    childnode = node.SelectSingleNode("tickets");
+                    if (childnode != null)
+                    {
+                        item.tickets = int.Parse(childnode.InnerText);
+                    }
+                    childnode = node.SelectSingleNode("item/name");
+                    if (childnode != null)
+                    {
+                        item.itemname = childnode.InnerText;
+                    }
+                    childnode = node.SelectSingleNode("item/num");
+                    if (childnode != null)
+                    {
+                        item.itemcount = int.Parse(childnode.InnerText);
+                    }
+                    list.Add(item);
+                }
+            }
+            return list;
+        }
+
+        public int getTicketsReward(ProtocolMgr protocol, ILogger logger, TicketItem item, int num)
+        {
+            string url = "/root/tickets!getTicketsReward.action";
+            string data = string.Format("rewardId={0}&num={1}", item.id, num);
+            ServerResult xml = protocol.postXml(url, data, "点券兑换");
+            if (xml != null && xml.CmdSucceed)
+            {
+                logInfo(logger, string.Format("商品【{0}x{1}】, 兑换{2}次消耗点券{3}", item.itemname, item.itemcount, num, item.tickets * num));
+                return num;
+            }
+            return 0;
+        }
+
         public int ticketGetInfo(ProtocolMgr protocol, ILogger logger, ref int total_ticket, ref TicketItem item)
         {
             string url = "/root/tickets.action";

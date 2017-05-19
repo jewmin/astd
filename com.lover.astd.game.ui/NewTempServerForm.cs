@@ -12,6 +12,7 @@ using com.lover.astd.common.logic;
 using com.lover.astd.common.model.battle;
 using com.lover.common;
 using com.lover.astd.common.model;
+using com.lover.astd.common.model.misc;
 
 namespace com.lover.astd.game.ui
 {
@@ -55,17 +56,25 @@ namespace com.lover.astd.game.ui
 
         private List<HeroWashInfo> _heroes_to_wash = new List<HeroWashInfo>();
 
+        private int tickets_ = 0;
+
+        private List<TicketItem> ticket_item_list_ = new List<TicketItem>();
+
+        private ILogger logger_;
+
+        private ProtocolMgr protocol_;
+
         public NewTempServerForm(NewMainForm frm)
         {
             InitializeComponent();
             _frm = frm;
+            logger_ = new TempLogger(_frm);
+            protocol_ = new ProtocolMgr(_frm.GameUser, logger_, _frm, _frm.Gameurl, _frm.JSessionId, _frm.Factory);
         }
 
         private void btn_init_campaign_Click(object sender, EventArgs e)
         {
-            ILogger logger = new TempLogger(_frm);
-            ProtocolMgr protocol = new ProtocolMgr(_frm.GameUser, logger, _frm, _frm.Gameurl, _frm.JSessionId, _frm.Factory);
-            List<CampaignItem> campaigns = _frm.Factory.getCampaignManager().getCampaigns(protocol, logger);
+            List<CampaignItem> campaigns = _frm.Factory.getCampaignManager().getCampaigns(protocol_, logger_);
             if (campaigns == null)
             {
                 UiUtils.getInstance().info("未找到战役");
@@ -288,6 +297,37 @@ namespace com.lover.astd.game.ui
             dictionary.Add("cost_bintie", cost_bintie.ToString());
             _frm.addTempServer("technology", dictionary);
             Close();
+        }
+
+        private void btn_ticket_exchange_Click(object sender, EventArgs e)
+        {
+            TicketItem item = cb_ticket_item.SelectedItem as TicketItem;
+            int num = Convert.ToInt32(num_ticket_num.Value);
+            int time = Convert.ToInt32(num_ticket_total.Value);
+            int exchange_num = 0, exchange_total = 0;
+            while (time > 0)
+            {
+                exchange_num = _frm.Factory.getMiscManager().getTicketsReward(protocol_, logger_, item, num);
+                if (exchange_num == 0) break;
+                exchange_total += exchange_num;
+                time--;
+            }
+            logger_.logInfo(string.Format("兑换{0}, {1}件, 消耗点券{2}", item.Name, exchange_total, item.tickets * exchange_total));
+            loadTicketInfo();
+        }
+
+        private void loadTicketInfo()
+        {
+            ticket_item_list_ = _frm.Factory.getMiscManager().getTicketsInfo(protocol_, logger_, ref tickets_);
+            cb_ticket_item.DataSource = ticket_item_list_;
+            cb_ticket_item.DisplayMember = "Name";
+            cb_ticket_item.ValueMember = "Id";
+            lbl_ticket.Text = tickets_.ToString();
+        }
+
+        private void NewTempServerForm_Load(object sender, EventArgs e)
+        {
+            loadTicketInfo();
         }
     }
 }

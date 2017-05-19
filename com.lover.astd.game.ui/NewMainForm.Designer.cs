@@ -196,6 +196,7 @@ namespace com.lover.astd.game.ui
             this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.chk_attack_army = new System.Windows.Forms.CheckBox();
             this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.chk_attack_before_22 = new System.Windows.Forms.CheckBox();
             this.combo_jailwork_type = new System.Windows.Forms.ComboBox();
             this.chk_juedou = new System.Windows.Forms.CheckBox();
             this.label67 = new System.Windows.Forms.Label();
@@ -472,7 +473,6 @@ namespace com.lover.astd.game.ui
             this.lbl_playerinfo = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lbl_time = new System.Windows.Forms.Label();
-            this.chk_attack_before_22 = new System.Windows.Forms.CheckBox();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_ticket_bighero)).BeginInit();
@@ -2480,6 +2480,16 @@ namespace com.lover.astd.game.ui
             this.tabPage7.TabIndex = 2;
             this.tabPage7.Text = "敌国";
             // 
+            // chk_attack_before_22
+            // 
+            this.chk_attack_before_22.AutoSize = true;
+            this.chk_attack_before_22.Location = new System.Drawing.Point(6, 31);
+            this.chk_attack_before_22.Name = "chk_attack_before_22";
+            this.chk_attack_before_22.Size = new System.Drawing.Size(84, 16);
+            this.chk_attack_before_22.TabIndex = 63;
+            this.chk_attack_before_22.Text = "10点后消息";
+            this.chk_attack_before_22.UseVisualStyleBackColor = true;
+            // 
             // combo_jailwork_type
             // 
             this.combo_jailwork_type.FormattingEnabled = true;
@@ -4106,7 +4116,7 @@ namespace com.lover.astd.game.ui
             0});
             this.nUD_DianQuan.Location = new System.Drawing.Point(62, 62);
             this.nUD_DianQuan.Maximum = new decimal(new int[] {
-            900000,
+            90000000,
             0,
             0,
             0});
@@ -4176,7 +4186,7 @@ namespace com.lover.astd.game.ui
             0});
             this.nUD_BaoShi.Location = new System.Drawing.Point(62, 40);
             this.nUD_BaoShi.Maximum = new decimal(new int[] {
-            90000,
+            9000000,
             0,
             0,
             0});
@@ -5748,16 +5758,6 @@ namespace com.lover.astd.game.ui
             this.lbl_time.Name = "lbl_time";
             this.lbl_time.Size = new System.Drawing.Size(0, 12);
             this.lbl_time.TabIndex = 8;
-            // 
-            // chk_attack_before_22
-            // 
-            this.chk_attack_before_22.AutoSize = true;
-            this.chk_attack_before_22.Location = new System.Drawing.Point(6, 31);
-            this.chk_attack_before_22.Name = "chk_attack_before_22";
-            this.chk_attack_before_22.Size = new System.Drawing.Size(84, 16);
-            this.chk_attack_before_22.TabIndex = 63;
-            this.chk_attack_before_22.Text = "10点后消息";
-            this.chk_attack_before_22.UseVisualStyleBackColor = true;
             // 
             // NewMainForm
             // 
