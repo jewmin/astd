@@ -10093,7 +10093,10 @@ namespace com.lover.astd.common.logic
         #region 雪地通商
         public int snowTradingGetSnowTradingInfo(ProtocolMgr protocol, ILogger logger, User user, int buyroundcostlimit, int goldavailable, bool isreinforce, int reinforcecostlimit)
         {
-            return snowTrading_.getSnowTradingInfo(protocol, logger, user, buyroundcostlimit, goldavailable, isreinforce, reinforcecostlimit);
+            if (user.isActivityRunning(ActivityType.SnowTradingEvent))
+                return snowTrading_.getSnowTradingInfo(protocol, logger, user, buyroundcostlimit, goldavailable, isreinforce, reinforcecostlimit);
+            else
+                return 10;
         }
         #endregion
 
@@ -10225,6 +10228,8 @@ namespace com.lover.astd.common.logic
         #region 抓年兽
         public int getBombNianInfo(ProtocolMgr protocol, ILogger logger, User user, int cost1, int cost5, int cost10)
         {
+            if (!user.isActivityRunning(ActivityType.BombNianEvent)) return 10;
+
             try
             {
                 string url = "/root/bombNianEvent!getBombNianInfo.action";

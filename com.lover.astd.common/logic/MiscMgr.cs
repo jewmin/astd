@@ -872,19 +872,16 @@ namespace com.lover.astd.common.logic
 
         public void getNewPerDayTask(ProtocolMgr protocol, ILogger logger, User user)
         {
-            if (user.Level < 220)
-            {
-                return;
-            }
+            if (user.Level < 220) return;
+
             user._impose_task_num = 0;
             user._impose_force_task_num = 0;
             user._weave_task_num = 0;
+
             string url = "/root/task!getNewPerdayTask.action";
             ServerResult xml = protocol.getXml(url, "新每日任务信息");
-            if (xml == null || !xml.CmdSucceed)
-            {
-                return;
-            }
+            if (xml == null || !xml.CmdSucceed) return;
+
             XmlDocument cmdResult = xml.CmdResult;
             int finalreward = 0, inreward = 0, outreward = 0;
             XmlNode xmlNode = cmdResult.SelectSingleNode("/results/finalreward");
@@ -894,10 +891,19 @@ namespace com.lover.astd.common.logic
             }
             outreward = finalreward / 10;
             inreward = finalreward % 10;
-            if (finalreward == 22)
+            if (finalreward == 22) return;
+
+            xmlNode = cmdResult.SelectSingleNode("/results/dayboxstate");
+            if (xmlNode != null)
             {
-                return;
+                string[] states = xmlNode.InnerText.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < states.Length; i++)
+                {
+                    if (states[i] == "0")
+                        openDayBox(protocol, logger, i + 1);
+                }
             }
+
             if (inreward == 1)
             {
                 url = "/root/task!getNewPerdayTaskFinalReward.action";
@@ -915,6 +921,7 @@ namespace com.lover.astd.common.logic
             {
                 check_task(protocol, logger, user, cmdResult.SelectNodes("/results/task"));
             }
+
             if (outreward == 1)
             {
                 url = "/root/task!getNewPerdayTaskFinalReward.action";
@@ -932,6 +939,18 @@ namespace com.lover.astd.common.logic
             {
                 check_task(protocol, logger, user, cmdResult.SelectNodes("/results/outtask"));
             }
+        }
+
+        private void openDayBox(ProtocolMgr protocol, ILogger logger, int rewardId)
+        {
+            string url = "/root/task!openDayBox.action";
+            string data = string.Format("rewardId={0}", rewardId);
+            ServerResult xml = protocol.postXml(url, data, "每日活跃-宝箱");
+            if (xml == null || !xml.CmdSucceed) return;
+
+            RewardInfo reward = new RewardInfo();
+            reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
+            logInfo(logger, string.Format("领取每日活跃宝箱, 获得{0}", reward.ToString()));
         }
 
         private void check_task(ProtocolMgr protocol, ILogger logger, User user, XmlNodeList xmlNodeList)

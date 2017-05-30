@@ -207,6 +207,30 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="lua\astd.lua" />
+    <None Include="lua\config\activity.lua" />
+    <None Include="lua\config\equip.lua" />
+    <None Include="lua\config\luaexeid.lua" />
+    <None Include="lua\exe\baijiayan.lua" />
+    <None Include="lua\exe\borrowingarrows.lua" />
+    <None Include="lua\exe\equipment.lua" />
+    <None Include="lua\exe\moral.lua" />
+    <None Include="lua\exe\movable.lua" />
+    <None Include="lua\exe\newyearactivity.lua" />
+    <None Include="lua\exe\snowtrading.lua" />
+    <None Include="lua\exe\specialequip.lua" />
+    <None Include="lua\exe\springfestivalwish.lua" />
+    <None Include="lua\exe\technology.lua" />
+    <None Include="lua\exe\training.lua" />
+    <None Include="lua\exe\world.lua" />
+    <None Include="lua\exe\zhuge.lua" />
+    <None Include="lua\module\activity.lua" />
+    <None Include="lua\module\equip.lua" />
+    <None Include="lua\module\event.lua" />
+    <None Include="lua\module\factory.lua" />
+    <None Include="lua\module\global.lua" />
+    <None Include="lua\module\refine.lua" />
+    <None Include="lua\module\world.lua" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\com.lover.astd.common\com.lover.astd.common.csproj">

@@ -13,7 +13,7 @@ equip.getUpgradeInfo = function()
 	if not result then return equip.null end
 	if not result.CmdSucceed then return equip.error end
 
-	ILogger():logInfo(result.CmdResult.InnerXml)
+	-- ILogger():logInfo(result.CmdResult.InnerXml)
   local data = {}
 	local cmdResult = result.CmdResult
 	local xmlNode = cmdResult:SelectSingleNode("/results/ticketnumber")
@@ -57,7 +57,7 @@ equip.upgradeMonkeyTao = function(name, composite, num)
   local result = ProtocolMgr():postXml(url, data, "装备-强化猴子套装")
 	if not result or not result.CmdSucceed then return false end
 
-  ILogger():logInfo(result.CmdResult.InnerXml)
+  -- ILogger():logInfo(result.CmdResult.InnerXml)
   local tips = string.format("强化%s成功", name)
   local cmdResult = result.CmdResult
 	local xmlNode = cmdResult:SelectSingleNode("/results/baoji")
@@ -94,7 +94,7 @@ equip.useXuli = function(name, composite)
   local result = ProtocolMgr():postXml(url, data, "装备-使用蓄力")
 	if not result or not result.CmdSucceed then return false end
 
-  ILogger():logInfo(result.CmdResult.InnerXml)
+  -- ILogger():logInfo(result.CmdResult.InnerXml)
   local tips = string.format("%s使用蓄力", name)
   local cmdResult = result.CmdResult
 	local xmlNode = cmdResult:SelectSingleNode("/results/xuliinfo/getevent")

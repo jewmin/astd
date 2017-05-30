@@ -127,6 +127,7 @@
     <Compile Include="logic\BigHeroMgr.cs" />
     <Compile Include="logic\BuildingMgr.cs" />
     <Compile Include="logic\CampaignMgr.cs" />
+    <Compile Include="logic\CommonMgr.cs" />
     <Compile Include="logic\EquipMgr.cs" />
     <Compile Include="logic\HeroMgr.cs" />
     <Compile Include="logic\LuaMgr.cs" />

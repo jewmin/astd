@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuaInterface", "LuaInterfac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "lua.test", "lua.test\lua.test.csproj", "{ECE3DD73-EE91-4925-96D7-C910F727F676}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xml.test", "xml.test\xml.test.csproj", "{09D5B67C-F2A9-4AE4-9AB4-3FD8575E4520}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -89,6 +91,16 @@ Global
 		{ECE3DD73-EE91-4925-96D7-C910F727F676}.Release|Mixed Platforms.Build.0 = Release|x86
 		{ECE3DD73-EE91-4925-96D7-C910F727F676}.Release|x86.ActiveCfg = Release|x86
 		{ECE3DD73-EE91-4925-96D7-C910F727F676}.Release|x86.Build.0 = Release|x86
+		{09D5B67C-F2A9-4AE4-9AB4-3FD8575E4520}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{09D5B67C-F2A9-4AE4-9AB4-3FD8575E4520}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{09D5B67C-F2A9-4AE4-9AB4-3FD8575E4520}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{09D5B67C-F2A9-4AE4-9AB4-3FD8575E4520}.Debug|x86.ActiveCfg = Debug|x86
+		{09D5B67C-F2A9-4AE4-9AB4-3FD8575E4520}.Debug|x86.Build.0 = Debug|x86
+		{09D5B67C-F2A9-4AE4-9AB4-3FD8575E4520}.Release|Any CPU.ActiveCfg = Release|x86
+		{09D5B67C-F2A9-4AE4-9AB4-3FD8575E4520}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{09D5B67C-F2A9-4AE4-9AB4-3FD8575E4520}.Release|Mixed Platforms.Build.0 = Release|x86
+		{09D5B67C-F2A9-4AE4-9AB4-3FD8575E4520}.Release|x86.ActiveCfg = Release|x86
+		{09D5B67C-F2A9-4AE4-9AB4-3FD8575E4520}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

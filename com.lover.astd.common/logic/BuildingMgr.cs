@@ -122,14 +122,11 @@ namespace com.lover.astd.common.logic
             }
         }
 
-		public bool getBuildingMainCity(ProtocolMgr protocol, ILogger logger, User user)
-		{
-			string url = "/root/mainCity.action";
-			ServerResult xml = protocol.getXml(url, "获取玩家主城信息");
-			if (xml == null || !xml.CmdSucceed)
-			{
-				return false;
-			}
+        public bool getBuildingMainCity(ProtocolMgr protocol, ILogger logger, User user)
+        {
+            string url = "/root/mainCity.action";
+            ServerResult xml = protocol.getXml(url, "获取玩家主城信息");
+            if (xml == null || !xml.CmdSucceed) return false;
 
             XmlDocument cmdResult = xml.CmdResult;
             XmlNode xmlNode = cmdResult.SelectSingleNode("/results");
@@ -149,81 +146,55 @@ namespace com.lover.astd.common.logic
                     this.renderMoziBuildingNode(xmlNode2, user._buildings);
                 }
             }
+
             XmlNode xmlNode3 = cmdResult.SelectSingleNode("/results/is51");
             if (xmlNode3 != null && xmlNode3.InnerText == "1")
-            {
                 user.addActivity(ActivityType.WeaponEvent);
-            }
             else
-            {
                 user.removeActivity(ActivityType.WeaponEvent);
-            }
+
             XmlNode xmlNode4 = cmdResult.SelectSingleNode("/results/hasarchevent");
             if (xmlNode4 != null && xmlNode4.InnerText == "1")
-            {
                 user.addActivity(ActivityType.ArchEvent);
-            }
             else
-            {
                 user.removeActivity(ActivityType.ArchEvent);
-            }
+
             XmlNode xmlNode5 = cmdResult.SelectSingleNode("/results/superfanpai");
             if (xmlNode5 != null && xmlNode5.InnerText == "1")
-            {
                 user.addActivity(ActivityType.SuperFanpai);
-            }
             else
-            {
                 user.removeActivity(ActivityType.SuperFanpai);
-            }
+
             XmlNode xmlNode6 = cmdResult.SelectSingleNode("/results/hasjailevent");
             if (xmlNode6 != null && xmlNode6.InnerText == "1")
-            {
                 user.addActivity(ActivityType.JailEvent);
-            }
             else
-            {
                 user.removeActivity(ActivityType.JailEvent);
-            }
+
             XmlNode xmlNode7 = cmdResult.SelectSingleNode("/results/hastroopfeedback");
             if (xmlNode7 != null && xmlNode7.InnerText == "1")
-            {
                 user.addActivity(ActivityType.TroopFeedback);
-            }
             else
-            {
                 user.removeActivity(ActivityType.TroopFeedback);
-            }
+
             XmlNode xmlNode8 = cmdResult.SelectSingleNode("/results/troopturntableevent");
             if (xmlNode8 != null && xmlNode8.InnerText == "1")
-            {
                 user.addActivity(ActivityType.TroopTurntable);
-            }
             else
-            {
                 user.removeActivity(ActivityType.TroopTurntable);
-            }
+
             XmlNode xmlNode9 = cmdResult.SelectSingleNode("/results/hascakeevent");
             if (xmlNode9 != null && xmlNode9.InnerText == "true")
-            {
                 user.addActivity(ActivityType.CakeEvent);
-            }
             else
-            {
                 user.removeActivity(ActivityType.CakeEvent);
-            }
+
             XmlNode xmlNode10 = cmdResult.SelectSingleNode("/results/goldgifttype");
-            if (xmlNode10 != null)
-            {
-                if (xmlNode10.InnerText == "2")
-                {
-                    user.addActivity(ActivityType.GemDump);
-                }
-            }
+            if (xmlNode10 != null && xmlNode10.InnerText == "2")
+                user.addActivity(ActivityType.GemDump);
             else
-            {
                 user.removeActivity(ActivityType.GemDump);
-            }
+
             XmlNode xmlNode11 = cmdResult.SelectSingleNode("/results/showkfwd");
             if (xmlNode11 != null && !xmlNode11.InnerText.Equals("0"))
             {
@@ -233,23 +204,40 @@ namespace com.lover.astd.common.logic
                     user.addActivity(ActivityType.PlayerCompeteEvent);
                 }
             }
+
             XmlNode xmlNode12 = cmdResult.SelectSingleNode("/results/kfwdeventreward");
             if (xmlNode12 != null && !xmlNode12.InnerText.Equals("0"))
             {
                 user.addActivity(ActivityType.PlayerCompeteEvent);
             }
+
             XmlNode xmlNode13 = cmdResult.SelectSingleNode("/results/showkfpvp");
             if (xmlNode13 != null && !xmlNode13.InnerText.Equals("0"))
             {
                 user.addActivity(ActivityType.KfPvp);
             }
+
             XmlNode xmlNode14 = cmdResult.SelectSingleNode("/results/kfpvpshow");
             if (xmlNode14 != null && !xmlNode14.InnerText.Equals("0"))
             {
                 user.addActivity(ActivityType.KfPvp);
             }
+
+            xmlNode14 = cmdResult.SelectSingleNode("/results/snowtradingevent");
+            if (xmlNode14 != null && !xmlNode14.InnerText.Equals("1"))
+                user.addActivity(ActivityType.SnowTradingEvent);
+            else
+                user.removeActivity(ActivityType.SnowTradingEvent);
+
+            xmlNode14 = cmdResult.SelectSingleNode("/results/bombnianevent");
+            if (xmlNode14 != null && !xmlNode14.InnerText.Equals("1"))
+                user.addActivity(ActivityType.BombNianEvent);
+            else
+                user.removeActivity(ActivityType.BombNianEvent);
+
+
             return true;
-		}
+        }
 
 		public bool getBuildingsOutCity(ProtocolMgr protocol, ILogger logger, User user)
 		{

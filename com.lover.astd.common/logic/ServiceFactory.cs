@@ -25,6 +25,8 @@ namespace com.lover.astd.common.logic
 
 		private MiscMgr _miscMgr;
 
+        private CommonMgr _commonMgr;
+
 		public TimeMgr TmrMgr
 		{
 			get
@@ -121,5 +123,15 @@ namespace com.lover.astd.common.logic
 			}
 			return this._miscMgr;
 		}
+
+        public CommonMgr getCommonManager()
+        {
+            if (this._commonMgr == null)
+            {
+                this._commonMgr = new CommonMgr(this._tmrMgr, this);
+            }
+
+            return this._commonMgr;
+        }
 	}
 }

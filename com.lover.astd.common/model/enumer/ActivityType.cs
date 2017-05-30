@@ -28,6 +28,8 @@ namespace com.lover.astd.common.model.enumer
 		TroopFeedback,
 		TroopTurntable,
 		CakeEvent,
-		GemDump
+		GemDump,
+        SnowTradingEvent,   //雪地通商
+        BombNianEvent,      //抓年兽
 	}
 }

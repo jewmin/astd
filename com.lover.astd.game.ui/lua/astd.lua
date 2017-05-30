@@ -13,6 +13,7 @@
 -- CampaignManager() 战役
 -- BigHeroManager() 大将
 -- HeroManager() 武将
+-- CommonManager() 通用
 -- CreateLuaExe(string name, string readable, int id) 创建exe
 
 luanet.load_assembly("System.Xml")

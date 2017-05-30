@@ -52,6 +52,7 @@ namespace com.lover.astd.common.logic
             lua_.RegisterFunction("CampaignManager", factory_, factory_.GetType().GetMethod("getCampaignManager"));
             lua_.RegisterFunction("BigHeroManager", factory_, factory_.GetType().GetMethod("getBigHeroManager"));
             lua_.RegisterFunction("HeroManager", factory_, factory_.GetType().GetMethod("getHeroManager"));
+            lua_.RegisterFunction("CommonManager", factory_, factory_.GetType().GetMethod("getCommonManager"));
             lua_.RegisterFunction("L", this, this.GetType().GetMethod("UTF8toUnicode"));
             lua_.RegisterFunction("CreateLuaExe", this, this.GetType().GetMethod("CreateLuaExe"));
             lua_.DoFile(Directory.GetCurrentDirectory() + lua_file_);
