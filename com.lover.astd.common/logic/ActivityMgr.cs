@@ -10367,7 +10367,7 @@ namespace com.lover.astd.common.logic
             ServerResult xml = protocol.postXml(url, data, "放鞭炮");
             if (xml == null || !xml.CmdSucceed) return false;
 
-            logInfo(logger, xml.getDebugInfo());
+            //logInfo(logger, xml.getDebugInfo());
             AstdLuaObject lua = new AstdLuaObject();
             lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
             int bombattack = lua.GetIntValue("results.bombattack");

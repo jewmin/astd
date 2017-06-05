@@ -904,6 +904,13 @@ namespace com.lover.astd.common.logic
                 }
             }
 
+            xmlNode = cmdResult.SelectSingleNode("/results/redpacketinfo/redpacket");
+            if (xmlNode != null)
+            {
+                if (xmlNode.InnerText.Equals("0"))
+                    openWeekRedPacket(protocol, logger);
+            }
+
             if (inreward == 1)
             {
                 url = "/root/task!getNewPerdayTaskFinalReward.action";
@@ -951,6 +958,17 @@ namespace com.lover.astd.common.logic
             RewardInfo reward = new RewardInfo();
             reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
             logInfo(logger, string.Format("领取每日活跃宝箱, 获得{0}", reward.ToString()));
+        }
+
+        private void openWeekRedPacket(ProtocolMgr protocol, ILogger logger)
+        {
+            string url = "/root/task!openWeekRedPacket.action";
+            ServerResult xml = protocol.getXml(url, "本周红包");
+            if (xml == null || !xml.CmdSucceed) return;
+
+            RewardInfo reward = new RewardInfo();
+            reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
+            logInfo(logger, string.Format("领取本周红包, 获得{0}", reward.ToString()));
         }
 
         private void check_task(ProtocolMgr protocol, ILogger logger, User user, XmlNodeList xmlNodeList)

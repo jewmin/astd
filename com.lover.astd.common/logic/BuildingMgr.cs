@@ -224,13 +224,13 @@ namespace com.lover.astd.common.logic
             }
 
             xmlNode14 = cmdResult.SelectSingleNode("/results/snowtradingevent");
-            if (xmlNode14 != null && !xmlNode14.InnerText.Equals("1"))
+            if (xmlNode14 != null && xmlNode14.InnerText.Equals("1"))
                 user.addActivity(ActivityType.SnowTradingEvent);
             else
                 user.removeActivity(ActivityType.SnowTradingEvent);
 
             xmlNode14 = cmdResult.SelectSingleNode("/results/bombnianevent");
-            if (xmlNode14 != null && !xmlNode14.InnerText.Equals("1"))
+            if (xmlNode14 != null && xmlNode14.InnerText.Equals("1"))
                 user.addActivity(ActivityType.BombNianEvent);
             else
                 user.removeActivity(ActivityType.BombNianEvent);
