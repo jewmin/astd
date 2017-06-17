@@ -90,3 +90,13 @@ borrowingArrowsConfig =
   -- 承重百分比
   percent = 0.8,
 }
+
+arrestEventConfig =
+{
+  -- 抓捕令费用
+  arresttokencostlimit = 5,
+  -- 密粽费用
+  ricedumplingcostlimit = 5,
+  -- 鞭子费用
+  hishenlimit = 0,
+}

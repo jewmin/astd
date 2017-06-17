@@ -1,6 +1,8 @@
 using com.lover.astd.common.config;
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
+using com.lover.astd.common.model;
 
 namespace com.lover.astd.game.ui.server.impl.equipment
 {
@@ -15,6 +17,7 @@ namespace com.lover.astd.game.ui.server.impl.equipment
 
 		public override void renderSettings()
 		{
+            this.renderData();
 			Dictionary<string, string> config = base.getConfig(this.ServerName);
             _mainForm.chk_polish_enable.Checked = (config.ContainsKey("enabled") && config["enabled"].ToLower().Equals("true"));
 			int value = 5;
@@ -41,6 +44,11 @@ namespace com.lover.astd.game.ui.server.impl.equipment
             _mainForm.num_polish_item_reserve.Value = value2;
             _mainForm.num_polish_melt_failcount.Value = value4;
             _mainForm.num_polish_goon.Value = value3;
+            if (config.ContainsKey("lh_ids"))
+            {
+                base.renderDataGridToSelected<Specialtreasure>(_mainForm.dg_specialtreasure, config["lh_ids"]);
+            }
+            this.renderData();
 		}
 
 		public override void saveSettings()
@@ -51,6 +59,7 @@ namespace com.lover.astd.game.ui.server.impl.equipment
             expr_0D.setConfig(this.ServerName, "reserve_item_count", _mainForm.num_polish_item_reserve.Value.ToString());
             expr_0D.setConfig(this.ServerName, "melt_failcount", _mainForm.num_polish_melt_failcount.Value.ToString());
             expr_0D.setConfig(this.ServerName, "gold_merge_attrib", _mainForm.num_polish_goon.Value.ToString());
+            expr_0D.setConfig(this.ServerName, "lh_ids", base.getDataGridSelectedIds<Specialtreasure>(_mainForm.dg_specialtreasure));
 		}
 
 		public override void loadDefaultSettings()
@@ -61,7 +70,20 @@ namespace com.lover.astd.game.ui.server.impl.equipment
 			expr_06.setConfig(this.ServerName, "reserve_item_count", "5");
 			expr_06.setConfig(this.ServerName, "melt_failcount", "2");
 			expr_06.setConfig(this.ServerName, "gold_merge_attrib", "10");
+            expr_06.setConfig(this.ServerName, "lh_ids", "");
 			this.renderSettings();
 		}
+
+        private void renderData()
+        {
+            if (this._mainForm.dg_specialtreasure.DataSource == null)
+            {
+                BindingSource bindingSource = new BindingSource();
+                bindingSource.DataSource = base.getUser().SpecialTreasureList;
+                this._mainForm.dg_specialtreasure.AutoGenerateColumns = false;
+                this._mainForm.dg_specialtreasure.DataSource = bindingSource;
+            }
+            this._mainForm.dg_specialtreasure.Refresh();
+        }
 	}
 }

@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="activity\ActivitySnowTrading.cs" />
+    <Compile Include="activity\ArrestEvent.cs" />
     <Compile Include="activity\BorrowingArrowsEvent.cs" />
     <Compile Include="ClientCache.cs" />
     <Compile Include="CommonReceiver.cs" />
@@ -181,6 +182,7 @@
     <Compile Include="model\misc\TicketItem.cs" />
     <Compile Include="model\ServerResult.cs" />
     <Compile Include="model\SheetInfo.cs" />
+    <Compile Include="model\Specialtreasure.cs" />
     <Compile Include="model\technology.cs" />
     <Compile Include="model\User.cs" />
     <Compile Include="model\WarChariot.cs" />

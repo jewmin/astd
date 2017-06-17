@@ -391,6 +391,9 @@ namespace com.lover.astd.common.model
 		public List<Equipment> _mhEquips;
 
 		public List<Equipment> _storeEquips;
+
+        private List<Specialtreasure> special_treasure_list_;
+
         /// <summary>
         /// 专属铸造
         /// </summary>
@@ -882,6 +885,12 @@ namespace com.lover.astd.common.model
 				this._heroes = value;
 			}
 		}
+
+        public List<Specialtreasure> SpecialTreasureList
+        {
+            get { return this.special_treasure_list_; }
+            set { this.special_treasure_list_ = value; }
+        }
 
 		public void addUiToQueue(string ui_key)
 		{
@@ -1611,6 +1620,7 @@ namespace com.lover.astd.common.model
 			this._weapon_info = "";
 			this._army_reach = "";
             this._specialEquipSkillInfo = new SkillInfo();
+            this.special_treasure_list_ = new List<Specialtreasure>();
 			this._factory = factory;
 		}
 	}

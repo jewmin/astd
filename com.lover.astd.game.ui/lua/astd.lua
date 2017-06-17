@@ -52,6 +52,7 @@ require("exe.specialequip") -- 铸造
 require("exe.zhuge") -- 潜能淬炼
 require("exe.technology") -- 新科技
 require("exe.borrowingarrows") -- 草船借箭
+require("exe.arrestevent") -- 端午
 
 -- 执行execute
 function OnLuaExecute(exeId)
@@ -109,3 +110,4 @@ table.insert(ExeTable, SpecialEquipExe.exe)
 table.insert(ExeTable, ZhugeExe.exe)
 table.insert(ExeTable, TechnologyExe.exe)
 table.insert(ExeTable, BorrowingArrowsExe.exe)
+table.insert(ExeTable, ArrestEventExe.exe)

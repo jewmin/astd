@@ -334,10 +334,11 @@ namespace com.lover.astd.common.logicexe.battle
 			{
 				int.TryParse(config["level_min"], out level_min);
 			}
-			if (config.ContainsKey("level_max"))
-			{
-				int.TryParse(config["level_max"], out level_max);
-			}
+            //if (config.ContainsKey("level_max"))
+            //{
+            //    int.TryParse(config["level_max"], out level_max);
+            //}
+            level_max = user.Level;
 			if (config.ContainsKey("min_score"))
 			{
 				int.TryParse(config["min_score"], out min_score);
@@ -680,7 +681,7 @@ namespace com.lover.astd.common.logicexe.battle
                 config["not_injail"].ToLower().Equals("true");
             }
             int min_level = 0;
-            int max_level = this._user.Level;
+            int max_level = 0;
             int min_score = 10000;
             int attack_reserve_token = 0;
             if (config.ContainsKey("level_min"))
@@ -691,6 +692,7 @@ namespace com.lover.astd.common.logicexe.battle
             //{
             //    int.TryParse(config["level_max"], out max_level);
             //}
+            max_level = this._user.Level;
             if (config.ContainsKey("min_score"))
             {
                 int.TryParse(config["min_score"], out min_score);

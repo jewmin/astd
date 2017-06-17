@@ -211,6 +211,7 @@
     <None Include="lua\config\activity.lua" />
     <None Include="lua\config\equip.lua" />
     <None Include="lua\config\luaexeid.lua" />
+    <None Include="lua\exe\arrestevent.lua" />
     <None Include="lua\exe\baijiayan.lua" />
     <None Include="lua\exe\borrowingarrows.lua" />
     <None Include="lua\exe\equipment.lua" />

@@ -44,24 +44,36 @@ namespace com.lover.astd.common.logicexe.equip
                 {
                     int.TryParse(config["gold_merge_attrib"], out gold_merge_attrib);
                 }
-                int ret = this._factory.getEquipManager().handlePolishInfo(this._proto, this._logger, base.getGoldAvailable(), this._user.Magic, reserve_count, reserve_item_count, gold_merge_attrib, melt_failcount);
-                if (ret == 3)
+                if (config.ContainsKey("lh_ids"))
                 {
-                    return base.next_hour();
+                    string lh_ids = config["lh_ids"];
+                    int ret = this._factory.getEquipManager().handlePolishInfo(this._proto, this._logger, this._user, base.getGoldAvailable(), lh_ids, this._user.Magic, reserve_count, reserve_item_count, gold_merge_attrib, melt_failcount);
+                    this.refreshUi();
+                    if (ret == 3)
+                    {
+                        return base.next_hour();
+                    }
+                    else if (ret == 4)
+                    {
+                        return base.immediate();
+                    }
+                    else if (ret == 0)
+                    {
+                        return 600000;
+                    }
+                    else
+                    {
+                        return base.next_hour();
+                    }
                 }
-                else if (ret == 4)
-                {
-                    return base.immediate();
-                }
-                else if (ret == 0)
-                {
-                    return 600000;
-                }
-                else
-                {
-                    return base.next_hour();
-                }
+                return base.next_hour();
             }
 		}
+
+        public override void init_data()
+        {
+            this._factory.getEquipManager().getBaowuPolishInfo(this._proto, this._logger, this._user, "");
+            this.refreshUi();
+        }
 	}
 }

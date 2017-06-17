@@ -128,6 +128,8 @@ namespace com.lover.astd.game.ui
             this.num_polish_reserve = new System.Windows.Forms.NumericUpDown();
             this.chk_upgrade_gem = new System.Windows.Forms.CheckBox();
             this.chk_polish_enable = new System.Windows.Forms.CheckBox();
+            this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.dg_specialtreasure = new System.Windows.Forms.DataGridView();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
@@ -473,6 +475,9 @@ namespace com.lover.astd.game.ui
             this.lbl_playerinfo = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lbl_time = new System.Windows.Forms.Label();
+            this.dataGridViewCheckBoxColumn1 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.col_name_specialtreasure = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.col_attr_specialtreasure = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_ticket_bighero)).BeginInit();
@@ -499,6 +504,8 @@ namespace com.lover.astd.game.ui
             ((System.ComponentModel.ISupportInitialize)(this.num_upgrade_gem)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_polish_goon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_polish_reserve)).BeginInit();
+            this.tabPage9.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dg_specialtreasure)).BeginInit();
             this.groupBox10.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_4)).BeginInit();
@@ -1031,6 +1038,7 @@ namespace com.lover.astd.game.ui
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage4);
+            this.tabControl1.Controls.Add(this.tabPage9);
             this.tabControl1.Location = new System.Drawing.Point(5, 17);
             this.tabControl1.Margin = new System.Windows.Forms.Padding(0);
             this.tabControl1.Name = "tabControl1";
@@ -1640,6 +1648,37 @@ namespace com.lover.astd.game.ui
             this.chk_polish_enable.TabIndex = 3;
             this.chk_polish_enable.Text = "开启炼化";
             this.chk_polish_enable.UseVisualStyleBackColor = true;
+            // 
+            // tabPage9
+            // 
+            this.tabPage9.BackColor = System.Drawing.Color.DarkSeaGreen;
+            this.tabPage9.Controls.Add(this.dg_specialtreasure);
+            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Name = "tabPage9";
+            this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage9.Size = new System.Drawing.Size(375, 221);
+            this.tabPage9.TabIndex = 4;
+            this.tabPage9.Text = "专属玉佩";
+            // 
+            // dg_specialtreasure
+            // 
+            this.dg_specialtreasure.AllowDrop = true;
+            this.dg_specialtreasure.AllowUserToAddRows = false;
+            this.dg_specialtreasure.AllowUserToDeleteRows = false;
+            this.dg_specialtreasure.AllowUserToOrderColumns = true;
+            this.dg_specialtreasure.AllowUserToResizeRows = false;
+            this.dg_specialtreasure.BackgroundColor = System.Drawing.Color.DarkSeaGreen;
+            this.dg_specialtreasure.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dg_specialtreasure.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridViewCheckBoxColumn1,
+            this.col_name_specialtreasure,
+            this.col_attr_specialtreasure});
+            this.dg_specialtreasure.Location = new System.Drawing.Point(6, 27);
+            this.dg_specialtreasure.Name = "dg_specialtreasure";
+            this.dg_specialtreasure.RowHeadersWidth = 30;
+            this.dg_specialtreasure.RowTemplate.Height = 23;
+            this.dg_specialtreasure.Size = new System.Drawing.Size(363, 188);
+            this.dg_specialtreasure.TabIndex = 20;
             // 
             // groupBox10
             // 
@@ -5759,6 +5798,27 @@ namespace com.lover.astd.game.ui
             this.lbl_time.Size = new System.Drawing.Size(0, 12);
             this.lbl_time.TabIndex = 8;
             // 
+            // dataGridViewCheckBoxColumn1
+            // 
+            this.dataGridViewCheckBoxColumn1.DataPropertyName = "IsChecked";
+            this.dataGridViewCheckBoxColumn1.HeaderText = "";
+            this.dataGridViewCheckBoxColumn1.Name = "dataGridViewCheckBoxColumn1";
+            this.dataGridViewCheckBoxColumn1.Width = 30;
+            // 
+            // col_name_specialtreasure
+            // 
+            this.col_name_specialtreasure.DataPropertyName = "NameWithGeneral";
+            this.col_name_specialtreasure.HeaderText = "名字";
+            this.col_name_specialtreasure.Name = "col_name_specialtreasure";
+            this.col_name_specialtreasure.Width = 150;
+            // 
+            // col_attr_specialtreasure
+            // 
+            this.col_attr_specialtreasure.DataPropertyName = "Attributes";
+            this.col_attr_specialtreasure.HeaderText = "属性";
+            this.col_attr_specialtreasure.Name = "col_attr_specialtreasure";
+            this.col_attr_specialtreasure.Width = 150;
+            // 
             // NewMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -5807,6 +5867,8 @@ namespace com.lover.astd.game.ui
             ((System.ComponentModel.ISupportInitialize)(this.num_upgrade_gem)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_polish_goon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_polish_reserve)).EndInit();
+            this.tabPage9.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dg_specialtreasure)).EndInit();
             this.groupBox10.ResumeLayout(false);
             this.groupBox10.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_5)).EndInit();
@@ -6367,6 +6429,11 @@ namespace com.lover.astd.game.ui
         private System.Windows.Forms.Label label76;
         public System.Windows.Forms.NumericUpDown num_ticket_bighero;
         public System.Windows.Forms.CheckBox chk_attack_before_22;
+        public System.Windows.Forms.TabPage tabPage9;
+        public System.Windows.Forms.DataGridView dg_specialtreasure;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn col_name_specialtreasure;
+        private System.Windows.Forms.DataGridViewTextBoxColumn col_attr_specialtreasure;
 
     }
 }

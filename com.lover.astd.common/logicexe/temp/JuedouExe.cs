@@ -110,7 +110,7 @@ namespace com.lover.astd.common.logicexe.temp
         {
             Dictionary<string, string> config = _conf.getConfig(ConfigStrings.S_Attack);
             int min_level = 0;
-            int max_level = this._user.Level;
+            int max_level = 0;
             if (config.ContainsKey(ConfigStrings.level_min))
             {
                 int.TryParse(config[ConfigStrings.level_min], out min_level);
@@ -119,6 +119,7 @@ namespace com.lover.astd.common.logicexe.temp
             //{
             //    int.TryParse(config[ConfigStrings.level_max], out max_level);
             //}
+            max_level = this._user.Level;
             BattleMgr battleManager = _factory.getBattleManager();
             battleManager.getNewAreaInfo(_proto, _logger, _user);
             _juedou = _user._attack_daojuFlag;

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Xml;
+using System.Text;
 
 namespace com.lover.astd.common.logic
 {
@@ -829,7 +830,50 @@ namespace com.lover.astd.common.logic
             return result;
         }
 
-        public int handlePolishInfo(ProtocolMgr protocol, ILogger logger, int gold_available, int magic_now, int reserve_count, int reserve_item_count, int gold_merge_attrib, int melt_failcount)
+        public bool getBaowuPolishInfo(ProtocolMgr protocol, ILogger logger, User user, string lh_ids)
+        {
+            string url = "/root/polish!getBaowuPolishInfo.action";
+            ServerResult xml = protocol.getXml(url, "获取炼化信息");
+            if (xml == null || !xml.CmdSucceed) return false;
+
+            user.SpecialTreasureList.Clear();
+            XmlNodeList nodeList = xml.CmdResult.SelectNodes("/results/specialtreasure");
+            foreach (XmlNode item in nodeList)
+            {
+                Specialtreasure treasure = new Specialtreasure();
+                XmlNodeList childNodes = item.ChildNodes;
+                foreach (XmlNode child in childNodes)
+                {
+                    if (child.Name == "storeid") treasure.Id = int.Parse(child.InnerText);
+                    else if (child.Name == "upgradestate") treasure.upgradestate_ = int.Parse(child.InnerText);
+                    else if (child.Name == "consecratestatus") treasure.consecratestatus_ = int.Parse(child.InnerText);
+                    else if (child.Name == "generalname") treasure.generalname_ = child.InnerText;
+                    else if (child.Name == "attribute_lea") treasure.attribute_lea_ = int.Parse(child.InnerText);
+                    else if (child.Name == "attribute_str") treasure.attribute_str_ = int.Parse(child.InnerText);
+                    else if (child.Name == "attribute_int") treasure.attribute_int_ = int.Parse(child.InnerText);
+                    else if (child.Name == "additionalattributelvmax") treasure.additionalattributelvmax_ = int.Parse(child.InnerText);
+                    else if (child.Name == "maxadd") treasure.maxadd_ = int.Parse(child.InnerText);
+                    else if (child.Name == "intro") treasure.intro_ = child.InnerText;
+                    else if (child.Name == "quality") treasure.quality_ = int.Parse(child.InnerText);
+                    else if (child.Name == "name") treasure.Name = child.InnerText;
+                    else if (child.Name == "succprob") treasure.succprob_ = float.Parse(child.InnerText);
+                }
+                if (treasure.Id > 0 && treasure.generalname_ != "")
+                {
+                    user.SpecialTreasureList.Add(treasure);
+                }
+            }
+
+            List<int> ids = base.generateIds(lh_ids);
+            foreach (Specialtreasure current in user.SpecialTreasureList)
+            {
+                current.IsChecked = (ids.IndexOf(current.Id) >= 0);
+            }
+
+            return true;
+        }
+
+        public int handlePolishInfo(ProtocolMgr protocol, ILogger logger, User user, int gold_available, string lh_ids, int magic_now, int reserve_count, int reserve_item_count, int gold_merge_attrib, int melt_failcount)
         {
             string url = "/root/polish!getBaowuPolishInfo.action";
             ServerResult xml = protocol.getXml(url, "获取炼化信息");
@@ -922,6 +966,32 @@ namespace com.lover.astd.common.logic
                     upgradeList.Add(decoration);
                 }
             }
+            //专属升级
+            if (!getBaowuPolishInfo(protocol, logger, user, lh_ids)) return 1;
+            List<Specialtreasure> treasure_list = user.SpecialTreasureList;
+            List<int> ids = base.generateIds(lh_ids);
+            foreach (int current in ids)
+            {
+                Specialtreasure treasure = null;
+                foreach (Specialtreasure current2 in treasure_list)
+                {
+                    if (current2.Id == current)
+                    {
+                        treasure = current2;
+                        break;
+                    }
+                }
+
+                if (treasure != null && treasure.CanUpgrade && upgradeList.Count > 0)
+                {
+                    while (treasure.CanUpgrade && upgradeList.Count > 0)
+                    {
+                        if (!upgradeBaowu(protocol, logger, treasure, upgradeList[0])) return 10;
+                        upgradeList.RemoveAt(0);
+                    }
+                }
+            }
+            
             //宝物升级
             if (upgradeList.Count > 0 && equipList.Count > 0)
             {
@@ -1032,6 +1102,48 @@ namespace com.lover.astd.common.logic
             int succstr = lua.GetIntValue("results.baowu.succstr");
             int succint = lua.GetIntValue("results.baowu.succint");
             logInfo(logger, string.Format("升级宝物[{0}({1})],统+{2},勇+{3},智+{4}", dst.name, dst.generalname, succlea, succstr, succint));
+            return true;
+        }
+
+        public bool upgradeBaowu(ProtocolMgr protocol, ILogger logger, Specialtreasure dst, Decoration src)
+        {
+            string url = "/root/polish!upgradeBaowu.action";
+            string data = string.Format("storeId={0}&storeId2={1}&type=2", dst.Id, src.storeid);
+            ServerResult xml = protocol.postXml(url, data, "专属玉佩升级");
+            if (xml == null || !xml.CmdSucceed) return false;
+
+            int upgraderesult = 0;
+            int succlea = 0;
+            int succstr = 0;
+            int succint = 0;
+            XmlNode node = xml.CmdResult.SelectSingleNode("/results/upgraderesult");
+            if (node != null) int.TryParse(node.InnerText, out upgraderesult);
+            node = xml.CmdResult.SelectSingleNode("/results/baowu/succlea");
+            if (node != null) int.TryParse(node.InnerText, out succlea);
+            node = xml.CmdResult.SelectSingleNode("/results/baowu/succstr");
+            if (node != null) int.TryParse(node.InnerText, out succstr);
+            node = xml.CmdResult.SelectSingleNode("/results/baowu/succint");
+            if (node != null) int.TryParse(node.InnerText, out succint);
+            
+            StringBuilder sb = new StringBuilder();
+            sb.Append("专属玉佩升级");
+            if (upgraderesult == 1)
+            {
+                sb.Append("成功");
+                if (succlea > 0) sb.AppendFormat(", 统+{0}", succlea);
+                if (succstr > 0) sb.AppendFormat(", 勇+{0}", succstr);
+                if (succint > 0) sb.AppendFormat(", 智+{0}", succint);
+                dst.attribute_lea_ += succlea;
+                dst.attribute_str_ += succstr;
+                dst.attribute_int_ += succint;
+            }
+            else
+            {
+                sb.Append("失败");
+            }
+
+            logInfo(logger, sb.ToString());
+
             return true;
         }
 

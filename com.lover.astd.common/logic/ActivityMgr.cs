@@ -26,6 +26,10 @@ namespace com.lover.astd.common.logic
         /// 草船借箭
         /// </summary>
         private BorrowingArrowsEvent borrowingArrows_;
+        /// <summary>
+        /// 端午活动
+        /// </summary>
+        private ArrestEvent arrestEvent_;
 
         public class KfzbItem
         {
@@ -288,6 +292,7 @@ namespace com.lover.astd.common.logic
             this._factory = factory;
             snowTrading_ = new ActivitySnowTrading(tmrMgr, factory);
             borrowingArrows_ = new BorrowingArrowsEvent(tmrMgr, factory);
+            arrestEvent_ = new ArrestEvent(tmrMgr, factory);
         }
 
         private bool doSilverFlopStep(char[,] s, int pos)
@@ -10104,6 +10109,13 @@ namespace com.lover.astd.common.logic
         public long borrowingArrowsExecute(ProtocolMgr protocol, ILogger logger, User user, int goldavailable, int buyboatcostlimit, bool calculatestream, int calculatestreamcostlimit, int costlimit, float percent)
         {
             return borrowingArrows_.execute(protocol, logger, user, goldavailable, buyboatcostlimit, calculatestream, calculatestreamcostlimit, costlimit, percent);
+        }
+        #endregion
+
+        #region 端午
+        public long ArrestEventExecute(ProtocolMgr protocol, ILogger logger, User user, int goldavailable, int hishengold, int ricedumplingcostgold, int arresttokencostgold)
+        {
+            return arrestEvent_.execute(protocol, logger, user, goldavailable, hishengold, ricedumplingcostgold, arresttokencostgold);
         }
         #endregion
 
