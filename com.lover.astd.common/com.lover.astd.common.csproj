@@ -187,6 +187,7 @@
     <Compile Include="model\User.cs" />
     <Compile Include="model\WarChariot.cs" />
     <Compile Include="model\activity\WineInfo.cs" />
+    <Compile Include="model\XmlObject.cs" />
     <Compile Include="partner\ILoginReceiver.cs" />
     <Compile Include="partner\impl\AoshitangLogin.cs" />
     <Compile Include="partner\impl\BaiduLogin.cs" />
@@ -253,6 +254,7 @@
     <Compile Include="protocol\response\GetUserInfoResponse.cs" />
     <Compile Include="protocol\response\LoginResponse.cs" />
     <Compile Include="UserSessionMgr.cs" />
+    <Compile Include="XmlHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\com.lover.common\com.lover.common.csproj">
