@@ -966,9 +966,19 @@ namespace com.lover.astd.common.logic
                     upgradeList.Add(decoration);
                 }
             }
-            //专属升级
+
+            //专属玉佩
             if (!getBaowuPolishInfo(protocol, logger, user, lh_ids)) return 1;
             List<Specialtreasure> treasure_list = user.SpecialTreasureList;
+            //专属开光
+            foreach (Specialtreasure current3 in treasure_list)
+            {
+                if (current3.CanConsecrate)
+                {
+                    if (!consecrateSpecialTreasure(protocol, logger, current3)) return 10;
+                }
+            }
+            //专属升级
             List<int> ids = base.generateIds(lh_ids);
             foreach (int current in ids)
             {
@@ -1085,6 +1095,17 @@ namespace com.lover.astd.common.logic
                 }
             }
             return 2;
+        }
+
+        public bool consecrateSpecialTreasure(ProtocolMgr protocol, ILogger logger, Specialtreasure src)
+        {
+            string url = "/root/polish!consecrateSpecialTreasure.action";
+            string data = string.Format("storeId={0}", src.Id);
+            ServerResult xml = protocol.postXml(url, data, "宝物开光");
+            if (xml == null || !xml.CmdSucceed) return false;
+
+            logInfo(logger, string.Format("{0}开光成功", src.NameWithGeneral));
+            return true;
         }
 
         public bool upgradeBaowu(ProtocolMgr protocol, ILogger logger, Decoration dst, Decoration src)
