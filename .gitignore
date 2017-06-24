@@ -13,3 +13,8 @@ com.lover.astd.common/bin/
 com.lover.astd.common/obj/
 LuaInterface/bin/
 LuaInterface/obj/
+
+/lua.test
+/xml.test
+/com.lover.astd.game.ui/com.lover.astd.game.ui.csproj.user
+/
