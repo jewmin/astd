@@ -857,6 +857,8 @@ namespace com.lover.astd.common.logic
                     else if (child.Name == "quality") treasure.quality_ = int.Parse(child.InnerText);
                     else if (child.Name == "name") treasure.Name = child.InnerText;
                     else if (child.Name == "succprob") treasure.succprob_ = float.Parse(child.InnerText);
+                    else if (child.Name == "canconsecrate") treasure.canconsecrate_ = int.Parse(child.InnerText);
+                    
                 }
                 if (treasure.Id > 0 && treasure.generalname_ != "")
                 {
