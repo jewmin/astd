@@ -18,6 +18,18 @@ namespace com.lover.astd.common.logic
 			this._factory = factory;
 		}
 
+        public MoziBuilding getMoziBuilding(List<MoziBuilding> buildings, int buildingId)
+        {
+            if (buildings == null || buildings.Count == 0) return null;
+
+            foreach (MoziBuilding current in buildings)
+            {
+                if (current.Id == buildingId) return current;
+            }
+
+            return null;
+        }
+
 		public Building getBuilding(List<Building> buildings, int buildingId)
 		{
 			Building result;
@@ -104,7 +116,7 @@ namespace com.lover.astd.common.logic
 			}
 		}
 
-        private void renderMoziBuildingNode(XmlNode building_node, List<Building> buildings)
+        private void renderMoziBuildingNode(XmlNode building_node, List<Building> buildings, List<MoziBuilding> mozi_buildings)
         {
             int id = 0;
             XmlNode xmlNode = building_node.SelectSingleNode("id");
@@ -119,6 +131,14 @@ namespace com.lover.astd.common.logic
                 {
                     building.fillMoziValues(building_node.ChildNodes);
                 }
+
+                MoziBuilding mozi_building = this.getMoziBuilding(mozi_buildings, id);
+                if (mozi_building == null)
+                {
+                    mozi_building = new MoziBuilding();
+                    mozi_buildings.Add(mozi_building);
+                }
+                mozi_building.fillValues(building_node.ChildNodes);
             }
         }
 
@@ -143,9 +163,11 @@ namespace com.lover.astd.common.logic
                 }
                 else if (xmlNode2.Name == "mozibuilding")
                 {
-                    this.renderMoziBuildingNode(xmlNode2, user._buildings);
+                    this.renderMoziBuildingNode(xmlNode2, user._buildings, user.mozi_buildings_);
                 }
             }
+
+            user.remainseniorslaves = XmlHelper.GetValue<int>(cmdResult.SelectSingleNode("/results/remainseniorslaves"));
 
             XmlNode xmlNode3 = cmdResult.SelectSingleNode("/results/is51");
             if (xmlNode3 != null && xmlNode3.InnerText == "1")
@@ -402,5 +424,65 @@ namespace com.lover.astd.common.logic
 			}
 			return num;
 		}
+
+        /// <summary>
+        /// <results>
+        ///     <state>1</state>
+        ///     <mozi>
+        ///         <buildid>1013</buildid>
+        ///         <slaves>0</slaves>
+        ///         <process>1</process>
+        ///         <state>0</state>
+        ///         <totalprocess>10</totalprocess>
+        ///         <update>0</update>
+        ///     </mozi>
+        /// </results>
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="logger"></param>
+        /// <param name="building"></param>
+        /// <returns></returns>
+        public bool constructBuilding(ProtocolMgr protocol, ILogger logger, MoziBuilding building)
+        {
+            string url = "/root/refine!constructBuilding.action";
+            string data = string.Format("buildId={0}", building.buildid);
+            ServerResult xml = protocol.postXml(url, data, "改造建筑");
+            if (xml == null || !xml.CmdSucceed) return false;
+
+            XmlNode node = xml.CmdResult.SelectSingleNode("/results/mozi");
+            if (node != null) building.fillValues(node.ChildNodes);
+            logInfo(logger, "改造建筑成功");
+            return true;
+        }
+
+        /// <summary>
+        /// <results>
+        ///     <state>1</state>
+        ///     <remainseniorslaves>8</remainseniorslaves>
+        ///     <lvupto>2</lvupto>
+        ///     <seniorprocess>0</seniorprocess>
+        ///     <totalseniorprocess>0</totalseniorprocess>
+        ///     <canupgrade>2</canupgrade>
+        ///     <hpbuff>7</hpbuff>
+        /// </results>
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="logger"></param>
+        /// <param name="building"></param>
+        /// <returns></returns>
+        public bool upGradeMoziBuild(ProtocolMgr protocol, ILogger logger, User user, MoziBuilding building)
+        {
+            string url = "/root/mainCity!upGradeMoziBuild.action";
+            string data = string.Format("player_BuildingId={0}", building.buildid);
+            ServerResult xml = protocol.postXml(url, data, "升级建筑");
+            if (xml == null || !xml.CmdSucceed) return false;
+
+            user.remainseniorslaves = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/remainseniorslaves"));
+            building.lv = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/lvupto"));
+            building.seniorprocess = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/seniorprocess"));
+            building.totalseniorprocess = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/totalseniorprocess"));
+            logInfo(logger, string.Format("升级建筑成功，升级到lv.{0}", building.lv));
+            return true;
+        }
 	}
 }

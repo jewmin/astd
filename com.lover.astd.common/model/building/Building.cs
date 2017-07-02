@@ -168,4 +168,83 @@ namespace com.lover.astd.common.model.building
             }
         }
 	}
+
+    public class MoziBuilding : AsObject
+    {
+        public int buildid;
+        public int slaves;
+        public int process;
+        public int state;
+        public int totalprocess;
+        public int update;
+        public int lv;
+        public int seniorprocess;
+        public int totalseniorprocess;
+        public string intro;
+
+        public MoziBuilding()
+        {
+            buildid = 0;
+            slaves = 0;
+            process = 0;
+            state = 0;
+            totalprocess = 0;
+            update = 0;
+            lv = 0;
+            seniorprocess = 0;
+            totalseniorprocess = 0;
+            intro = "";
+        }
+
+        public void fillValues(XmlNodeList nodes)
+        {
+            foreach (XmlNode xmlNode in nodes)
+            {
+                if (xmlNode.Name == "id")
+                {
+                    base.Id = int.Parse(xmlNode.InnerText);
+                }
+                else if (xmlNode.Name == "buildid")
+                {
+                    this.buildid = int.Parse(xmlNode.InnerText);
+                }
+                else if (xmlNode.Name == "slaves")
+                {
+                    this.slaves = int.Parse(xmlNode.InnerText);
+                }
+                else if (xmlNode.Name == "process")
+                {
+                    this.process = int.Parse(xmlNode.InnerText);
+                }
+                else if (xmlNode.Name == "state")
+                {
+                    this.state = int.Parse(xmlNode.InnerText);
+                }
+                else if (xmlNode.Name == "totalprocess")
+                {
+                    this.totalprocess = int.Parse(xmlNode.InnerText);
+                }
+                else if (xmlNode.Name == "update")
+                {
+                    this.update = int.Parse(xmlNode.InnerText);
+                }
+                else if (xmlNode.Name == "lv")
+                {
+                    this.lv = int.Parse(xmlNode.InnerText);
+                }
+                else if (xmlNode.Name == "seniorprocess")
+                {
+                    this.seniorprocess = int.Parse(xmlNode.InnerText);
+                }
+                else if (xmlNode.Name == "totalseniorprocess")
+                {
+                    this.totalseniorprocess = int.Parse(xmlNode.InnerText);
+                }
+                else if (xmlNode.Name == "intro")
+                {
+                    this.intro = xmlNode.InnerText;
+                }
+            }
+        }
+    }
 }

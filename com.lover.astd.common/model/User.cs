@@ -180,6 +180,10 @@ namespace com.lover.astd.common.model
 
 		public List<Building> _buildings;
 
+        public List<MoziBuilding> mozi_buildings_;
+
+        public int remainseniorslaves;
+
 		public Dictionary<int, BuildingLine> _buildingLines;
 
 		private long _tuFeiCd;
@@ -1601,6 +1605,7 @@ namespace com.lover.astd.common.model
 			this._dinner_team_id = "";
 			this._dinner_team_creator = "";
 			this._buildings = new List<Building>();
+            this.mozi_buildings_ = new List<MoziBuilding>();
 			this._buildingLines = new Dictionary<int, BuildingLine>();
 			this._heroes = new List<Hero>();
 			this._battle_current_army_id = "";
