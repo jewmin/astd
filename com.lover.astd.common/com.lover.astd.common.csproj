@@ -146,6 +146,7 @@
     <Compile Include="manager\TimeMgr.cs" />
     <Compile Include="manager\WeaponHelper.cs" />
     <Compile Include="model\AccountData.cs" />
+    <Compile Include="model\activity\CaseState.cs" />
     <Compile Include="model\activity\TaskInfo.cs" />
     <Compile Include="model\AsObject.cs" />
     <Compile Include="model\AstdLuaObject.cs" />

@@ -5694,17 +5694,26 @@ namespace com.lover.astd.common.logic
                 return false;
             }
 
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
-            islike = lua.GetIntValue("results.like");//0:不喜欢,1:喜欢
-            int weavestate = lua.GetIntValue("results.weavestate");//纺织状态,0:失败
-            int hanganadd = lua.GetIntValue("results.hanganadd");//好感度增加
-            int bussinessdone = lua.GetIntValue("results.bussinessdone");//已通商人数
-            int bussinessdonemax = lua.GetIntValue("results.bussinessdonemax");//最大通商人数
-            int heishi = lua.GetIntValue("results.heishi");//黑市状态,0:没有,1:出现
-            int buyheishicost = lua.GetIntValue("results.buyheishicost");//黑市购买宝箱花费金币数
-            int heishimianfei = lua.GetIntValue("results.heishimianfei");//黑市免费开宝箱次数
-            string heishistate = lua.GetStringValue("results.heishistate");//黑市宝箱开启状态 0,1,0,0,0, 0未开启 1已开启
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+            //islike = lua.GetIntValue("results.like");//0:不喜欢,1:喜欢
+            //int weavestate = lua.GetIntValue("results.weavestate");//纺织状态,0:失败
+            //int hanganadd = lua.GetIntValue("results.hanganadd");//好感度增加
+            //int bussinessdone = lua.GetIntValue("results.bussinessdone");//已通商人数
+            //int bussinessdonemax = lua.GetIntValue("results.bussinessdonemax");//最大通商人数
+            //int heishi = lua.GetIntValue("results.heishi");//黑市状态,0:没有,1:出现
+            //int buyheishicost = lua.GetIntValue("results.buyheishicost");//黑市购买宝箱花费金币数
+            //int heishimianfei = lua.GetIntValue("results.heishimianfei");//黑市免费开宝箱次数
+            //string heishistate = lua.GetStringValue("results.heishistate");//黑市宝箱开启状态 0,1,0,0,0, 0未开启 1已开启
+            islike = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/like"));
+            int weavestate = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/weavestate"));
+            int hanganadd = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/hanganadd"));
+            int bussinessdone = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/bussinessdone"));
+            int bussinessdonemax = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/bussinessdonemax"));
+            int heishi = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/heishi"));
+            int buyheishicost = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/buyheishicost"));
+            int heishimianfei = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/heishimianfei"));
+            string heishistate = XmlHelper.GetString(xml.CmdResult.SelectSingleNode("/results/heishistate"));
             if (weavestate > 1)
             {
                 RewardInfo reward = new RewardInfo();
@@ -5754,12 +5763,16 @@ namespace com.lover.astd.common.logic
                 return false;
             }
 
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
-            int heishi = lua.GetIntValue("results.heishi");//黑市状态,0:没有,1:出现
-            int buyheishicost = lua.GetIntValue("results.buyheishicost");//黑市购买宝箱花费金币数
-            heishimianfei = lua.GetIntValue("results.heishimianfei");//黑市免费开宝箱次数
-            heishistate = lua.GetStringValue("results.heishistate");//黑市宝箱开启状态 0,1,0,0,0, 0未开启 1已开启
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+            //int heishi = lua.GetIntValue("results.heishi");//黑市状态,0:没有,1:出现
+            //int buyheishicost = lua.GetIntValue("results.buyheishicost");//黑市购买宝箱花费金币数
+            //heishimianfei = lua.GetIntValue("results.heishimianfei");//黑市免费开宝箱次数
+            //heishistate = lua.GetStringValue("results.heishistate");//黑市宝箱开启状态 0,1,0,0,0, 0未开启 1已开启
+            int heishi = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/heishi"));
+            int buyheishicost = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/buyheishicost"));
+            heishimianfei = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/heishimianfei"));
+            heishistate = XmlHelper.GetString(xml.CmdResult.SelectSingleNode("/results/heishistate"));
             RewardInfo reward = new RewardInfo();
             reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
             logInfo(logger, string.Format("免费开启黑市宝箱, 获得{0}", reward.ToString()));
@@ -5780,24 +5793,40 @@ namespace com.lover.astd.common.logic
                 return 10;
             }
 
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
-            int activestatus = lua.GetIntValue("results.activestatus");//纺织状态,1:高效,2:疲劳
-            int needactive = lua.GetIntValue("results.needactive");//纺织所需行动力
-            int remainhigh = lua.GetIntValue("results.remainhigh");//高效次数
-            int limit = lua.GetIntValue("results.limit");//极限次数
-            int remainlimit = lua.GetIntValue("results.remainlimit");//剩余极限次数
-            int cost1 = lua.GetIntValue("results.cost1");//高效消耗行动力
-            int cost2 = lua.GetIntValue("results.cost2");//疲劳消耗行动力
-            string bussinessname = lua.GetStringValue("results.bussinessname");//当前商人
-            int bussinessdone = lua.GetIntValue("results.bussinessdone");//已通商人数
-            int bussinessdonemax = lua.GetIntValue("results.bussinessdonemax");//最大通商人数
-            int haogandu = lua.GetIntValue("results.haogandu");//当前商人好感度
-            int haogandumax = lua.GetIntValue("results.haogandumax");//商人最大好感度
-            int heishi = lua.GetIntValue("results.heishi");//黑市状态,0:没有,1:出现
-            int buyheishicost = lua.GetIntValue("results.buyheishicost");//黑市购买宝箱花费金币数
-            int heishimianfei = lua.GetIntValue("results.heishimianfei");//黑市免费开宝箱次数
-            string heishistate = lua.GetStringValue("results.heishistate");//黑市宝箱开启状态 0,1,0,0,0, 0未开启 1已开启
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+            //int activestatus = lua.GetIntValue("results.activestatus");//纺织状态,1:高效,2:疲劳
+            //int needactive = lua.GetIntValue("results.needactive");//纺织所需行动力
+            //int remainhigh = lua.GetIntValue("results.remainhigh");//高效次数
+            //int limit = lua.GetIntValue("results.limit");//极限次数
+            //int remainlimit = lua.GetIntValue("results.remainlimit");//剩余极限次数
+            //int cost1 = lua.GetIntValue("results.cost1");//高效消耗行动力
+            //int cost2 = lua.GetIntValue("results.cost2");//疲劳消耗行动力
+            //string bussinessname = lua.GetStringValue("results.bussinessname");//当前商人
+            //int bussinessdone = lua.GetIntValue("results.bussinessdone");//已通商人数
+            //int bussinessdonemax = lua.GetIntValue("results.bussinessdonemax");//最大通商人数
+            //int haogandu = lua.GetIntValue("results.haogandu");//当前商人好感度
+            //int haogandumax = lua.GetIntValue("results.haogandumax");//商人最大好感度
+            //int heishi = lua.GetIntValue("results.heishi");//黑市状态,0:没有,1:出现
+            //int buyheishicost = lua.GetIntValue("results.buyheishicost");//黑市购买宝箱花费金币数
+            //int heishimianfei = lua.GetIntValue("results.heishimianfei");//黑市免费开宝箱次数
+            //string heishistate = lua.GetStringValue("results.heishistate");//黑市宝箱开启状态 0,1,0,0,0, 0未开启 1已开启
+            int activestatus = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/activestatus"));
+            int needactive = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/needactive"));
+            int remainhigh = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/remainhigh"));
+            int limit = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/limit"));
+            int remainlimit = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/remainlimit"));
+            int cost1 = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/cost1"));
+            int cost2 = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/cost2"));
+            string bussinessname = XmlHelper.GetString(xml.CmdResult.SelectSingleNode("/results/bussinessname"));
+            int bussinessdone = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/bussinessdone"));
+            int bussinessdonemax = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/bussinessdonemax"));
+            int haogandu = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/haogandu"));
+            int haogandumax = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/haogandumax"));
+            int heishi = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/heishi"));
+            int buyheishicost = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/buyheishicost"));
+            int heishimianfei = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/heishimianfei"));
+            string heishistate = XmlHelper.GetString(xml.CmdResult.SelectSingleNode("/results/heishistate"));
 
             int use = limit - remainlimit;
             if (remainlimit <= 0)
@@ -8775,13 +8804,19 @@ namespace com.lover.astd.common.logic
             ServerResult xml = protocol.getXml(url, "将军塔");
             if (xml != null && xml.CmdSucceed)
             {
-                AstdLuaObject lua = new AstdLuaObject();
-                lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
-                int buildingprogress = lua.GetIntValue("results.generaltower.buildingprogress");//进度
-                int leveluprequirement = lua.GetIntValue("results.generaltower.leveluprequirement");//升级要求
-                int buildingstone = lua.GetIntValue("results.generaltower.buildingstone");//筑造石
-                int gemstonenum = lua.GetIntValue("results.generaltower.gemstonenum");//今天获得宝石
-                int generaltowerlevel = lua.GetIntValue("results.generaltower.generaltowerlevel");//等级
+                //AstdLuaObject lua = new AstdLuaObject();
+                //lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+                //int buildingprogress = lua.GetIntValue("results.generaltower.buildingprogress");//进度
+                //int leveluprequirement = lua.GetIntValue("results.generaltower.leveluprequirement");//升级要求
+                //int buildingstone = lua.GetIntValue("results.generaltower.buildingstone");//筑造石
+                //int gemstonenum = lua.GetIntValue("results.generaltower.gemstonenum");//今天获得宝石
+                //int generaltowerlevel = lua.GetIntValue("results.generaltower.generaltowerlevel");//等级
+                int buildingprogress = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/generaltower/buildingprogress"));
+                int leveluprequirement = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/generaltower/leveluprequirement"));
+                int buildingstone = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/generaltower/buildingstone"));
+                int gemstonenum = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/generaltower/gemstonenum"));
+                int generaltowerlevel = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/generaltower/generaltowerlevel"));
+
                 while (buildingstone > 0)
                 {
                     useBuildingStone(protocol, logger, out buildingstone);
@@ -8796,12 +8831,16 @@ namespace com.lover.astd.common.logic
             ServerResult xml = protocol.getXml(url, "");
             if (xml != null && xml.CmdSucceed)
             {
-                AstdLuaObject lua = new AstdLuaObject();
-                lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
-                int levelup = lua.GetIntValue("results.generaltower.levelup");//升级
-                int addprogress = lua.GetIntValue("results.generaltower.addprogress");//增加进度
-                int buildingprogress = lua.GetIntValue("results.generaltower.buildingprogress");//进度
-                buildingstone = lua.GetIntValue("results.generaltower.buildingstone");//筑造石
+                //AstdLuaObject lua = new AstdLuaObject();
+                //lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+                //int levelup = lua.GetIntValue("results.generaltower.levelup");//升级
+                //int addprogress = lua.GetIntValue("results.generaltower.addprogress");//增加进度
+                //int buildingprogress = lua.GetIntValue("results.generaltower.buildingprogress");//进度
+                //buildingstone = lua.GetIntValue("results.generaltower.buildingstone");//筑造石
+                int levelup = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/generaltower/levelup"));
+                int addprogress = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/generaltower/addprogress"));
+                int buildingprogress = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/generaltower/buildingprogress"));
+                buildingstone = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/generaltower/buildingstone"));
                 string leveluptext = "";
                 if (levelup == 1)
                 {

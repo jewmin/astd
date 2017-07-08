@@ -8,10 +8,11 @@ using com.lover.astd.common.model;
 using System.Collections.Specialized;
 using LuaInterface;
 using com.lover.astd.common.model.misc;
+using System.Xml;
 
 namespace com.lover.astd.common.activity
 {
-    public class streamarrows : IComparable
+    public class streamarrows : XmlObject, IComparable
     {
         /// <summary>
         /// 0 下游 1 中游 2 上游
@@ -33,9 +34,23 @@ namespace com.lover.astd.common.activity
             else if (this.arrows < arrows.arrows) return 1;
             else return 0;
         }
+
+        public override void Parse(System.Xml.XmlNode node)
+        {
+            foreach (XmlNode item in node.ChildNodes)
+            {
+                if (item.Name == "id") id = int.Parse(item.InnerText);
+                else if (item.Name == "arrows") arrows = int.Parse(item.InnerText);
+            }
+        }
+
+        public override bool CanAdd()
+        {
+            return true;
+        }
     }
 
-    public class exchangereward : IComparable
+    public class exchangereward : XmlObject, IComparable
     {
         private string[] rewardname = { "镔铁", "点卷", "宝物", "宝石" };
         private int[] priority = { 4, 3, 2, 1 };
@@ -76,6 +91,21 @@ namespace com.lover.astd.common.activity
             if (this.Priority < reward.Priority) return -1;
             else if (this.Priority > reward.Priority) return 1;
             else return 0;
+        }
+
+        public override void Parse(XmlNode node)
+        {
+            foreach (XmlNode item in node.ChildNodes)
+            {
+                if (item.Name == "rewardtype") rewardtype = int.Parse(item.InnerText);
+                else if (item.Name == "buynum") buynum = int.Parse(item.InnerText);
+                else if (item.Name == "cost") cost = int.Parse(item.InnerText);
+            }
+        }
+
+        public override bool CanAdd()
+        {
+            return true;
         }
     }
 
@@ -213,39 +243,53 @@ namespace com.lover.astd.common.activity
             {
                 return 1;
             }
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
-            this.arrowsboat = lua.GetIntValue("results.borrowingarrowseventinfo.arrowsboat");
-            this.arrowsleft = lua.GetIntValue("results.borrowingarrowseventinfo.arrowsleft");
-            this.arrowstotal = lua.GetIntValue("results.borrowingarrowseventinfo.arrowstotal");
-            this.boatcapacity = lua.GetIntValue("results.borrowingarrowseventinfo.boatcapacity");
-            this.boatnum = lua.GetIntValue("results.borrowingarrowseventinfo.boatnum");
-            this.buyboatcost = lua.GetIntValue("results.borrowingarrowseventinfo.buyboatcost");
-            this.calculatestreamstate = lua.GetIntValue("results.borrowingarrowseventinfo.calculatestreamstate");
-            this.calculatestreamcost = lua.GetIntValue("results.borrowingarrowseventinfo.calculatestreamcost");
-            this.currentstream = lua.GetIntValue("results.borrowingarrowseventinfo.currentstream");
-            this.eventresttime = lua.GetIntValue("results.borrowingarrowseventinfo.eventresttime");
-            this.unlocknum = lua.GetIntValue("results.borrowingarrowseventinfo.unlocknum");
-            ListDictionary streamarrows_table = lua.GetListValue("results.borrowingarrowseventinfo.streamarrows");
-            this.streamarrows_list.Clear();
-            foreach (LuaTable table in streamarrows_table.Values)
-            {
-                streamarrows item = new streamarrows();
-                item.id = AstdLuaObject.GetIntValue(table, "id");
-                item.arrows = AstdLuaObject.GetIntValue(table, "arrows");
-                this.streamarrows_list.Add(item);
-            }
-            ListDictionary exchangereward_table = lua.GetListValue("results.borrowingarrowseventinfo.exchangereward");
-            this.exchangereward_list.Clear();
-            foreach (LuaTable table in exchangereward_table.Values)
-            {
-                exchangereward item = new exchangereward();
-                item.rewardtype = AstdLuaObject.GetIntValue(table, "rewardtype");
-                item.buynum = AstdLuaObject.GetIntValue(table, "buynum");
-                item.cost = AstdLuaObject.GetIntValue(table, "cost");
-                this.exchangereward_list.Add(item);
-            }
-            string stagestatus = lua.GetStringValue("results.borrowingarrowseventinfo.stagestatus");
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
+            //this.arrowsboat = lua.GetIntValue("results.borrowingarrowseventinfo.arrowsboat");
+            //this.arrowsleft = lua.GetIntValue("results.borrowingarrowseventinfo.arrowsleft");
+            //this.arrowstotal = lua.GetIntValue("results.borrowingarrowseventinfo.arrowstotal");
+            //this.boatcapacity = lua.GetIntValue("results.borrowingarrowseventinfo.boatcapacity");
+            //this.boatnum = lua.GetIntValue("results.borrowingarrowseventinfo.boatnum");
+            //this.buyboatcost = lua.GetIntValue("results.borrowingarrowseventinfo.buyboatcost");
+            //this.calculatestreamstate = lua.GetIntValue("results.borrowingarrowseventinfo.calculatestreamstate");
+            //this.calculatestreamcost = lua.GetIntValue("results.borrowingarrowseventinfo.calculatestreamcost");
+            //this.currentstream = lua.GetIntValue("results.borrowingarrowseventinfo.currentstream");
+            //this.eventresttime = lua.GetIntValue("results.borrowingarrowseventinfo.eventresttime");
+            //this.unlocknum = lua.GetIntValue("results.borrowingarrowseventinfo.unlocknum");
+            arrowsboat = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/borrowingarrowseventinfo/arrowsboat"));
+            arrowsleft = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/borrowingarrowseventinfo/arrowsleft"));
+            arrowstotal = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/borrowingarrowseventinfo/arrowstotal"));
+            boatcapacity = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/borrowingarrowseventinfo/boatcapacity"));
+            boatnum = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/borrowingarrowseventinfo/boatnum"));
+            buyboatcost = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/borrowingarrowseventinfo/buyboatcost"));
+            calculatestreamstate = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/borrowingarrowseventinfo/calculatestreamstate"));
+            calculatestreamcost = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/borrowingarrowseventinfo/calculatestreamcost"));
+            currentstream = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/borrowingarrowseventinfo/currentstream"));
+            eventresttime = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/borrowingarrowseventinfo/eventresttime"));
+            unlocknum = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/borrowingarrowseventinfo/unlocknum"));
+            //ListDictionary streamarrows_table = lua.GetListValue("results.borrowingarrowseventinfo.streamarrows");
+            //this.streamarrows_list.Clear();
+            //foreach (LuaTable table in streamarrows_table.Values)
+            //{
+            //    streamarrows item = new streamarrows();
+            //    item.id = AstdLuaObject.GetIntValue(table, "id");
+            //    item.arrows = AstdLuaObject.GetIntValue(table, "arrows");
+            //    this.streamarrows_list.Add(item);
+            //}
+            streamarrows_list = XmlHelper.GetClassList<streamarrows>(result.CmdResult.SelectNodes("/results/borrowingarrowseventinfo/streamarrows"));
+            //ListDictionary exchangereward_table = lua.GetListValue("results.borrowingarrowseventinfo.exchangereward");
+            //this.exchangereward_list.Clear();
+            //foreach (LuaTable table in exchangereward_table.Values)
+            //{
+            //    exchangereward item = new exchangereward();
+            //    item.rewardtype = AstdLuaObject.GetIntValue(table, "rewardtype");
+            //    item.buynum = AstdLuaObject.GetIntValue(table, "buynum");
+            //    item.cost = AstdLuaObject.GetIntValue(table, "cost");
+            //    this.exchangereward_list.Add(item);
+            //}
+            exchangereward_list = XmlHelper.GetClassList<exchangereward>(result.CmdResult.SelectNodes("/results/borrowingarrowseventinfo/exchangereward"));
+            //string stagestatus = lua.GetStringValue("results.borrowingarrowseventinfo.stagestatus");
+            string stagestatus = XmlHelper.GetString(result.CmdResult.SelectSingleNode("/results/borrowingarrowseventinfo/stagestatus"));
             string[] tmp = stagestatus.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             this.stagestatus_list.Clear();
             foreach (string item in tmp)
@@ -271,9 +315,10 @@ namespace com.lover.astd.common.activity
             {
                 return 1;
             }
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
-            this.currentstream = lua.GetIntValue("results.buyboat.currentstream");
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
+            //this.currentstream = lua.GetIntValue("results.buyboat.currentstream");
+            currentstream = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/buyboat/currentstream"));
             if (this.boatnum > 0)
             {
                 logInfo(logger, string.Format("免费发船"));
@@ -326,17 +371,24 @@ namespace com.lover.astd.common.activity
             {
                 return 1;
             }
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
-            int borrowingresult = lua.GetIntValue("results.borrowingarrows.borrowingresult");
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
+            //int borrowingresult = lua.GetIntValue("results.borrowingarrows.borrowingresult");
+            int borrowingresult = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/borrowingarrows/borrowingresult"));
             if (borrowingresult == 0)
             {
-                this.boatnum = lua.GetIntValue("results.borrowingarrows.boatnum");
-                this.boatcapacity = lua.GetIntValue("results.borrowingarrows.boatcapacity");
-                this.arrowsleft = lua.GetIntValue("results.borrowingarrows.arrowsleft");
-                this.arrowstotal = lua.GetIntValue("results.borrowingarrows.arrowstotal");
-                this.arrowsdeliver = lua.GetIntValue("results.borrowingarrows.arrowsdeliver");
-                string stagestatus = lua.GetStringValue("results.borrowingarrows.stagestatus");
+                //this.boatnum = lua.GetIntValue("results.borrowingarrows.boatnum");
+                //this.boatcapacity = lua.GetIntValue("results.borrowingarrows.boatcapacity");
+                //this.arrowsleft = lua.GetIntValue("results.borrowingarrows.arrowsleft");
+                //this.arrowstotal = lua.GetIntValue("results.borrowingarrows.arrowstotal");
+                //this.arrowsdeliver = lua.GetIntValue("results.borrowingarrows.arrowsdeliver");
+                //string stagestatus = lua.GetStringValue("results.borrowingarrows.stagestatus");
+                boatnum = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/borrowingarrows/boatnum"));
+                boatcapacity = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/borrowingarrows/boatcapacity"));
+                arrowsleft = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/borrowingarrows/arrowsleft"));
+                arrowstotal = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/borrowingarrows/arrowstotal"));
+                arrowsdeliver = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/borrowingarrows/arrowsdeliver"));
+                string stagestatus = XmlHelper.GetString(result.CmdResult.SelectSingleNode("/results/borrowingarrows/stagestatus"));
                 string[] tmp = stagestatus.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                 this.stagestatus_list.Clear();
                 foreach (string item in tmp)
@@ -344,18 +396,22 @@ namespace com.lover.astd.common.activity
                     this.stagestatus_list.Add(int.Parse(item));
                 }
             }
-            this.arrowsboat = lua.GetIntValue("results.borrowingarrows.arrowsboat");
-            this.arrowsstream = lua.GetIntValue("results.borrowingarrows.arrowsstream");
-            this.currentstream = lua.GetIntValue("results.borrowingarrows.currentstream");
-            ListDictionary streamarrows_table = lua.GetListValue("results.borrowingarrows.streamarrows");
-            this.streamarrows_list.Clear();
-            foreach (LuaTable table in streamarrows_table.Values)
-            {
-                streamarrows item = new streamarrows();
-                item.id = AstdLuaObject.GetIntValue(table, "id");
-                item.arrows = AstdLuaObject.GetIntValue(table, "arrows");
-                this.streamarrows_list.Add(item);
-            }
+            //this.arrowsboat = lua.GetIntValue("results.borrowingarrows.arrowsboat");
+            //this.arrowsstream = lua.GetIntValue("results.borrowingarrows.arrowsstream");
+            //this.currentstream = lua.GetIntValue("results.borrowingarrows.currentstream");
+            arrowsboat = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/borrowingarrows/arrowsboat"));
+            arrowsstream = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/borrowingarrows/arrowsstream"));
+            currentstream = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/borrowingarrows/currentstream"));
+            //ListDictionary streamarrows_table = lua.GetListValue("results.borrowingarrows.streamarrows");
+            //this.streamarrows_list.Clear();
+            //foreach (LuaTable table in streamarrows_table.Values)
+            //{
+            //    streamarrows item = new streamarrows();
+            //    item.id = AstdLuaObject.GetIntValue(table, "id");
+            //    item.arrows = AstdLuaObject.GetIntValue(table, "arrows");
+            //    this.streamarrows_list.Add(item);
+            //}
+            streamarrows_list = XmlHelper.GetClassList<streamarrows>(result.CmdResult.SelectNodes("/results/borrowingarrows/streamarrows"));
             if (borrowingresult == 1)
             {
                 logInfo(logger, string.Format("{0}，箭矢增加{1}，当前承重{2}/{3}", desc, this.arrowsstream, this.arrowsboat, this.boatcapacity));
@@ -391,16 +447,24 @@ namespace com.lover.astd.common.activity
             {
                 return 1;
             }
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
-            this.arrowsleft = lua.GetIntValue("results.deliverarrows.arrowsleft");
-            this.arrowstotal = lua.GetIntValue("results.deliverarrows.arrowstotal");
-            this.arrowsdeliver = lua.GetIntValue("results.deliverarrows.arrowsdeliver");
-            this.boatnum = lua.GetIntValue("results.deliverarrows.boatnum");
-            this.arrowsboat = lua.GetIntValue("results.deliverarrows.arrowsboat");
-            this.boatcapacity = lua.GetIntValue("results.deliverarrows.boatcapacity");
-            this.currentstream = lua.GetIntValue("results.deliverarrows.currentstream");
-            string stagestatus = lua.GetStringValue("results.deliverarrows.stagestatus");
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
+            //this.arrowsleft = lua.GetIntValue("results.deliverarrows.arrowsleft");
+            //this.arrowstotal = lua.GetIntValue("results.deliverarrows.arrowstotal");
+            //this.arrowsdeliver = lua.GetIntValue("results.deliverarrows.arrowsdeliver");
+            //this.boatnum = lua.GetIntValue("results.deliverarrows.boatnum");
+            //this.arrowsboat = lua.GetIntValue("results.deliverarrows.arrowsboat");
+            //this.boatcapacity = lua.GetIntValue("results.deliverarrows.boatcapacity");
+            //this.currentstream = lua.GetIntValue("results.deliverarrows.currentstream");
+            //string stagestatus = lua.GetStringValue("results.deliverarrows.stagestatus");
+            arrowsleft = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/deliverarrows/arrowsleft"));
+            arrowstotal = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/deliverarrows/arrowstotal"));
+            arrowsdeliver = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/deliverarrows/arrowsdeliver"));
+            boatnum = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/deliverarrows/boatnum"));
+            arrowsboat = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/deliverarrows/arrowsboat"));
+            boatcapacity = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/deliverarrows/boatcapacity"));
+            currentstream = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/deliverarrows/currentstream"));
+            string stagestatus = XmlHelper.GetString(result.CmdResult.SelectSingleNode("/results/deliverarrows/stagestatus"));
             string[] tmp = stagestatus.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             this.stagestatus_list.Clear();
             foreach (string item in tmp)
@@ -429,10 +493,12 @@ namespace com.lover.astd.common.activity
             {
                 return 1;
             }
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
-            this.unlocknum = lua.GetIntValue("results.getkey.unlocknum");
-            string stagestatus = lua.GetStringValue("results.getkey.stagestatus");
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
+            //this.unlocknum = lua.GetIntValue("results.getkey.unlocknum");
+            //string stagestatus = lua.GetStringValue("results.getkey.stagestatus");
+            unlocknum = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/getkey/unlocknum"));
+            string stagestatus = XmlHelper.GetString(result.CmdResult.SelectSingleNode("/results/getkey/stagestatus"));
             string[] tmp = stagestatus.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             this.stagestatus_list.Clear();
             foreach (string item in tmp)
@@ -465,16 +531,20 @@ namespace com.lover.astd.common.activity
             {
                 return 1;
             }
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
-            this.unlocknum = lua.GetIntValue("results.unlockreward.unlocknum");
-            rewardType = lua.GetIntValue("results.unlockreward.exchangereward.rewardtype");
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
+            //this.unlocknum = lua.GetIntValue("results.unlockreward.unlocknum");
+            //rewardType = lua.GetIntValue("results.unlockreward.exchangereward.rewardtype");
+            unlocknum = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/unlockreward/unlocknum"));
+            rewardType = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/unlockreward/exchangereward/rewardtype"));
             foreach (exchangereward item in this.exchangereward_list)
             {
                 if (item.rewardtype == rewardType)
                 {
-                    item.buynum = lua.GetIntValue("results.unlockreward.exchangereward.buynum");
-                    item.cost = lua.GetIntValue("results.unlockreward.exchangereward.cost");
+                    //item.buynum = lua.GetIntValue("results.unlockreward.exchangereward.buynum");
+                    //item.cost = lua.GetIntValue("results.unlockreward.exchangereward.cost");
+                    item.buynum = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/unlockreward/exchangereward/buynum"));
+                    item.cost = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/unlockreward/exchangereward/cost"));
                     logInfo(logger, string.Format("打开[{0}]宝箱", item.RewardName));
                     break;
                 }
@@ -509,18 +579,22 @@ namespace com.lover.astd.common.activity
             {
                 return 1;
             }
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
-            this.arrowsleft = lua.GetIntValue("results.arrowsleft");
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
+            //this.arrowsleft = lua.GetIntValue("results.arrowsleft");
+            arrowsleft = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/arrowsleft"));
             int cost = 0;
-            rewardType = lua.GetIntValue("results.exchangereward.rewardtype");
+            //rewardType = lua.GetIntValue("results.exchangereward.rewardtype");
+            rewardType = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/exchangereward/rewardtype"));
             foreach (exchangereward item in this.exchangereward_list)
             {
                 if (item.rewardtype == rewardType)
                 {
                     cost = item.cost;
-                    item.buynum = lua.GetIntValue("results.exchangereward.buynum");
-                    item.cost = lua.GetIntValue("results.exchangereward.cost");
+                    //item.buynum = lua.GetIntValue("results.exchangereward.buynum");
+                    //item.cost = lua.GetIntValue("results.exchangereward.cost");
+                    item.buynum = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/exchangereward/buynum"));
+                    item.cost = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/exchangereward/cost"));
                     break;
                 }
             }
@@ -557,17 +631,18 @@ namespace com.lover.astd.common.activity
             {
                 return 1;
             }
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
-            ListDictionary streamarrows_table = lua.GetListValue("results.calculatestream.streamarrows");
-            this.streamarrows_list.Clear();
-            foreach (LuaTable table in streamarrows_table.Values)
-            {
-                streamarrows item = new streamarrows();
-                item.id = AstdLuaObject.GetIntValue(table, "id");
-                item.arrows = AstdLuaObject.GetIntValue(table, "arrows");
-                this.streamarrows_list.Add(item);
-            }
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
+            //ListDictionary streamarrows_table = lua.GetListValue("results.calculatestream.streamarrows");
+            //this.streamarrows_list.Clear();
+            //foreach (LuaTable table in streamarrows_table.Values)
+            //{
+            //    streamarrows item = new streamarrows();
+            //    item.id = AstdLuaObject.GetIntValue(table, "id");
+            //    item.arrows = AstdLuaObject.GetIntValue(table, "arrows");
+            //    this.streamarrows_list.Add(item);
+            //}
+            streamarrows_list = XmlHelper.GetClassList<streamarrows>(result.CmdResult.SelectNodes("/results/calculatestream/streamarrows"));
             goldavailable -= this.calculatestreamcost;
             return 0;
         }

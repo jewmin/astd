@@ -8,6 +8,7 @@ using com.lover.astd.common.model;
 using com.lover.astd.common.model.misc;
 using System.Collections.Specialized;
 using LuaInterface;
+using com.lover.astd.common.model.activity;
 
 namespace com.lover.astd.common.activity
 {
@@ -43,28 +44,43 @@ namespace com.lover.astd.common.activity
                 return 10;
             }
 
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
-            int buyroundcost = lua.GetIntValue("results.buyroundcost");//购买次数费用
-            int reinforcecost = lua.GetIntValue("results.reinforcecost");//加固雪橇费用
-            int hastime = lua.GetIntValue("results.hastime");//剩余次数
-            int buyroundnum = lua.GetIntValue("results.buyroundnum");//购买次数
-            int castnum = lua.GetIntValue("results.castnum");//运送宝箱
-            int reinforce = lua.GetIntValue("results.reinforce");//加固雪橇 0:未加固 1:已加固
-            int casttype = lua.GetIntValue("results.casttype");//宝箱 1:木质 2:白银 3:黄金
-            ListDictionary casestate = lua.GetListValue("results.casestate");//运送宝箱状态
-            foreach (LuaTable table in casestate.Values)
+            int buyroundcost = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/buyroundcost"));
+            int reinforcecost = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/reinforcecost"));
+            int hastime = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/hastime"));
+            int buyroundnum = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/buyroundnum"));
+            int castnum = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/castnum"));
+            int reinforce = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/reinforce"));
+            int casttype = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/casttype"));
+            List<CaseState> casestate = XmlHelper.GetClassList<CaseState>(result.CmdResult.SelectNodes("/results/casestate"));
+            foreach (CaseState item in casestate)
             {
-                int id = AstdLuaObject.GetIntValue(table, "id");
-                int state = AstdLuaObject.GetIntValue(table, "state");
-                if (state == 1)
+                if (!getCaseNumReward(protocol, logger, user, item.id))
                 {
-                    if (!getCaseNumReward(protocol, logger, user, id))
-                    {
-                        return 2;
-                    }
+                    return 2;
                 }
             }
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
+            //int buyroundcost = lua.GetIntValue("results.buyroundcost");//购买次数费用
+            //int reinforcecost = lua.GetIntValue("results.reinforcecost");//加固雪橇费用
+            //int hastime = lua.GetIntValue("results.hastime");//剩余次数
+            //int buyroundnum = lua.GetIntValue("results.buyroundnum");//购买次数
+            //int castnum = lua.GetIntValue("results.castnum");//运送宝箱
+            //int reinforce = lua.GetIntValue("results.reinforce");//加固雪橇 0:未加固 1:已加固
+            //int casttype = lua.GetIntValue("results.casttype");//宝箱 1:木质 2:白银 3:黄金
+            //ListDictionary casestate = lua.GetListValue("results.casestate");//运送宝箱状态
+            //foreach (LuaTable table in casestate.Values)
+            //{
+            //    int id = AstdLuaObject.GetIntValue(table, "id");
+            //    int state = AstdLuaObject.GetIntValue(table, "state");
+            //    if (state == 1)
+            //    {
+            //        if (!getCaseNumReward(protocol, logger, user, id))
+            //        {
+            //            return 2;
+            //        }
+            //    }
+            //}
             if (hastime <= 0)
             {
                 if (buyroundcost <= buyroundcostlimit && buyroundcost <= goldavailable)
@@ -162,10 +178,11 @@ namespace com.lover.astd.common.activity
                 return false;
             }
 
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
-            int storneloss = lua.GetIntValue("results.stonestate.storneloss");//宝箱掉落个数
-            int caseadd = lua.GetIntValue("results.caseadd");//运送宝箱增加个数
+            int storneloss = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/stonestate/storneloss"));
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
+            //int storneloss = lua.GetIntValue("results.stonestate.storneloss");//宝箱掉落个数
+            //int caseadd = lua.GetIntValue("results.caseadd");//运送宝箱增加个数
             RewardInfo reward = new RewardInfo();
             reward.handleXmlNode(result.CmdResult.SelectSingleNode("/results/rewardinfo"));
             logInfo(logger, string.Format("雪地通商，丢失{0}宝箱，获得{1}", storneloss, reward.ToString()));
@@ -193,8 +210,8 @@ namespace com.lover.astd.common.activity
                 return false;
             }
 
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
             RewardInfo reward = new RewardInfo();
             reward.handleXmlNode(result.CmdResult.SelectSingleNode("/results/rewardinfo"));
             logInfo(logger, string.Format("雪地通商奖励，获得{0}", reward.ToString()));

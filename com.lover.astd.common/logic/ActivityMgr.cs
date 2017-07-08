@@ -10128,12 +10128,16 @@ namespace com.lover.astd.common.logic
             {
                 return 10;
             }
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
-            int haschoose = lua.GetIntValue("results.haschoose");
-            int nowevent = lua.GetIntValue("results.nowevent");
-            string wishstate = lua.GetStringValue("results.wishstate");
-            int cangetreward = lua.GetIntValue("results.cangetreward");
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+            //int haschoose = lua.GetIntValue("results.haschoose");
+            //int nowevent = lua.GetIntValue("results.nowevent");
+            //string wishstate = lua.GetStringValue("results.wishstate");
+            //int cangetreward = lua.GetIntValue("results.cangetreward");
+            int haschoose = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/haschoose"));
+            int nowevent = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/nowevent"));
+            string wishstate = XmlHelper.GetString(xml.CmdResult.SelectSingleNode("/results/wishstate"));
+            int cangetreward = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/cangetreward"));
             if (nowevent == 1)
             {
                 if (haschoose == 0)
@@ -10380,9 +10384,10 @@ namespace com.lover.astd.common.logic
             if (xml == null || !xml.CmdSucceed) return false;
 
             //logInfo(logger, xml.getDebugInfo());
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
-            int bombattack = lua.GetIntValue("results.bombattack");
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+            //int bombattack = lua.GetIntValue("results.bombattack");
+            int bombattack = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/bombattack"));
             RewardInfo reward = new RewardInfo();
             reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/bombnianreward/rewardinfo"));
             logInfo(logger, string.Format("放鞭炮，年兽血量减少{0}，获得{1}", bombattack, reward.ToString()));

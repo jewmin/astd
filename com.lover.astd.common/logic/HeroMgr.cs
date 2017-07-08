@@ -65,7 +65,11 @@ namespace com.lover.astd.common.logic
                 this.confirmHeroAttrib(protocol, logger, hero.Id, false);
             }
             this.getWashModes(protocol, logger, ref creditCostToWash, ref goldWashCount, ref superWashCount);
-            if (level > user.Level)
+            if (level == 400)
+            {
+                level = user.Level;
+            }
+            else if (level > user.Level)
             {
                 level = user.Level;
             }
@@ -508,30 +512,47 @@ namespace com.lover.astd.common.logic
             {
                 return 0;
             }
-            
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
-            int level = lua.GetIntValue("results.generaldto.generallevel");
+
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+            //int level = lua.GetIntValue("results.generaldto.generallevel");
+            int level = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/generaldto/generallevel"));
             if (level > 0)
             {
                 hero.Level = heroLevel = level;
             }
-            if (lua.IsNull("results.general"))
+            //if (lua.IsNull("results.general"))
+            //{
+            //    return 0;
+            //}
+            XmlNode node = xml.CmdResult.SelectSingleNode("/results/general");
+            if (node == null)
             {
                 return 0;
             }
 
-            old_attrib[0] = lua.GetIntValue("results.general.originalattr.plusleader");
-            old_attrib[1] = lua.GetIntValue("results.general.originalattr.plusforces");
-            old_attrib[2] = lua.GetIntValue("results.general.originalattr.plusintelligence");
-            if (lua.IsNull("results.general.newattr"))
+            //old_attrib[0] = lua.GetIntValue("results.general.originalattr.plusleader");
+            //old_attrib[1] = lua.GetIntValue("results.general.originalattr.plusforces");
+            //old_attrib[2] = lua.GetIntValue("results.general.originalattr.plusintelligence");
+            old_attrib[0] = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/general/originalattr/plusleader"));
+            old_attrib[1] = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/general/originalattr/plusforces"));
+            old_attrib[2] = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/general/originalattr/plusintelligence"));
+            //if (lua.IsNull("results.general.newattr"))
+            //{
+            //    return 2;
+            //}
+            node = xml.CmdResult.SelectSingleNode("/results/general/newattr");
+            if (node == null)
             {
                 return 2;
             }
 
-            new_attrib[0] = lua.GetIntValue("results.general.newattr.plusleader");
-            new_attrib[1] = lua.GetIntValue("results.general.newattr.plusforces");
-            new_attrib[2] = lua.GetIntValue("results.general.newattr.plusintelligence");
+            //new_attrib[0] = lua.GetIntValue("results.general.newattr.plusleader");
+            //new_attrib[1] = lua.GetIntValue("results.general.newattr.plusforces");
+            //new_attrib[2] = lua.GetIntValue("results.general.newattr.plusintelligence");
+            new_attrib[0] = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/general/newattr/plusleader"));
+            new_attrib[1] = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/general/newattr/plusforces"));
+            new_attrib[2] = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/general/newattr/plusintelligence"));
             return 1;
 		}
         /// <summary>
@@ -932,11 +953,14 @@ namespace com.lover.astd.common.logic
             Dictionary<int, int> generals = new Dictionary<int, int>();
             foreach (XmlNode xmlnode in xmlnodelist)
             {
-                AstdLuaObject lua = new AstdLuaObject();
-                lua.ParseXml(xmlnode);
-                int generalid = lua.GetIntValue("general.generalid");
-                int zhugeid = lua.GetIntValue("general.zhugeid");
-                int zhugetimes = lua.GetIntValue("general.zhugetimes");
+                //AstdLuaObject lua = new AstdLuaObject();
+                //lua.ParseXml(xmlnode);
+                //int generalid = lua.GetIntValue("general.generalid");
+                //int zhugeid = lua.GetIntValue("general.zhugeid");
+                //int zhugetimes = lua.GetIntValue("general.zhugetimes");
+                int generalid = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/general/generalid"));
+                int zhugeid = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/general/zhugeid"));
+                int zhugetimes = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/general/zhugetimes"));
                 if (zhugeid > 0 && zhugetimes > 0)
                 {
                     generals.Add(generalid, zhugeid);
@@ -979,19 +1003,30 @@ namespace com.lover.astd.common.logic
             {
                 return 1;
             }
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
-            int maxattr = lua.GetIntValue("results.maxattr");
-            int freenum = lua.GetIntValue("results.freenum");
-            int curattr_lea = lua.GetIntValue("results.curattr.lea");
-            int curattr_str = lua.GetIntValue("results.curattr.str");
-            int curattr_int = lua.GetIntValue("results.curattr.int");
-            int newattr_lea = lua.GetIntValue("results.newattr.lea");
-            int newattr_str = lua.GetIntValue("results.newattr.str");
-            int newattr_int = lua.GetIntValue("results.newattr.int");
-            int resetattr_lea = lua.GetIntValue("results.resetattr.lea");
-            int resetattr_str = lua.GetIntValue("results.resetattr.str");
-            int resetattr_int = lua.GetIntValue("results.resetattr.int");
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+            //int maxattr = lua.GetIntValue("results.maxattr");
+            //int freenum = lua.GetIntValue("results.freenum");
+            //int curattr_lea = lua.GetIntValue("results.curattr.lea");
+            //int curattr_str = lua.GetIntValue("results.curattr.str");
+            //int curattr_int = lua.GetIntValue("results.curattr.int");
+            //int newattr_lea = lua.GetIntValue("results.newattr.lea");
+            //int newattr_str = lua.GetIntValue("results.newattr.str");
+            //int newattr_int = lua.GetIntValue("results.newattr.int");
+            //int resetattr_lea = lua.GetIntValue("results.resetattr.lea");
+            //int resetattr_str = lua.GetIntValue("results.resetattr.str");
+            //int resetattr_int = lua.GetIntValue("results.resetattr.int");
+            int maxattr = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/maxattr"));
+            int freenum = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/freenum"));
+            int curattr_lea = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/curattr/lea"));
+            int curattr_str = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/curattr/str"));
+            int curattr_int = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/curattr/int"));
+            int newattr_lea = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/newattr/lea"));
+            int newattr_str = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/newattr/str"));
+            int newattr_int = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/newattr/int"));
+            int resetattr_lea = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/resetattr/lea"));
+            int resetattr_str = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/resetattr/str"));
+            int resetattr_int = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/resetattr/int"));
             if (newattr_lea != 0 && newattr_str != 0 && newattr_int != 0)
             {
                 int total_cur = curattr_lea + curattr_str + curattr_int;
@@ -1037,9 +1072,10 @@ namespace com.lover.astd.common.logic
             {
                 return 1;
             }
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
-            string newattr = lua.GetStringValue("results.newattr");
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+            //string newattr = lua.GetStringValue("results.newattr");
+            string newattr = XmlHelper.GetString(xml.CmdResult.SelectSingleNode("/results/newattr"));
             string[] attrs = newattr.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             if (attrs.Length != 3)
             {

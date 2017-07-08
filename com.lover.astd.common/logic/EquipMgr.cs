@@ -1119,11 +1119,14 @@ namespace com.lover.astd.common.logic
             {
                 return false;
             }
-            AstdLuaObject lua = new AstdLuaObject();
-            lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
-            int succlea = lua.GetIntValue("results.baowu.succlea");
-            int succstr = lua.GetIntValue("results.baowu.succstr");
-            int succint = lua.GetIntValue("results.baowu.succint");
+            //AstdLuaObject lua = new AstdLuaObject();
+            //lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+            //int succlea = lua.GetIntValue("results.baowu.succlea");
+            //int succstr = lua.GetIntValue("results.baowu.succstr");
+            //int succint = lua.GetIntValue("results.baowu.succint");
+            int succlea = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/baowu/succlea"));
+            int succstr = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/baowu/succstr"));
+            int succint = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/baowu/succint"));
             logInfo(logger, string.Format("升级宝物[{0}({1})],统+{2},勇+{3},智+{4}", dst.name, dst.generalname, succlea, succstr, succint));
             return true;
         }
@@ -3190,22 +3193,24 @@ namespace com.lover.astd.common.logic
                 return list;
             }
 
-            user._specialEquipSkillInfo.handle(xml.CmdResult.SelectSingleNode("/results/skillinfo"));
+            //user._specialEquipSkillInfo.handle(xml.CmdResult.SelectSingleNode("/results/skillinfo"));
+            user._specialEquipSkillInfo.Parse(xml.CmdResult.SelectSingleNode("/results/skillinfo"));
 
-            XmlNode node = xml.CmdResult.SelectSingleNode("/results");
-            XmlNodeList nodeList = node.ChildNodes;
-            foreach (XmlNode item in nodeList)
-            {
-                if (item.Name == "sheetinfo")
-                {
-                    SheetInfo sheet = new SheetInfo();
-                    sheet.handle(item);
-                    if (sheet.id > 0 && sheet.quality >= 5)
-                    {
-                        list.Add(sheet);
-                    }
-                }
-            }
+            //XmlNode node = xml.CmdResult.SelectSingleNode("/results");
+            //XmlNodeList nodeList = node.ChildNodes;
+            //foreach (XmlNode item in nodeList)
+            //{
+            //    if (item.Name == "sheetinfo")
+            //    {
+            //        SheetInfo sheet = new SheetInfo();
+            //        sheet.handle(item);
+            //        if (sheet.id > 0 && sheet.quality >= 5)
+            //        {
+            //            list.Add(sheet);
+            //        }
+            //    }
+            //}
+            list = XmlHelper.GetClassList<SheetInfo>(xml.CmdResult.SelectNodes("/results/sheetinfo"));
             return list;
         }
 
@@ -3242,7 +3247,8 @@ namespace com.lover.astd.common.logic
             {
                 return false;
             }
-            user._specialEquipSkillInfo.handle2(xml.CmdResult.SelectSingleNode("/results"));
+            //user._specialEquipSkillInfo.handle2(xml.CmdResult.SelectSingleNode("/results"));
+            user._specialEquipSkillInfo.Parse(xml.CmdResult.SelectSingleNode("/results"));
             logInfo(logger, string.Format("铸造{0}lv.{1}, 消耗镔铁*{2}, {3}*{4}", sheetinfo.name, sheetinfo.lv, sheetinfo.material2num, sheetinfo.goodsname, sheetinfo.material1num));
             return true;
         }
@@ -3279,16 +3285,17 @@ namespace com.lover.astd.common.logic
             ServerResult xml = protocol.getXml(url, "新科技信息");
             if (xml != null && xml.CmdSucceed)
             {
-                XmlNodeList xmlNodeList = xml.CmdResult.SelectNodes("/results/technology");
-                foreach (XmlNode item in xmlNodeList)
-                {
-                    Technology tech = new Technology();
-                    tech.handle(item);
-                    if (tech.techid_ > 0)
-                    {
-                        list.Add(tech);
-                    }
-                }
+                //XmlNodeList xmlNodeList = xml.CmdResult.SelectNodes("/results/technology");
+                //foreach (XmlNode item in xmlNodeList)
+                //{
+                //    Technology tech = new Technology();
+                //    tech.handle(item);
+                //    if (tech.techid_ > 0)
+                //    {
+                //        list.Add(tech);
+                //    }
+                //}
+                list = XmlHelper.GetClassList<Technology>(xml.CmdResult.SelectNodes("/results/technology"));
             }
             return list;
         }
@@ -3302,11 +3309,14 @@ namespace com.lover.astd.common.logic
             if (xml != null && xml.CmdSucceed)
             {
                 result = true;
-                AstdLuaObject lua = new AstdLuaObject();
-                lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
-                int currentconsume = lua.GetIntValue("results.currentconsume");
-                int addprogress = lua.GetIntValue("results.addprogress");
-                int progress = lua.GetIntValue("results.progress");
+                //AstdLuaObject lua = new AstdLuaObject();
+                //lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
+                //int currentconsume = lua.GetIntValue("results.currentconsume");
+                //int addprogress = lua.GetIntValue("results.addprogress");
+                //int progress = lua.GetIntValue("results.progress");
+                int currentconsume = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/currentconsume"));
+                int addprogress = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/addprogress"));
+                int progress = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/progress"));
                 tech.progress_ = progress;
                 logInfo(logger, string.Format("研究新科技[{0} lv.{1}], 消耗镔铁*{2}, 进度+{3}, 当前进度{4}/{5}", tech.techname_, tech.techlevel_, currentconsume, addprogress, tech.progress_, tech.requireprogress_));
             }
