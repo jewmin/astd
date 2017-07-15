@@ -173,6 +173,7 @@
     <Compile Include="model\EquipmentType.cs" />
     <Compile Include="model\Game.cs" />
     <Compile Include="model\GameEvent.cs" />
+    <Compile Include="model\General.cs" />
     <Compile Include="model\GoodsType.cs" />
     <Compile Include="model\Hero.cs" />
     <Compile Include="model\LogLevel.cs" />

@@ -7,7 +7,7 @@ NewYearActivityExe.id = LuaExeId.eNewYear
 NewYearActivityExe.exe = LuaExeFactory.createLuaExe(NewYearActivityExe)
 
 NewYearActivityExe.execute = function()
-    local result = ActivityManager():getBombNianInfo(ProtocolMgr(), ILogger(), User(), 1, 1, 1)
+    local result = ActivityManager():getBombNianInfo(ProtocolMgr(), ILogger(), User(), true, 1, 1, 1)
     if result == 1 then
         return NewYearActivityExe.exe:next_hour()
     elseif result == 10 then

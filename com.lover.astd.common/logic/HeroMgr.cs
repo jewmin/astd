@@ -945,35 +945,44 @@ namespace com.lover.astd.common.logic
             {
                 return next_halfhour();
             }
-            XmlNodeList xmlnodelist = xml.CmdResult.SelectNodes("/results/general");
-            if (xmlnodelist == null || xmlnodelist.Count == 0)
-            {
-                return next_halfhour();
-            }
-            Dictionary<int, int> generals = new Dictionary<int, int>();
-            foreach (XmlNode xmlnode in xmlnodelist)
-            {
-                //AstdLuaObject lua = new AstdLuaObject();
-                //lua.ParseXml(xmlnode);
-                //int generalid = lua.GetIntValue("general.generalid");
-                //int zhugeid = lua.GetIntValue("general.zhugeid");
-                //int zhugetimes = lua.GetIntValue("general.zhugetimes");
-                int generalid = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/general/generalid"));
-                int zhugeid = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/general/zhugeid"));
-                int zhugetimes = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/general/zhugetimes"));
-                if (zhugeid > 0 && zhugetimes > 0)
-                {
-                    generals.Add(generalid, zhugeid);
-                }
-            }
+            //XmlNodeList xmlnodelist = xml.CmdResult.SelectNodes("/results/general");
+            //if (xmlnodelist == null || xmlnodelist.Count == 0)
+            //{
+            //    return next_halfhour();
+            //}
+            //Dictionary<int, int> generals = new Dictionary<int, int>();
+            //foreach (XmlNode xmlnode in xmlnodelist)
+            //{
+            //    //AstdLuaObject lua = new AstdLuaObject();
+            //    //lua.ParseXml(xmlnode);
+            //    //int generalid = lua.GetIntValue("general.generalid");
+            //    //int zhugeid = lua.GetIntValue("general.zhugeid");
+            //    //int zhugetimes = lua.GetIntValue("general.zhugetimes");
+            //    int generalid = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/general/generalid"));
+            //    int zhugeid = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/general/zhugeid"));
+            //    int zhugetimes = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/general/zhugetimes"));
+            //    if (zhugeid > 0 && zhugetimes > 0)
+            //    {
+            //        generals.Add(generalid, zhugeid);
+            //    }
+            //}
+            List<General> generals = XmlHelper.GetClassList<General>(xml.CmdResult.SelectNodes("/results/general"));
             if (generals.Count == 0)
             {
                 return next_day();
             }
             bool finish = true;
-            foreach (KeyValuePair<int, int> kvp in generals)
+            //foreach (KeyValuePair<int, int> kvp in generals)
+            //{
+            //    int result = getXiZhugeInfo(proto, logger, user, kvp.Key, kvp.Value);
+            //    if (result != 2)
+            //    {
+            //        finish = false;
+            //    }
+            //}
+            foreach (General current in generals)
             {
-                int result = getXiZhugeInfo(proto, logger, user, kvp.Key, kvp.Value);
+                int result = getXiZhugeInfo(proto, logger, user, current.generalid, current.zhugeid);
                 if (result != 2)
                 {
                     finish = false;

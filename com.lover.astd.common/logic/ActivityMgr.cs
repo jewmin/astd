@@ -10242,7 +10242,25 @@ namespace com.lover.astd.common.logic
         #endregion
 
         #region 抓年兽
-        public int getBombNianInfo(ProtocolMgr protocol, ILogger logger, User user, int cost1, int cost5, int cost10)
+        /// <summary>
+        /// <playerbombnianeventinfo>
+        ///     <niannum>0</niannum>
+        ///     <nianhp>350</nianhp>
+        ///     <nianmaxhp>350</nianmaxhp>
+        ///     <firecrackersnum>5</firecrackersnum>
+        ///     <stringfirecrackersnum>3</stringfirecrackersnum>
+        ///     <springthundernum>2</springthundernum>
+        ///     <niantype>0</niantype>
+        /// </playerbombnianeventinfo>
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="logger"></param>
+        /// <param name="user"></param>
+        /// <param name="cost1"></param>
+        /// <param name="cost5"></param>
+        /// <param name="cost10"></param>
+        /// <returns></returns>
+        public int getBombNianInfo(ProtocolMgr protocol, ILogger logger, User user, bool onlyfree, int cost1, int cost5, int cost10)
         {
             if (!user.isActivityRunning(ActivityType.BombNianEvent)) return 10;
 
@@ -10265,100 +10283,134 @@ namespace com.lover.astd.common.logic
                 //int firecrackerscost = lua.GetIntValue("results.cost.firecrackerscost");
                 //int stringfirecrackerscost = lua.GetIntValue("results.cost.stringfirecrackerscost");
                 //int springthundercost = lua.GetIntValue("results.cost.springthundercost");
-                //int niannum = 0, niantype = 0, firecrackersnum = 0, stringfirecrackersnum = 0, springthundernum = 0;
+                int niannum = 0, niantype = 0, firecrackersnum = 0, stringfirecrackersnum = 0, springthundernum = 0;
                 int nianhp = 0, nianmaxhp = 0, firecrackerscost = 0, stringfirecrackerscost = 0, springthundercost = 0;
-                XmlNode node = xml.CmdResult.SelectSingleNode("/results/playerbombnianeventinfo/nianhp");
-                if (node != null)
-                {
-                    int.TryParse(node.InnerText, out nianhp);
-                }
-                node = xml.CmdResult.SelectSingleNode("/results/playerbombnianeventinfo/nianhp");
-                if (node != null)
-                {
-                    int.TryParse(node.InnerText, out nianhp);
-                }
-                node = xml.CmdResult.SelectSingleNode("/results/playerbombnianeventinfo/nianmaxhp");
-                if (node != null)
-                {
-                    int.TryParse(node.InnerText, out nianmaxhp);
-                }
-                node = xml.CmdResult.SelectSingleNode("/results/playerbombnianeventinfo/firecrackerscost");
-                if (node != null)
-                {
-                    int.TryParse(node.InnerText, out firecrackerscost);
-                }
-                node = xml.CmdResult.SelectSingleNode("/results/playerbombnianeventinfo/stringfirecrackerscost");
-                if (node != null)
-                {
-                    int.TryParse(node.InnerText, out stringfirecrackerscost);
-                }
-                node = xml.CmdResult.SelectSingleNode("/results/playerbombnianeventinfo/springthundercost");
-                if (node != null)
-                {
-                    int.TryParse(node.InnerText, out springthundercost);
-                }
-
-                float precent = (float)nianhp / (float)nianmaxhp;
+                niannum = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/playerbombnianeventinfo/niannum"));
+                nianhp = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/playerbombnianeventinfo/nianhp"));
+                nianmaxhp = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/playerbombnianeventinfo/nianmaxhp"));
+                firecrackersnum = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/playerbombnianeventinfo/firecrackersnum"));
+                stringfirecrackersnum = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/playerbombnianeventinfo/stringfirecrackersnum"));
+                springthundernum = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/playerbombnianeventinfo/springthundernum"));
+                niantype = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/playerbombnianeventinfo/niantype"));
+                firecrackerscost = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/cost/firecrackerscost"));
+                stringfirecrackerscost = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/cost/stringfirecrackerscost"));
+                springthundercost = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/cost/springthundercost"));
                 bool result = false;
-                if (precent >= 0.75)
+                //float precent = (float)nianhp / (float)nianmaxhp;
+                //if (precent >= 0.75)
+                //{
+                //    if (springthundercost <= cost10)
+                //    {
+                //        result = bombNian(protocol, logger, user, 3);
+                //    }
+                //    else if (stringfirecrackerscost <= cost5)
+                //    {
+                //        result = bombNian(protocol, logger, user, 2);
+                //    }
+                //    else if (firecrackerscost <= cost1)
+                //    {
+                //        result = bombNian(protocol, logger, user, 1);
+                //    }
+                //    else if (precent < 1.0)
+                //    {
+                //        result = huntNian(protocol, logger, user);
+                //    }
+                //    else
+                //    {
+                //        return 2;
+                //    }
+                //}
+                //else if (precent >= 0.5)
+                //{
+                //    if (stringfirecrackerscost <= cost5)
+                //    {
+                //        result = bombNian(protocol, logger, user, 2);
+                //    }
+                //    else if (firecrackerscost <= cost1)
+                //    {
+                //        result = bombNian(protocol, logger, user, 1);
+                //    }
+                //    else if (springthundercost <= cost10)
+                //    {
+                //        result = bombNian(protocol, logger, user, 3);
+                //    }
+                //    else
+                //    {
+                //        result = huntNian(protocol, logger, user);
+                //    }
+                //}
+                //else if (precent >= 0.2)
+                //{
+                //    if (firecrackerscost <= cost1)
+                //    {
+                //        result = bombNian(protocol, logger, user, 1);
+                //    }
+                //    else if (stringfirecrackerscost <= cost5)
+                //    {
+                //        result = bombNian(protocol, logger, user, 2);
+                //    }
+                //    else if (springthundercost <= cost10)
+                //    {
+                //        result = bombNian(protocol, logger, user, 3);
+                //    }
+                //    else
+                //    {
+                //        result = huntNian(protocol, logger, user);
+                //    }
+                //}
+                //else
+                //{
+                //    result = huntNian(protocol, logger, user);
+                //}
+                if (nianhp > 100)
                 {
-                    if (springthundercost <= cost10)
+                    if (onlyfree)
                     {
-                        result = bombNian(protocol, logger, user, 3);
-                    }
-                    else if (stringfirecrackerscost <= cost5)
-                    {
-                        result = bombNian(protocol, logger, user, 2);
-                    }
-                    else if (firecrackerscost <= cost1)
-                    {
-                        result = bombNian(protocol, logger, user, 1);
-                    }
-                    else if (precent < 1.0)
-                    {
-                        result = huntNian(protocol, logger, user);
+                        if (springthundernum > 0) result = bombNian(protocol, logger, user, 3);
+                        else if (stringfirecrackersnum > 0) result = bombNian(protocol, logger, user, 2);
+                        else if (firecrackersnum > 0) result = bombNian(protocol, logger, user, 1);
+                        else return 2;
                     }
                     else
                     {
-                        return 2;
+                        if (springthundercost <= cost10) result = bombNian(protocol, logger, user, 3);
+                        else if (stringfirecrackerscost <= cost5) result = bombNian(protocol, logger, user, 2);
+                        else if (firecrackerscost <= cost1) result = bombNian(protocol, logger, user, 1);
+                        else return 2;
                     }
                 }
-                else if (precent >= 0.5)
+                else if (nianhp > 50)
                 {
-                    if (stringfirecrackerscost <= cost5)
+                    if (onlyfree)
                     {
-                        result = bombNian(protocol, logger, user, 2);
-                    }
-                    else if (firecrackerscost <= cost1)
-                    {
-                        result = bombNian(protocol, logger, user, 1);
-                    }
-                    else if (springthundercost <= cost10)
-                    {
-                        result = bombNian(protocol, logger, user, 3);
+                        if (stringfirecrackersnum > 0) result = bombNian(protocol, logger, user, 2);
+                        else if (firecrackersnum > 0) result = bombNian(protocol, logger, user, 1);
+                        else if (springthundernum > 0) result = bombNian(protocol, logger, user, 3);
+                        else return 2;
                     }
                     else
                     {
-                        result = huntNian(protocol, logger, user);
+                        if (stringfirecrackerscost <= cost5) result = bombNian(protocol, logger, user, 2);
+                        else if (firecrackerscost <= cost1) result = bombNian(protocol, logger, user, 1);
+                        else if (springthundercost <= cost10) result = bombNian(protocol, logger, user, 3);
+                        else return 2;
                     }
                 }
-                else if (precent >= 0.2)
+                else if (nianhp > 10)
                 {
-                    if (firecrackerscost <= cost1)
+                    if (onlyfree)
                     {
-                        result = bombNian(protocol, logger, user, 1);
-                    }
-                    else if (stringfirecrackerscost <= cost5)
-                    {
-                        result = bombNian(protocol, logger, user, 2);
-                    }
-                    else if (springthundercost <= cost10)
-                    {
-                        result = bombNian(protocol, logger, user, 3);
+                        if (firecrackersnum > 0) result = bombNian(protocol, logger, user, 1);
+                        else if (stringfirecrackersnum > 0) result = bombNian(protocol, logger, user, 2);
+                        else if (springthundernum > 0) result = bombNian(protocol, logger, user, 3);
+                        else return 2;
                     }
                     else
                     {
-                        result = huntNian(protocol, logger, user);
+                        if (firecrackerscost <= cost1) result = bombNian(protocol, logger, user, 1);
+                        else if (stringfirecrackerscost <= cost5) result = bombNian(protocol, logger, user, 2);
+                        else if (springthundercost <= cost10) result = bombNian(protocol, logger, user, 3);
+                        else return 2;
                     }
                 }
                 else
@@ -10404,13 +10456,7 @@ namespace com.lover.astd.common.logic
             //AstdLuaObject lua = new AstdLuaObject();
             //lua.ParseXml(xml.CmdResult.SelectSingleNode("/results"));
             //int huntstate = lua.GetIntValue("results.huntstate");
-            int huntstate = 0;
-            XmlNode node = xml.CmdResult.SelectSingleNode("/results/huntstate");
-            if (node != null)
-            {
-                int.TryParse(node.InnerText, out huntstate);
-            }
-            
+            int huntstate = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/huntstate"));
             if (huntstate == 1)
             {
                 RewardInfo reward = new RewardInfo();
