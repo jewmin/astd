@@ -858,6 +858,7 @@ namespace com.lover.astd.common.logic
                     else if (child.Name == "name") treasure.Name = child.InnerText;
                     else if (child.Name == "succprob") treasure.succprob_ = float.Parse(child.InnerText);
                     else if (child.Name == "canconsecrate") treasure.canconsecrate_ = int.Parse(child.InnerText);
+                    else if (child.Name == "canevolve") treasure.canevolve_ = int.Parse(child.InnerText);
                     
                 }
                 if (treasure.Id > 0 && treasure.generalname_ != "")
@@ -978,6 +979,10 @@ namespace com.lover.astd.common.logic
                 if (current3.CanConsecrate)
                 {
                     if (!consecrateSpecialTreasure(protocol, logger, current3)) return 10;
+                }
+                if (current3.CanEvolve)
+                {
+                    if (!evolveSpecialTreasure(protocol, logger, current3)) return 10;
                 }
             }
             //专属升级
@@ -1107,6 +1112,17 @@ namespace com.lover.astd.common.logic
             if (xml == null || !xml.CmdSucceed) return false;
 
             logInfo(logger, string.Format("{0}开光成功", src.NameWithGeneral));
+            return true;
+        }
+
+        public bool evolveSpecialTreasure(ProtocolMgr protocol, ILogger logger, Specialtreasure src)
+        {
+            string url = "/root/polish!evolveSpecialTreasure.action";
+            string data = string.Format("storeId={0}", src.Id);
+            ServerResult xml = protocol.postXml(url, data, "宝物进化");
+            if (xml == null || !xml.CmdSucceed) return false;
+
+            logInfo(logger, string.Format("{0}进化成功", src.NameWithGeneral));
             return true;
         }
 

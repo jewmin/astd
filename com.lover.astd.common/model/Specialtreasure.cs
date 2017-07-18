@@ -18,6 +18,7 @@ namespace com.lover.astd.common.model
         public int quality_;
         public float succprob_;
         public int canconsecrate_;
+        public int canevolve_;
 
         public Specialtreasure()
         {
@@ -35,6 +36,7 @@ namespace com.lover.astd.common.model
             _name = "";
             succprob_ = 0.0f;
             canconsecrate_ = 0;
+            canevolve_ = 0;
         }
 
         public string NameWithGeneral
@@ -55,6 +57,11 @@ namespace com.lover.astd.common.model
         public bool CanConsecrate
         {
             get { return this.canconsecrate_ == 1; }
+        }
+
+        public bool CanEvolve
+        {
+            get { return this.canevolve_ == 1; }
         }
     }
 }
