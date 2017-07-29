@@ -141,7 +141,7 @@ namespace com.lover.astd.common.model
 
         public override bool CanAdd()
         {
-            return true;
+            return quality >= 6 && lv <= 2;
         }
     }
 
