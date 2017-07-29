@@ -292,9 +292,11 @@ namespace com.lover.astd.game.ui
         {
             int left_bintie = (int)num_bintie.Value;
             int cost_bintie = (int)num_bintiecost.Value;
+            int get_bintie = (int)num_getbintie.Value;
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
             dictionary.Add("left_bintie", left_bintie.ToString());
             dictionary.Add("cost_bintie", cost_bintie.ToString());
+            dictionary.Add("get_bintie", get_bintie.ToString());
             _frm.addTempServer("technology", dictionary);
             Close();
         }
