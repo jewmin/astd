@@ -1,4 +1,4 @@
--- è£…å¤‡æ¨¡å—
+-- ×°±¸Ä£¿é
 equip = {}
 
 equip.null = 1
@@ -8,7 +8,7 @@ equip.success = 0
 
 equip.getUpgradeInfo = function()
   local url = "/root/equip!getUpgradeInfo.action"
-	local result = ProtocolMgr():getXml(url, "è£…å¤‡-ä¿¡æ¯")
+	local result = ProtocolMgr():getXml(url, "×°±¸-ÐÅÏ¢")
 
 	if not result then return equip.null end
 	if not result.CmdSucceed then return equip.error end
@@ -54,16 +54,16 @@ end
 equip.upgradeMonkeyTao = function(name, composite, num)
   local url = "/root/equip!upgradeMonkeyTao.action"
   local data = string.format("composite=%d&num=%d", composite, num)
-  local result = ProtocolMgr():postXml(url, data, "è£…å¤‡-å¼ºåŒ–çŒ´å­å¥—è£…")
+  local result = ProtocolMgr():postXml(url, data, "×°±¸-Ç¿»¯ºï×ÓÌ××°")
 	if not result or not result.CmdSucceed then return false end
 
   -- ILogger():logInfo(result.CmdResult.InnerXml)
-  local tips = string.format("å¼ºåŒ–%sæˆåŠŸ", name)
+  local tips = string.format("Ç¿»¯%s³É¹¦", name)
   local cmdResult = result.CmdResult
 	local xmlNode = cmdResult:SelectSingleNode("/results/baoji")
 	local baoji = xmlNode and tonumber(xmlNode.InnerText) or 0
   if baoji > 1 then
-    tips = tips .. string.format("ï¼Œ%då€æš´å‡»", baoji)
+    tips = tips .. string.format("£¬%d±¶±©»÷", baoji)
   end
 
   local xmlNodeList = cmdResult:SelectNodes("/results/addinfo")
@@ -80,7 +80,7 @@ equip.upgradeMonkeyTao = function(name, composite, num)
           addinfo.val = childChildXmlNode.InnerText
         end
       end
-      tips = tips .. "ï¼Œ" .. string.format("%s+%s", equip.getCarAttrName(addinfo.name), addinfo.val or "æœªçŸ¥æ•°å€¼")
+      tips = tips .. "£¬" .. string.format("%s+%s", equip.getCarAttrName(addinfo.name), addinfo.val or "Î´ÖªÊýÖµ")
     end
   end
 
@@ -91,28 +91,28 @@ end
 equip.useXuli = function(name, composite)
   local url = "/root/equip!useXuli.action"
   local data = string.format("composite=%d", composite)
-  local result = ProtocolMgr():postXml(url, data, "è£…å¤‡-ä½¿ç”¨è“„åŠ›")
+  local result = ProtocolMgr():postXml(url, data, "×°±¸-Ê¹ÓÃÐîÁ¦")
 	if not result or not result.CmdSucceed then return false end
 
   -- ILogger():logInfo(result.CmdResult.InnerXml)
-  local tips = string.format("%sä½¿ç”¨è“„åŠ›", name)
+  local tips = string.format("%sÊ¹ÓÃÐîÁ¦", name)
   local cmdResult = result.CmdResult
 	local xmlNode = cmdResult:SelectSingleNode("/results/xuliinfo/getevent")
   local getevent = xmlNode and tonumber(xmlNode.InnerText) or 0
   if getevent == 1 then
     xmlNode = cmdResult:SelectSingleNode("/results/xuliinfo/gethighnum")
     local gethighnum = xmlNode and tonumber(xmlNode.InnerText) or 0
-    if gethighnum > 0 then tips = tips .. string.format("ï¼Œæ™®é€šå¼ºåŒ–æ¬¡æ•°+%d", gethighnum) end
+    if gethighnum > 0 then tips = tips .. string.format("£¬ÆÕÍ¨Ç¿»¯´ÎÊý+%d", gethighnum) end
   elseif getevent == 2 then
     xmlNode = cmdResult:SelectSingleNode("/results/xuliinfo/addinfo/val")
     local val = xmlNode and tonumber(xmlNode.InnerText) or 0
     xmlNode = cmdResult:SelectSingleNode("/results/xuliinfo/addinfo/name")
-    if val > 0 then tips = tips .. string.format("ï¼Œ%s+%d", equip.getCarAttrName(xmlNode.InnerText), val) end
+    if val > 0 then tips = tips .. string.format("£¬%s+%d", equip.getCarAttrName(xmlNode.InnerText), val) end
   elseif getevent == 3 then
     xmlNode = cmdResult:SelectSingleNode("/results/xuliinfo/newattr")
     local newattr = global.split(xmlNode.InnerText, ",")
     for i, v in ipairs(newattr) do
-      if tonumber(v) > 0 then tips = tips .. string.format("ï¼Œ%s+%s", equip.getAttrName(i), v) end
+      if tonumber(v) > 0 then tips = tips .. string.format("£¬%s+%s", equip.getAttrName(i), v) end
     end
   end
   ILogger():logInfo(tips)
@@ -121,28 +121,28 @@ end
 
 equip.getCarAttrName = function(name)
   if name == "att" then
-    return "æ™®æ”»"
+    return "ÆÕ¹¥"
   elseif name == "def" then
-    return "æ™®é˜²"
+    return "ÆÕ·À"
   elseif name == "satt" then
-    return "æˆ˜æ”»"
+    return "Õ½¹¥"
   elseif name == "sdef" then
-    return "æˆ˜é˜²"
+    return "Õ½·À"
   elseif name == "stgatt" then
-    return "ç­–æ”»"
+    return "²ß¹¥"
   elseif name == "stgdef" then
-    return "ç­–é˜²"
+    return "²ß·À"
   elseif name == "hp" then
-    return "å…µåŠ›"
+    return "±øÁ¦"
   end
 end
 
 equip.getAttrName = function(num)
   if num == 1 then
-    return "ç»Ÿ"
+    return "Í³"
   elseif num == 2 then
-    return "å‹‡"
+    return "ÓÂ"
   elseif num == 3 then
-    return "æ™º"
+    return "ÖÇ"
   end
 end
