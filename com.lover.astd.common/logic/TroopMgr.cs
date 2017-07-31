@@ -24,7 +24,7 @@ namespace com.lover.astd.common.logic
         /// <param name="logger"></param>
         /// <param name="min_troop_percent"></param>
         /// <returns></returns>
-		public int makeSureForce(ProtocolMgr protocol, ILogger logger, double min_troop_percent = 0.8)
+		public int makeSureForce(ProtocolMgr protocol, ILogger logger, double min_troop_percent = 0.5)
 		{
 			User user = protocol.getUser();
             if ((double)user.Forces * 1.0 / (double)user.MaxForces < min_troop_percent && (this._freeArmyCd == 0 || (this._freeArmyCd > 0 && this._tmrMgr.TimeStamp > this._freeArmyCd)))

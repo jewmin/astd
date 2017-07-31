@@ -29,7 +29,7 @@ namespace com.lover.astd.common.logicexe.battle
 			{
 				battleManager.getWeaponEventInfo(this._proto, this._logger, this._user);
 			}
-			int num = this._factory.getTroopManager().makeSureForce(this._proto, this._logger, 0.8);
+			int num = this._factory.getTroopManager().makeSureForce(this._proto, this._logger, 0.5);
 			long result;
 			if (num != 0)
 			{

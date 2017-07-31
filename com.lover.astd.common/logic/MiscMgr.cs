@@ -1040,11 +1040,11 @@ namespace com.lover.astd.common.logic
                             user._impose_force_task_num = finishline - finishnum;
                             base.logInfo(logger, string.Format("新每日任务，需要强征{0}次", user._impose_force_task_num));
                         }
-                        else if (taskcontext.Contains("纺织"))
-                        {
-                            user._weave_task_num = finishline - finishnum;
-                            base.logInfo(logger, string.Format("新每日任务，需要纺织{0}次", user._weave_task_num));
-                        }
+                        //else if (taskcontext.Contains("纺织"))
+                        //{
+                        //    user._weave_task_num = finishline - finishnum;
+                        //    base.logInfo(logger, string.Format("新每日任务，需要纺织{0}次", user._weave_task_num));
+                        //}
                     }
                     else if (taskstate == 3)
                     {

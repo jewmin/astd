@@ -220,7 +220,7 @@ namespace com.lover.astd.common.logic
 
 		private int innerStartCampaign(ProtocolMgr protocol, ILogger logger, int id, string name)
 		{
-			int num = this._factory.getTroopManager().makeSureForce(protocol, logger, 0.8);
+			int num = this._factory.getTroopManager().makeSureForce(protocol, logger, 0.5);
 			bool flag = num > 0;
 			int result;
 			if (flag)
