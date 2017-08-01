@@ -147,7 +147,9 @@ namespace com.lover.astd.common.logicexe.economy
             }
             else if (this._user._impose_task_num > 0)
             {
-                if (mgr.impose(this._proto, this._logger, this._user, false, min_loyalty))
+                bool force = false;
+                if (this._user._impose_count == 0) force = true;
+                if (mgr.impose(this._proto, this._logger, this._user, force, min_loyalty))
                 {
                     this._user._impose_task_num--;
                     return base.immediate();
