@@ -132,10 +132,11 @@ namespace com.lover.astd.common.logicexe.economy
                 int.TryParse(config["impose_loyalty"], out min_loyalty);
             }
             mgr.getImposeInfo(this._proto, this._logger, this._user, min_loyalty);
-            if (this._user._impose_task_num > 0)
+            if (this._user._impose_force_task_num > 0)
             {
-                if (mgr.impose(this._proto, this._logger, this._user, false, min_loyalty))
+                if (mgr.impose(this._proto, this._logger, this._user, true, min_loyalty))
                 {
+                    this._user._impose_force_task_num--;
                     this._user._impose_task_num--;
                     return base.immediate();
                 }
@@ -144,11 +145,11 @@ namespace com.lover.astd.common.logicexe.economy
                     return base.next_halfhour();
                 }
             }
-            else if (this._user._impose_force_task_num > 0)
+            else if (this._user._impose_task_num > 0)
             {
-                if (mgr.impose(this._proto, this._logger, this._user, true, min_loyalty))
+                if (mgr.impose(this._proto, this._logger, this._user, false, min_loyalty))
                 {
-                    this._user._impose_force_task_num--;
+                    this._user._impose_task_num--;
                     return base.immediate();
                 }
                 else

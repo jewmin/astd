@@ -2505,7 +2505,7 @@ namespace com.lover.astd.common.logic
         public bool impose(ProtocolMgr protocol, ILogger logger, User user, bool force, int min_loyalty)
         {
             string url = "/root/mainCity!impose.action";
-            if (force)
+            if (force || user._impose_count == 0)
             {
                 url = "/root/mainCity!forceImpose.action";
             }
