@@ -195,7 +195,7 @@ namespace com.lover.astd.common.model
 
         public override bool CanAdd()
         {
-            return true;
+            return num > 0;
         }
     }
 }

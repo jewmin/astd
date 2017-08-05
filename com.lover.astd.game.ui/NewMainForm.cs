@@ -462,6 +462,7 @@ namespace com.lover.astd.game.ui
             _intentExit = true;
             stopServer(true);
             _account = null;
+            Thread.Sleep(500);
             Close();
         }
 

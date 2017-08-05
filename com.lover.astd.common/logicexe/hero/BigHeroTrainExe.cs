@@ -68,6 +68,20 @@ namespace com.lover.astd.common.logicexe.hero
                     }
                 }
                 logInfo(string.Format("开始大将{0} {1}", canChange ? "突破" : "突飞", hero.Name));
+                int use_free_num = 0;
+                while (freenum_ > 0)
+                {
+                    if (canChange) break;
+                    if (mgr_.fastTrainBigGeneral(_proto, _logger, hero.Id))
+                    {
+                        use_free_num++;
+                        freenum_--;
+                    }
+                }
+                if (use_free_num > 0)
+                {
+                    logInfo(string.Format("使用{0}次免费对大将【{1}】进行{2}", freenum_, hero.Name, canChange ? "突破" : "突飞"));
+                }
                 int use_tu_fei = 0;
                 int cost = 0;
                 while (hero.TuFei > 0)
@@ -100,7 +114,7 @@ namespace com.lover.astd.common.logicexe.hero
                 }
             }
             getAllBigGenerals();
-            heros = _factory.getBigHeroManager().heros_;
+            heros = mgr_.heros_;
             heros.Sort();
             int pos = 1;
             foreach (BigHero hero in heros)
@@ -110,18 +124,29 @@ namespace com.lover.astd.common.logicexe.hero
                 {
                     logInfo(string.Format("开始训练大将 {0}", hero.Name));
                     pos++;
-                    foreach (BigHeroExpBook item in mgr_.expbooks_)
+                }
+            }
+            getAllBigGenerals();
+            heros = mgr_.heros_;
+            heros.Sort();
+            pos = 1;
+            foreach (BigHero hero in heros)
+            {
+                if (hero.TrainPos == 0) continue;
+                if (pos > total_pos_) break;
+                foreach (BigHeroExpBook item in mgr_.expbooks_)
+                {
+                    if (item.type == hero.GeneralType)
                     {
-                        if (item.type == hero.GeneralType && item.num > 0)
+                        while (item.num > 0)
                         {
-                            while (item.num > 0)
-                            {
-                                item.num--;
-                                if (!mgr_.useExpBook(_proto, _logger, hero.Id)) break;
-                            }
+                            item.num--;
+                            if (!mgr_.useExpBook(_proto, _logger, hero.Id)) break;
                         }
+                        break;
                     }
                 }
+                pos++;
             }
             return next_day();
         }
