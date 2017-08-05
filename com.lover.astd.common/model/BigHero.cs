@@ -16,6 +16,7 @@ namespace com.lover.astd.common.model
         private int pos_;
         private int change_;
         private int index_;
+        private int generaltype_;
         /// <summary>
         /// 武将等级
         /// </summary>
@@ -79,6 +80,14 @@ namespace com.lover.astd.common.model
         {
             get { return change_; }
             set { change_ = value; }
+        }
+        /// <summary>
+        /// 大将类型 0:战法 1:策略 2:机械
+        /// </summary>
+        public int GeneralType
+        {
+            get { return generaltype_; }
+            set { generaltype_ = value; }
         }
         /// <summary>
         /// 优先级
@@ -149,6 +158,44 @@ namespace com.lover.astd.common.model
             if (this.index_ < hero.index_) return -1;
             else if (this.index_ > hero.index_) return 1;
             else return 0;
+        }
+    }
+
+    public class BigHeroExpBook : XmlObject
+    {
+        /// <summary>
+        /// 经验书类型 0:战法 1:策略 2:机械
+        /// </summary>
+        public int type;
+        /// <summary>
+        /// 数量
+        /// </summary>
+        public int num;
+        /// <summary>
+        /// 名称
+        /// </summary>
+        public string Name
+        {
+            get
+            {
+                if (type == 0) return "战法经验书";
+                else if (type == 1) return "策略经验书";
+                else return "机械经验书";
+            }
+        }
+
+        public override void Parse(XmlNode node)
+        {
+            foreach (XmlNode item in node.ChildNodes)
+            {
+                if (item.Name == "type") type = int.Parse(item.InnerText);
+                else if (item.Name == "num") num = int.Parse(item.InnerText);
+            }
+        }
+
+        public override bool CanAdd()
+        {
+            return true;
         }
     }
 }

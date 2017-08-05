@@ -12,6 +12,7 @@ namespace com.lover.astd.common.logic
     {
         public Dictionary<string, int> indexs_ = new Dictionary<string, int>();
         public List<BigHero> heros_ = new List<BigHero>();
+        public List<BigHeroExpBook> expbooks_ = new List<BigHeroExpBook>();
 
         public BigHeroMgr(TimeMgr tmrMgr, ServiceFactory factory)
 		{
@@ -107,10 +108,11 @@ namespace com.lover.astd.common.logic
         /// <param name="protocol"></param>
         /// <param name="logger"></param>
         /// <param name="max_big_level"></param>
-        public void getBigTrainInfo(ProtocolMgr protocol, ILogger logger, out int max_big_level, out int totalpos)
+        public void getBigTrainInfo(ProtocolMgr protocol, ILogger logger, out int max_big_level, out int totalpos, out int freenum)
         {
             max_big_level = 0;
             totalpos = 0;
+            freenum = 0;
             string url = "/root/general!getBigTrainInfo.action";
             ServerResult xml = protocol.getXml(url, "获取大将训练信息");
             if (xml == null || !xml.CmdSucceed)
@@ -127,6 +129,11 @@ namespace com.lover.astd.common.logic
             if (xmlNode != null)
             {
                 int.TryParse(xmlNode.InnerText, out totalpos);
+            }
+            xmlNode = cmdResult.SelectSingleNode("/results/freenum");
+            if (xmlNode != null)
+            {
+                int.TryParse(xmlNode.InnerText, out freenum);
             }
             XmlNodeList childNodes = cmdResult.SelectNodes("/results/traininfo");
             if (childNodes != null)
@@ -174,10 +181,16 @@ namespace com.lover.astd.common.logic
                             {
                                 hero.Change = int.Parse(xmlNode4.InnerText);
                             }
+                            xmlNode4 = xmlNode2.SelectSingleNode("generaltype");
+                            if (xmlNode4 != null)
+                            {
+                                hero.GeneralType = int.Parse(xmlNode4.InnerText);
+                            }
                         }
                     }
                 }
             }
+            expbooks_ = XmlHelper.GetClassList<BigHeroExpBook>(cmdResult.SelectNodes("/results/expbook"));
         }
         /// <summary>
         /// 训练大将
@@ -274,6 +287,25 @@ namespace com.lover.astd.common.logic
             {
                 int.TryParse(xmlNode.InnerText, out cost);
             }
+            return true;
+        }
+        /// <summary>
+        /// 大将使用经验书
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="logger"></param>
+        /// <param name="generalId"></param>
+        /// <returns></returns>
+        public bool useExpBook(ProtocolMgr protocol, ILogger logger, int generalId)
+        {
+            string url = "/root/general!useExpBook.action";
+            string data = string.Format("generalId={0}", generalId);
+            ServerResult xml = protocol.postXml(url, data, "使用经验书");
+            if (xml == null || !xml.CmdSucceed) return false;
+
+            XmlDocument cmdResult = xml.CmdResult;
+            int expreward = XmlHelper.GetValue<int>(cmdResult.SelectSingleNode("/results/bookreward/expreward"));
+            logInfo(logger, string.Format("使用经验书, 经验+{0}", expreward));
             return true;
         }
     }

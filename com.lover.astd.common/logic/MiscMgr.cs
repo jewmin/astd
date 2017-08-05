@@ -1615,125 +1615,86 @@ namespace com.lover.astd.common.logic
             }
         }
 
-        public void baiShen(ProtocolMgr protocol, ILogger logger, User user, int gold_available, int advance_baoshi, int advance_dianquan, bool b_usefree, int cishu)
+        public void baiShen(ProtocolMgr protocol, ILogger logger, User user, int gold_available, int advance_baoshi, int advance_dianquan, int advance_bintie, bool b_usefree, int cishu)
         {
-            bool flag = true;
-            while (flag)
+            while (true)
             {
                 string url = "/root/baishen!getInformation.action";
                 ServerResult xml = protocol.getXml(url, "取拜神信息");
-                bool flag2 = xml == null || !xml.CmdSucceed;
-                if (flag2)
-                {
-                    break;
-                }
-                int num = 0;
-                int num2 = 0;
-                int num3 = 0;
+                if (xml == null || !xml.CmdSucceed) break;
+                
+                int cailiaolefttime = 0;
+                int leftbaishentime = 0;
+                int buycishu = 0;
                 XmlDocument cmdResult = xml.CmdResult;
                 XmlNode xmlNode = cmdResult.SelectSingleNode("/results/cailiaolefttime");
-                bool flag3 = xmlNode != null;
-                if (flag3)
+                if (xmlNode != null)
                 {
-                    int.TryParse(xmlNode.InnerText, out num);
+                    int.TryParse(xmlNode.InnerText, out cailiaolefttime);
                 }
                 xmlNode = cmdResult.SelectSingleNode("/results/leftbaishentime");
-                bool flag4 = xmlNode != null;
-                if (flag4)
+                if (xmlNode != null)
                 {
-                    int.TryParse(xmlNode.InnerText, out num2);
+                    int.TryParse(xmlNode.InnerText, out leftbaishentime);
                 }
                 xmlNode = cmdResult.SelectSingleNode("/results/buycishu");
-                bool flag5 = xmlNode != null;
-                if (flag5)
+                if (xmlNode != null)
                 {
-                    int.TryParse(xmlNode.InnerText, out num3);
+                    int.TryParse(xmlNode.InnerText, out buycishu);
                 }
-                bool flag6 = num2 == 0;
-                if (flag6)
+
+                if (leftbaishentime == 0)
                 {
-                    bool flag7 = num3 < cishu && gold_available >= 5;
-                    if (!flag7)
-                    {
-                        break;
-                    }
+                    if (buycishu >= cishu || gold_available < 5) break;
                     this.buyCishu(protocol, logger, user);
                 }
+
                 xmlNode = cmdResult.SelectSingleNode("/results/thisreward");
                 string innerText = xmlNode.InnerText;
-                string[] array = innerText.Split(new char[]
-				{
-					':'
-				});
-                int num4 = int.Parse(array[1]);
-                int num5 = 1;
-                bool flag8 = array[0].Contains("baoshi");
+                string[] array = innerText.Split(new char[] { ':' });
+                int count = int.Parse(array[1]);
+                int type = 1;
                 string text;
-                if (flag8)
+                if (array[0].Contains("baoshi"))
                 {
-                    text = "本次祭祀基础奖励为宝石：" + num4.ToString();
-                    bool flag9 = num4 >= advance_baoshi;
-                    if (flag9)
-                    {
-                        num5 = 3;
-                    }
+                    text = "本次祭祀基础奖励为宝石：" + count.ToString();
+                    if (count >= advance_baoshi) type = 3;
+                }
+                else if (array[0].Contains("bintie"))
+                {
+                    text = "本次祭祀基础奖励为镔铁：" + count.ToString();
+                    if (count >= advance_bintie) type = 3;
                 }
                 else
                 {
-                    text = "本次祭祀基础奖励为点券：" + num4.ToString();
-                    bool flag10 = num4 >= advance_dianquan;
-                    if (flag10)
+                    text = "本次祭祀基础奖励为点券：" + count.ToString();
+                    if (count >= advance_dianquan) type = 3;
+                }
+
+                if (type == 3)
+                {
+                    if (cailiaolefttime < 10)
                     {
-                        num5 = 3;
+                        if (b_usefree) type = 1;
                     }
                 }
-                bool flag11 = num5 == 3;
-                if (flag11)
+
+                if (type == 1)
                 {
-                    bool flag12 = num < 10;
-                    if (flag12)
-                    {
-                        if (b_usefree)
-                        {
-                            num5 = 1;
-                        }
-                    }
+                    if (cailiaolefttime > 0) text += ", 准备花费1个免费贡品, 初级祭祀";
+                    else text += ", 准备花费1金币, 初级祭祀";
                 }
-                bool flag13 = num5 == 1 && num > 0;
-                if (flag13)
+                else if (type == 3)
                 {
-                    text += ",准备花费1个免费贡品，初级祭祀";
+                    if (cailiaolefttime >= 10) text += ", 准备花费10个免费贡品, 高级祭祀";
+                    else text += ", 准备花费50金币，高级祭祀";
                 }
                 else
                 {
-                    bool flag14 = num5 == 1 && num == 0;
-                    if (flag14)
-                    {
-                        text += ",准备花费1金币，初级祭祀";
-                    }
-                    else
-                    {
-                        bool flag15 = num5 == 3 && num >= 10;
-                        if (flag15)
-                        {
-                            text += ",准备花费10个免费贡品，高级祭祀";
-                        }
-                        else
-                        {
-                            bool flag16 = num5 == 3 && num < 10;
-                            if (flag16)
-                            {
-                                text += ",准备花费50金币，高级祭祀";
-                            }
-                            else
-                            {
-                                text += ",准备祭祀";
-                            }
-                        }
-                    }
+                    text += ", 准备祭祀";
                 }
                 base.logInfo(logger, text);
-                this.startBaiShen(protocol, logger, user, num5);
+                this.startBaiShen(protocol, logger, user, type);
             }
         }
 
@@ -1741,8 +1702,7 @@ namespace com.lover.astd.common.logic
         {
             string url = "/root/baishen!buyCishu.action";
             ServerResult xml = protocol.getXml(url, "拜神:购买一次显灵");
-            bool flag = xml == null || !xml.CmdSucceed;
-            if (flag)
+            if (xml == null || !xml.CmdSucceed)
             {
                 base.logInfo(logger, "购买拜神次数失败" + xml.CmdError);
             }
@@ -1757,8 +1717,7 @@ namespace com.lover.astd.common.logic
             string url = "/root/baishen!baishen.action";
             string data = string.Format("type={0}", type);
             ServerResult serverResult = protocol.postXml(url, data, "开始拜神");
-            bool flag = serverResult == null || !serverResult.CmdSucceed;
-            if (flag)
+            if (serverResult == null || !serverResult.CmdSucceed)
             {
                 base.logInfo(logger, "拜神祭祀失败" + serverResult.CmdError);
             }

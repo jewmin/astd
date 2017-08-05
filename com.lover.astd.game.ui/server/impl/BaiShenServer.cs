@@ -17,11 +17,9 @@ namespace com.lover.astd.game.ui.server.impl
 		{
 			int value = 0;
             _mainForm.refreshPlayerInfo();
-            if (_mainForm.getConfig() == null)
-			{
-				return;
-			}
-			Dictionary<string, string> config = base.getConfig(this.ServerName);
+            if (_mainForm.getConfig() == null) return;
+			
+            Dictionary<string, string> config = base.getConfig(this.ServerName);
 			if (config.ContainsKey("baishenenable") && config["baishenenable"] != "")
 			{
                 _mainForm.chk_AutoBaiShen.Checked = config["baishenenable"].ToLower().Equals("true");
@@ -35,7 +33,12 @@ namespace com.lover.astd.game.ui.server.impl
 			{
 				int.TryParse(config["advancedianquan"], out value);
                 _mainForm.nUD_DianQuan.Value = value;
-			}
+            }
+            if (config.ContainsKey("advancebintie") && config["advancebintie"] != "")
+            {
+                int.TryParse(config["advancebintie"], out value);
+                _mainForm.nUD_BinTie.Value = value;
+            }
 			if (config.ContainsKey("superusefree") && config["superusefree"] != "")
 			{
                 _mainForm.chk_SuperUseFree.Checked = config["superusefree"].ToLower().Equals("true");
@@ -60,6 +63,7 @@ namespace com.lover.astd.game.ui.server.impl
 			}
             config.setConfig(this.ServerName, "advancebaoshi", _mainForm.nUD_BaoShi.Value.ToString());
             config.setConfig(this.ServerName, "advancedianquan", _mainForm.nUD_DianQuan.Value.ToString());
+            config.setConfig(this.ServerName, "advancebintie", _mainForm.nUD_BinTie.Value.ToString());
             if (_mainForm.chk_SuperUseFree.Checked)
 			{
 				config.setConfig(this.ServerName, "superusefree", "true");
@@ -75,8 +79,9 @@ namespace com.lover.astd.game.ui.server.impl
 		{
 			GameConfig expr_06 = base.getConfig();
 			expr_06.setConfig(this.ServerName, "baishenenable", "false");
-			expr_06.setConfig(this.ServerName, "advancebaoshi", "3000");
-			expr_06.setConfig(this.ServerName, "advancedianquan", "60000");
+            expr_06.setConfig(this.ServerName, "advancebaoshi", "50000000");
+            expr_06.setConfig(this.ServerName, "advancedianquan", "50000000");
+            expr_06.setConfig(this.ServerName, "advancebintie", "50000000");
 			expr_06.setConfig(this.ServerName, "superusefree", "false");
 			expr_06.setConfig(this.ServerName, "cishu", "0");
 			this.renderSettings();

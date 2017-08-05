@@ -19,30 +19,30 @@ namespace com.lover.astd.common.logicexe
 		public override long execute()
 		{
 			Dictionary<string, string> config = base.getConfig();
-			int advance_baoshi = 3000;
-			int advance_dianquan = 60000;
+            int advance_baoshi = 50000000;
+            int advance_dianquan = 50000000;
+            int advance_bintie = 50000000;
 			int cishu = 0;
-			bool flag = config.ContainsKey("baishenenable") && config["baishenenable"].ToLower().Equals("true");
-			bool flag2 = config.ContainsKey("advancebaoshi");
-			if (flag2)
+			if (config.ContainsKey("advancebaoshi"))
 			{
 				advance_baoshi = int.Parse(config["advancebaoshi"]);
 			}
-			bool flag3 = config.ContainsKey("advancedianquan");
-			if (flag3)
+			if (config.ContainsKey("advancedianquan"))
 			{
 				advance_dianquan = int.Parse(config["advancedianquan"]);
-			}
+            }
+            if (config.ContainsKey("advancebintie"))
+            {
+                advance_bintie = int.Parse(config["advancebintie"]);
+            }
 			bool b_usefree = config.ContainsKey("superusefree") && config["superusefree"].ToLower().Equals("true");
-			bool flag4 = config.ContainsKey("cishu");
-			if (flag4)
+			if (config.ContainsKey("cishu"))
 			{
 				cishu = int.Parse(config["cishu"]);
 			}
-			bool flag5 = flag;
-			if (flag5)
+			if (config.ContainsKey("baishenenable") && config["baishenenable"].ToLower().Equals("true"))
 			{
-				this._factory.getMiscManager().baiShen(this._proto, this._logger, this._user, base.getGoldAvailable(), advance_baoshi, advance_dianquan, b_usefree, cishu);
+                this._factory.getMiscManager().baiShen(this._proto, this._logger, this._user, base.getGoldAvailable(), advance_baoshi, advance_dianquan, advance_bintie, b_usefree, cishu);
 			}
 			return base.next_day();
 		}

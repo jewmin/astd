@@ -130,6 +130,9 @@ namespace com.lover.astd.game.ui
             this.chk_polish_enable = new System.Windows.Forms.CheckBox();
             this.tabPage9 = new System.Windows.Forms.TabPage();
             this.dg_specialtreasure = new System.Windows.Forms.DataGridView();
+            this.dataGridViewCheckBoxColumn1 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.col_name_specialtreasure = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.col_attr_specialtreasure = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
@@ -475,9 +478,10 @@ namespace com.lover.astd.game.ui
             this.lbl_playerinfo = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lbl_time = new System.Windows.Forms.Label();
-            this.dataGridViewCheckBoxColumn1 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.col_name_specialtreasure = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.col_attr_specialtreasure = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.label77 = new System.Windows.Forms.Label();
+            this.label78 = new System.Windows.Forms.Label();
+            this.nUD_BinTie = new System.Windows.Forms.NumericUpDown();
+            this.label79 = new System.Windows.Forms.Label();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_ticket_bighero)).BeginInit();
@@ -589,6 +593,7 @@ namespace com.lover.astd.game.ui
             ((System.ComponentModel.ISupportInitialize)(this.num_kf_banquet_buygold)).BeginInit();
             this.logPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.subBrowser)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nUD_BinTie)).BeginInit();
             this.SuspendLayout();
             // 
             // mainMenu
@@ -1679,6 +1684,27 @@ namespace com.lover.astd.game.ui
             this.dg_specialtreasure.RowTemplate.Height = 23;
             this.dg_specialtreasure.Size = new System.Drawing.Size(363, 188);
             this.dg_specialtreasure.TabIndex = 20;
+            // 
+            // dataGridViewCheckBoxColumn1
+            // 
+            this.dataGridViewCheckBoxColumn1.DataPropertyName = "IsChecked";
+            this.dataGridViewCheckBoxColumn1.HeaderText = "";
+            this.dataGridViewCheckBoxColumn1.Name = "dataGridViewCheckBoxColumn1";
+            this.dataGridViewCheckBoxColumn1.Width = 30;
+            // 
+            // col_name_specialtreasure
+            // 
+            this.col_name_specialtreasure.DataPropertyName = "NameWithGeneral";
+            this.col_name_specialtreasure.HeaderText = "名字";
+            this.col_name_specialtreasure.Name = "col_name_specialtreasure";
+            this.col_name_specialtreasure.Width = 150;
+            // 
+            // col_attr_specialtreasure
+            // 
+            this.col_attr_specialtreasure.DataPropertyName = "Attributes";
+            this.col_attr_specialtreasure.HeaderText = "属性";
+            this.col_attr_specialtreasure.Name = "col_attr_specialtreasure";
+            this.col_attr_specialtreasure.Width = 150;
             // 
             // groupBox10
             // 
@@ -4090,6 +4116,10 @@ namespace com.lover.astd.game.ui
             // 
             // groupBox17
             // 
+            this.groupBox17.Controls.Add(this.label79);
+            this.groupBox17.Controls.Add(this.label77);
+            this.groupBox17.Controls.Add(this.label78);
+            this.groupBox17.Controls.Add(this.nUD_BinTie);
             this.groupBox17.Controls.Add(this.chk_SuperUseFree);
             this.groupBox17.Controls.Add(this.label56);
             this.groupBox17.Controls.Add(this.label60);
@@ -4112,7 +4142,7 @@ namespace com.lover.astd.game.ui
             // chk_SuperUseFree
             // 
             this.chk_SuperUseFree.AutoSize = true;
-            this.chk_SuperUseFree.Location = new System.Drawing.Point(6, 89);
+            this.chk_SuperUseFree.Location = new System.Drawing.Point(6, 114);
             this.chk_SuperUseFree.Name = "chk_SuperUseFree";
             this.chk_SuperUseFree.Size = new System.Drawing.Size(156, 16);
             this.chk_SuperUseFree.TabIndex = 68;
@@ -4122,7 +4152,7 @@ namespace com.lover.astd.game.ui
             // label56
             // 
             this.label56.AutoSize = true;
-            this.label56.Location = new System.Drawing.Point(121, 66);
+            this.label56.Location = new System.Drawing.Point(126, 66);
             this.label56.Name = "label56";
             this.label56.Size = new System.Drawing.Size(77, 12);
             this.label56.TabIndex = 67;
@@ -4131,7 +4161,7 @@ namespace com.lover.astd.game.ui
             // label60
             // 
             this.label60.AutoSize = true;
-            this.label60.Location = new System.Drawing.Point(39, 66);
+            this.label60.Location = new System.Drawing.Point(42, 66);
             this.label60.Name = "label60";
             this.label60.Size = new System.Drawing.Size(17, 12);
             this.label60.TabIndex = 66;
@@ -4140,7 +4170,7 @@ namespace com.lover.astd.game.ui
             // label61
             // 
             this.label61.AutoSize = true;
-            this.label61.Location = new System.Drawing.Point(7, 66);
+            this.label61.Location = new System.Drawing.Point(8, 66);
             this.label61.Name = "label61";
             this.label61.Size = new System.Drawing.Size(41, 12);
             this.label61.TabIndex = 65;
@@ -4171,7 +4201,7 @@ namespace com.lover.astd.game.ui
             // label59
             // 
             this.label59.AutoSize = true;
-            this.label59.Location = new System.Drawing.Point(122, 44);
+            this.label59.Location = new System.Drawing.Point(126, 44);
             this.label59.Name = "label59";
             this.label59.Size = new System.Drawing.Size(77, 12);
             this.label59.TabIndex = 63;
@@ -4180,7 +4210,7 @@ namespace com.lover.astd.game.ui
             // label58
             // 
             this.label58.AutoSize = true;
-            this.label58.Location = new System.Drawing.Point(39, 44);
+            this.label58.Location = new System.Drawing.Point(42, 44);
             this.label58.Name = "label58";
             this.label58.Size = new System.Drawing.Size(17, 12);
             this.label58.TabIndex = 62;
@@ -4197,7 +4227,7 @@ namespace com.lover.astd.game.ui
             // 
             // nUD_CiShu
             // 
-            this.nUD_CiShu.Location = new System.Drawing.Point(90, 111);
+            this.nUD_CiShu.Location = new System.Drawing.Point(141, 14);
             this.nUD_CiShu.Maximum = new decimal(new int[] {
             20,
             0,
@@ -4210,11 +4240,11 @@ namespace com.lover.astd.game.ui
             // label55
             // 
             this.label55.AutoSize = true;
-            this.label55.Location = new System.Drawing.Point(8, 116);
+            this.label55.Location = new System.Drawing.Point(75, 18);
             this.label55.Name = "label55";
-            this.label55.Size = new System.Drawing.Size(89, 12);
+            this.label55.Size = new System.Drawing.Size(65, 12);
             this.label55.TabIndex = 3;
-            this.label55.Text = "购买显灵次数：";
+            this.label55.Text = "购买显灵：";
             // 
             // nUD_BaoShi
             // 
@@ -4225,7 +4255,7 @@ namespace com.lover.astd.game.ui
             0});
             this.nUD_BaoShi.Location = new System.Drawing.Point(62, 40);
             this.nUD_BaoShi.Maximum = new decimal(new int[] {
-            9000000,
+            90000000,
             0,
             0,
             0});
@@ -4241,7 +4271,7 @@ namespace com.lover.astd.game.ui
             // chk_AutoBaiShen
             // 
             this.chk_AutoBaiShen.AutoSize = true;
-            this.chk_AutoBaiShen.Location = new System.Drawing.Point(7, 21);
+            this.chk_AutoBaiShen.Location = new System.Drawing.Point(6, 17);
             this.chk_AutoBaiShen.Name = "chk_AutoBaiShen";
             this.chk_AutoBaiShen.Size = new System.Drawing.Size(72, 16);
             this.chk_AutoBaiShen.TabIndex = 0;
@@ -5798,26 +5828,54 @@ namespace com.lover.astd.game.ui
             this.lbl_time.Size = new System.Drawing.Size(0, 12);
             this.lbl_time.TabIndex = 8;
             // 
-            // dataGridViewCheckBoxColumn1
+            // label77
             // 
-            this.dataGridViewCheckBoxColumn1.DataPropertyName = "IsChecked";
-            this.dataGridViewCheckBoxColumn1.HeaderText = "";
-            this.dataGridViewCheckBoxColumn1.Name = "dataGridViewCheckBoxColumn1";
-            this.dataGridViewCheckBoxColumn1.Width = 30;
+            this.label77.AutoSize = true;
+            this.label77.Location = new System.Drawing.Point(126, 88);
+            this.label77.Name = "label77";
+            this.label77.Size = new System.Drawing.Size(77, 12);
+            this.label77.TabIndex = 71;
+            this.label77.Text = "使用高级祭祀";
             // 
-            // col_name_specialtreasure
+            // label78
             // 
-            this.col_name_specialtreasure.DataPropertyName = "NameWithGeneral";
-            this.col_name_specialtreasure.HeaderText = "名字";
-            this.col_name_specialtreasure.Name = "col_name_specialtreasure";
-            this.col_name_specialtreasure.Width = 150;
+            this.label78.AutoSize = true;
+            this.label78.Location = new System.Drawing.Point(8, 88);
+            this.label78.Name = "label78";
+            this.label78.Size = new System.Drawing.Size(41, 12);
+            this.label78.TabIndex = 70;
+            this.label78.Text = "镔铁：";
             // 
-            // col_attr_specialtreasure
+            // nUD_BinTie
             // 
-            this.col_attr_specialtreasure.DataPropertyName = "Attributes";
-            this.col_attr_specialtreasure.HeaderText = "属性";
-            this.col_attr_specialtreasure.Name = "col_attr_specialtreasure";
-            this.col_attr_specialtreasure.Width = 150;
+            this.nUD_BinTie.Increment = new decimal(new int[] {
+            5000,
+            0,
+            0,
+            0});
+            this.nUD_BinTie.Location = new System.Drawing.Point(62, 85);
+            this.nUD_BinTie.Maximum = new decimal(new int[] {
+            90000000,
+            0,
+            0,
+            0});
+            this.nUD_BinTie.Name = "nUD_BinTie";
+            this.nUD_BinTie.Size = new System.Drawing.Size(63, 21);
+            this.nUD_BinTie.TabIndex = 69;
+            this.nUD_BinTie.Value = new decimal(new int[] {
+            60000,
+            0,
+            0,
+            0});
+            // 
+            // label79
+            // 
+            this.label79.AutoSize = true;
+            this.label79.Location = new System.Drawing.Point(42, 88);
+            this.label79.Name = "label79";
+            this.label79.Size = new System.Drawing.Size(17, 12);
+            this.label79.TabIndex = 72;
+            this.label79.Text = "≥";
             // 
             // NewMainForm
             // 
@@ -5980,6 +6038,7 @@ namespace com.lover.astd.game.ui
             this.logPage.ResumeLayout(false);
             this.logPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.subBrowser)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nUD_BinTie)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -6434,6 +6493,10 @@ namespace com.lover.astd.game.ui
         private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn col_name_specialtreasure;
         private System.Windows.Forms.DataGridViewTextBoxColumn col_attr_specialtreasure;
+        private System.Windows.Forms.Label label79;
+        private System.Windows.Forms.Label label77;
+        private System.Windows.Forms.Label label78;
+        public System.Windows.Forms.NumericUpDown nUD_BinTie;
 
     }
 }

@@ -11,6 +11,7 @@ namespace com.lover.astd.common.logicexe.hero
         private const int change_big_level_ = 100;
         private int max_big_level_;
         private int total_pos_;
+        private int freenum_;
         private BigHeroMgr mgr_;
         public BigHeroTrainExe()
 		{
@@ -22,7 +23,7 @@ namespace com.lover.astd.common.logicexe.hero
         {
             mgr_ = _factory.getBigHeroManager();
             mgr_.getAllBigGenerals(_proto, _logger);
-            mgr_.getBigTrainInfo(_proto, _logger, out max_big_level_, out total_pos_);
+            mgr_.getBigTrainInfo(_proto, _logger, out max_big_level_, out total_pos_, out freenum_);
         }
 
         public override void init_data()
@@ -104,14 +105,22 @@ namespace com.lover.astd.common.logicexe.hero
             int pos = 1;
             foreach (BigHero hero in heros)
             {
-                if (pos > total_pos_)
-                {
-                    break;
-                }
+                if (pos > total_pos_) break;
                 if (hero.Big == 1 && hero.BigLevel < max_big_level_ && _factory.getBigHeroManager().startBigTrain(_proto, _logger, pos, hero.Id))
                 {
                     logInfo(string.Format("开始训练大将 {0}", hero.Name));
                     pos++;
+                    foreach (BigHeroExpBook item in mgr_.expbooks_)
+                    {
+                        if (item.type == hero.GeneralType && item.num > 0)
+                        {
+                            while (item.num > 0)
+                            {
+                                item.num--;
+                                if (!mgr_.useExpBook(_proto, _logger, hero.Id)) break;
+                            }
+                        }
+                    }
                 }
             }
             return next_day();

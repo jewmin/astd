@@ -1232,183 +1232,158 @@ namespace com.lover.astd.common.logic
         {
             string url = "/root/superFanpai!getSuperFanpaiInfo.action";
             ServerResult xml = protocol.getXml(url, "获取超级翻牌信息");
-            bool flag = xml == null;
-            int result;
-            if (flag)
+            if (xml == null)
             {
-                result = 1;
+                return 1;
             }
-            else
+            else if (!xml.CmdSucceed)
             {
-                bool flag2 = !xml.CmdSucceed;
-                if (flag2)
+                return 10;
+            }
+
+            XmlDocument cmdResult = xml.CmdResult;
+            int buyone = 1;
+            int buyall = 20;
+            int freetimes = 0;
+            int superlv = 18;
+            XmlNode xmlNode = cmdResult.SelectSingleNode("/results/superfanpaiinfo/buyone");
+            if (xmlNode != null)
+            {
+                int.TryParse(xmlNode.InnerText, out buyone);
+            }
+            XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/superfanpaiinfo/buyall");
+            if (xmlNode2 != null)
+            {
+                int.TryParse(xmlNode2.InnerText, out buyall);
+            }
+            XmlNode xmlNode3 = cmdResult.SelectSingleNode("/results/superfanpaiinfo/freetimes");
+            if (xmlNode3 != null)
+            {
+                int.TryParse(xmlNode3.InnerText, out freetimes);
+            }
+            xmlNode3 = cmdResult.SelectSingleNode("/results/superfanpaiinfo/superlv");
+            if (xmlNode3 != null)
+            {
+                int.TryParse(xmlNode3.InnerText, out superlv);
+            }
+
+            bool isfanpai = false;
+            XmlNode xmlNode4 = cmdResult.SelectSingleNode("/results/superfanpaiinfo/isfanpai");
+            if (xmlNode4 != null)
+            {
+                isfanpai = (xmlNode4.InnerText != "0");
+            }
+            if (isfanpai)
+            {
+                //Random random = new Random();
+                //return this.SuperFanpai_fanOne(protocol, logger, random.Next(3) + 1);
+                return this.SuperFanpai_fanOne(protocol, logger, _superFanpai_idx + 1);
+            }
+
+            int i = 0;
+            int[] array_gemlevel = new int[3];
+            XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/superfanpaiinfo/card/gemlevel");
+            foreach (XmlNode xmlNode5 in xmlNodeList)
+            {
+                int num4 = 0;
+                int.TryParse(xmlNode5.InnerText, out num4);
+                array_gemlevel[i++] = num4;
+            }
+
+            i = 0;
+            int[] array_gemnumber = new int[3];
+            XmlNodeList xmlNodeList2 = cmdResult.SelectNodes("/results/superfanpaiinfo/card/gemnumber");
+            foreach (XmlNode xmlNode6 in xmlNodeList2)
+            {
+                int num6 = 0;
+                int.TryParse(xmlNode6.InnerText, out num6);
+                array_gemnumber[i++] = num6;
+            }
+
+            int sum = 0;
+            for (i = 0; i < 3; i++)
+            {
+                sum += (int)Math.Pow(2.0, (double)(array_gemlevel[i] - 1)) * array_gemnumber[i];
+            }
+            base.logInfo(logger, string.Format("当前超级翻牌还剩翻牌次数{0}次, 当前收益:[{1},{2},{3}]级, 全开{4}个宝石", new object[] { freetimes, array_gemlevel[0], array_gemlevel[1], array_gemlevel[2], sum }));
+
+            int fanpai_baoshi_level = array_gemlevel[0];
+            _superFanpai_idx = 0;
+            for (int fanpai_idx = 1; fanpai_idx < 3; fanpai_idx++)
+            {
+                if (fanpai_baoshi_level > array_gemlevel[fanpai_idx])
                 {
-                    result = 10;
+                    fanpai_baoshi_level = array_gemlevel[fanpai_idx];
+                    _superFanpai_idx = fanpai_idx;
+                }
+            }
+
+            if (freetimes == 0)
+            {
+                if (buyone <= max_buy_gold && max_buy_gold <= gold_available)
+                {
+                    return this.superFanpai_buyTimes(protocol, logger, buyone);
                 }
                 else
                 {
-                    XmlDocument cmdResult = xml.CmdResult;
-                    int buyone = 1;
-                    int buyall = 20;
-                    int freetimes = 0;
-                    XmlNode xmlNode = cmdResult.SelectSingleNode("/results/superfanpaiinfo/buyone");
-                    bool flag3 = xmlNode != null;
-                    if (flag3)
-                    {
-                        int.TryParse(xmlNode.InnerText, out buyone);
-                    }
-                    XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/superfanpaiinfo/buyall");
-                    bool flag4 = xmlNode2 != null;
-                    if (flag4)
-                    {
-                        int.TryParse(xmlNode2.InnerText, out buyall);
-                    }
-                    XmlNode xmlNode3 = cmdResult.SelectSingleNode("/results/superfanpaiinfo/freetimes");
-                    bool flag5 = xmlNode3 != null;
-                    if (flag5)
-                    {
-                        int.TryParse(xmlNode3.InnerText, out freetimes);
-                    }
-                    bool isfanpai = false;
-                    XmlNode xmlNode4 = cmdResult.SelectSingleNode("/results/superfanpaiinfo/isfanpai");
-                    bool flag7 = xmlNode4 != null;
-                    if (flag7)
-                    {
-                        isfanpai = (xmlNode4.InnerText != "0");
-                    }
-                    bool flag8 = isfanpai;
-                    if (flag8)
-                    {
-                        //Random random = new Random();
-                        //result = this.SuperFanpai_fanOne(protocol, logger, random.Next(3) + 1);
-                        result = this.SuperFanpai_fanOne(protocol, logger, _superFanpai_idx + 1);
-                    }
-                    else
-                    {
-                        int i = 0;
-                        int[] array = new int[3];
-                        int[] array2 = array;
-                        XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/superfanpaiinfo/card/gemlevel");
-                        int num5;
-                        foreach (XmlNode xmlNode5 in xmlNodeList)
-                        {
-                            int num4 = 0;
-                            int.TryParse(xmlNode5.InnerText, out num4);
-                            int[] arg_17D_0 = array2;
-                            num5 = i;
-                            i = num5 + 1;
-                            arg_17D_0[num5] = num4;
-                        }
-                        i = 0;
-                        int[] array3 = new int[3];
-                        int[] array4 = array3;
-                        XmlNodeList xmlNodeList2 = cmdResult.SelectNodes("/results/superfanpaiinfo/card/gemnumber");
-                        foreach (XmlNode xmlNode6 in xmlNodeList2)
-                        {
-                            int num6 = 0;
-                            int.TryParse(xmlNode6.InnerText, out num6);
-                            int[] arg_1F9_0 = array4;
-                            num5 = i;
-                            i = num5 + 1;
-                            arg_1F9_0[num5] = num6;
-                        }
-                        int num7 = 0;
-                        for (i = 0; i < 3; i = num5 + 1)
-                        {
-                            num7 += (int)Math.Pow(2.0, (double)(array2[i] - 1)) * array4[i];
-                            num5 = i;
-                        }
-                        base.logInfo(logger, string.Format("当前超级翻牌还剩翻牌次数{0}次, 当前收益:[{1},{2},{3}]级, 全开{4}个宝石", new object[]
-						{
-							freetimes,
-							array2[0],
-							array2[1],
-							array2[2],
-							num7
-						}));
-                        int fanpai_baoshi_level = array2[0];
-                        _superFanpai_idx = 0;
-                        for (int fanpai_idx = 1; fanpai_idx < 3; fanpai_idx++)
-                        {
-                            if (fanpai_baoshi_level > array2[fanpai_idx])
-                            {
-                                fanpai_baoshi_level = array2[fanpai_idx];
-                                _superFanpai_idx = fanpai_idx;
-                            }
-                        }
-                        if (freetimes == 0)
-                        {
-                            if (buyone <= max_buy_gold && max_buy_gold <= gold_available)
-                            {
-                                result = this.superFanpai_buyTimes(protocol, logger, buyone);
-                            }
-                            else
-                            {
-                                result = 2;
-                            }
-                        }
-                        else
-                        {
-                            double num8 = (double)buyall * 1.0 / (double)num7;
-                            bool flag10 = num8 <= gem_price && buyall <= gold_available;
-                            if (flag10)
-                            {
-                                int num9 = this.SuperFanpai_getAll(protocol, logger);
-                                bool flag11 = num9 == 0;
-                                if (flag11)
-                                {
-                                    base.logInfo(logger, "超级翻牌卡牌全开, 获得宝石+" + num7);
-                                    result = 0;
-                                }
-                                else
-                                {
-                                    result = num9;
-                                }
-                            }
-                            else
-                            {
-                                int num10 = this.SuperFanpai_xiPai(protocol, logger);
-                                bool flag12 = num10 == 0;
-                                if (flag12)
-                                {
-                                    Random random2 = new Random();
-                                    result = this.SuperFanpai_fanOne(protocol, logger, random2.Next(3) + 1);
-                                }
-                                else
-                                {
-                                    result = num10;
-                                }
-                            }
-                        }
-                    }
+                    return 2;
                 }
             }
-            return result;
+
+            bool all = true;
+            for (i = 0; i < 3; i++)
+            {
+                if (array_gemlevel[i] < superlv)
+                {
+                    all = false;
+                    break;
+                }
+            }
+            //double price = (double)buyall * 1.0 / (double)sum;
+            //if (price <= gem_price && buyall <= gold_available)
+            if (all)
+            {
+                int result = this.SuperFanpai_getAll(protocol, logger);
+                if (result == 0)
+                {
+                    base.logInfo(logger, "超级翻牌卡牌全开, 获得宝石+" + sum);
+                    return 0;
+                }
+                else
+                {
+                    return result;
+                }
+            }
+
+            int result1 = this.SuperFanpai_xiPai(protocol, logger);
+            if (result1 == 0)
+            {
+                //Random random2 = new Random();
+                //return this.SuperFanpai_fanOne(protocol, logger, random2.Next(3) + 1);
+                return this.SuperFanpai_fanOne(protocol, logger, _superFanpai_idx + 1);
+            }
+            else
+            {
+                return result1;
+            }
         }
 
         public int SuperFanpai_getAll(ProtocolMgr protocol, ILogger logger)
         {
             string url = "/root/superFanpai!getAll.action";
             ServerResult xml = protocol.getXml(url, "超级翻牌卡牌全开");
-            bool flag = xml == null;
-            int result;
-            if (flag)
+            if (xml == null)
             {
-                result = 1;
+                return 1;
+            }
+            else if (!xml.CmdSucceed)
+            {
+                return 10;
             }
             else
             {
-                bool flag2 = !xml.CmdSucceed;
-                if (flag2)
-                {
-                    result = 10;
-                }
-                else
-                {
-                    result = 0;
-                }
+                return 0;
             }
-            return result;
         }
 
         public int SuperFanpai_xiPai(ProtocolMgr protocol, ILogger logger)
@@ -1442,41 +1417,34 @@ namespace com.lover.astd.common.logic
             string url = "/root/superFanpai!fanOne.action";
             string data = "cardId=" + index;
             ServerResult serverResult = protocol.postXml(url, data, "超级翻牌卡牌翻牌");
-            bool flag = serverResult == null;
             int result;
-            if (flag)
+            if (serverResult == null)
             {
                 result = 1;
             }
+            else if (!serverResult.CmdSucceed)
+            {
+                result = 10;
+            }
             else
             {
-                bool flag2 = !serverResult.CmdSucceed;
-                if (flag2)
+                XmlDocument cmdResult = serverResult.CmdResult;
+                XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/card");
+                foreach (XmlNode xmlNode in xmlNodeList)
                 {
-                    result = 10;
-                }
-                else
-                {
-                    XmlDocument cmdResult = serverResult.CmdResult;
-                    XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/card");
-                    foreach (XmlNode xmlNode in xmlNodeList)
+                    XmlNode xmlNode2 = xmlNode.SelectSingleNode("ischoose");
+                    if (xmlNode2.InnerText == "1")
                     {
-                        XmlNode xmlNode2 = xmlNode.SelectSingleNode("ischoose");
-                        bool flag3 = xmlNode2.InnerText == "1";
-                        if (flag3)
+                        XmlNode xmlNode3 = xmlNode.SelectSingleNode("gemlevel");
+                        if (xmlNode3 != null)
                         {
-                            XmlNode xmlNode3 = xmlNode.SelectSingleNode("gemlevel");
-                            bool flag4 = xmlNode3 != null;
-                            if (flag4)
-                            {
-                                base.logInfo(logger, string.Format("超级翻牌卡牌翻牌, 翻牌序号为{0}, 获得{1}级宝石*1", index, xmlNode3.InnerText));
-                                break;
-                            }
+                            base.logInfo(logger, string.Format("超级翻牌卡牌翻牌, 翻牌序号为{0}, 获得{1}级宝石*1", index, xmlNode3.InnerText));
                             break;
                         }
+                        break;
                     }
-                    result = 0;
                 }
+                result = 0;
             }
             return result;
         }
