@@ -4350,6 +4350,11 @@ namespace com.lover.astd.common.logic
 
         public int handleNewTradeInfo(ProtocolMgr protocol, ILogger logger, User user, string visit_merchants, int max_fail_count, int silver_available, int gold_available, out int map_count, out int boxnum)
         {
+            if (user.Silver < 10000000)
+            {
+                ticketExchangeMoney(protocol, logger);
+            }
+
             map_count = 0;
             boxnum = 0;
             string url = "/root/caravan!getNewTrade.action";
@@ -4643,6 +4648,11 @@ namespace com.lover.astd.common.logic
 
         public int handleTradeInfo(ProtocolMgr protocol, ILogger logger, User user, out int state, bool do_tired_trade = false, bool only_free = true)
         {
+            if (user.Silver < 10000000)
+            {
+                ticketExchangeMoney(protocol, logger);
+            }
+
             state = 0;
             bool flag = user.Level < 40;
             int result;
@@ -6957,6 +6967,11 @@ namespace com.lover.astd.common.logic
 
         public int handleRefineFactoryInfo(ProtocolMgr protocol, ILogger logger, User user, int refine_gold_limit, int refine_stone_limit, int gold_available, int stone_available, string _refine_weapon_name, int silver_available, bool do_tired_refine = false)
         {
+            if (user.Silver < 10000000)
+            {
+                ticketExchangeMoney(protocol, logger);
+            }
+
             int result;
             if (user.Level < 161)
             {
@@ -8786,6 +8801,42 @@ namespace com.lover.astd.common.logic
                 }
                 logInfo(logger, string.Format("将军塔进度增加{0}，{1}当前进度{2}，剩余筑造石{3}", addprogress, leveluptext, buildingprogress, buildingstone));
             }
+        }
+        #endregion
+
+        #region 高级炼制工坊
+        public int getRefineBintieFactory(ProtocolMgr protocol, ILogger logger, User user)
+        {
+            string url = "/root/refine!getRefineBintieFactory.action";
+            ServerResult result = protocol.getXml(url, "高级炼制工坊-信息");
+            if (result == null) return 1;
+            if (!result.CmdSucceed) return 10;
+
+            int remainhigh = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/remainhigh"));
+            if (remainhigh == 0) return 2;
+
+            if (doRefineBintieFactory(protocol, logger, user, 0)) return 0;
+            return 10;
+        }
+
+        public bool doRefineBintieFactory(ProtocolMgr protocol, ILogger logger, User user, int mode)
+        {
+            if (user.Silver < 10000000)
+            {
+                ticketExchangeMoney(protocol, logger);
+            }
+
+            string url = "/root/refine!doRefineBintieFactory.action";
+            string data = string.Format("mode={0}", mode);
+            ServerResult result = protocol.postXml(url, data, "高级炼制工坊-炼制");
+            if (result == null || !result.CmdSucceed) return false;
+
+            int cri = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/cri"));
+            int basebintie = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/basebintie"));
+            string tips = string.Format("高级炼制，获得镔铁+{0}", basebintie * cri);
+            if (cri > 1) tips = string.Format("高级炼制，{0}倍暴击，获得镔铁+{1}", cri, basebintie * cri);
+            logInfo(logger, tips);
+            return true;
         }
         #endregion
     }
