@@ -48,15 +48,22 @@ namespace com.lover.astd.common.logicexe
             }
             int ticket = 0;
             int total_ticket = 0;
-            TicketItem item = new TicketItem();
+            List<TicketItem> itemList = new List<TicketItem>();
             if (config.ContainsKey(ConfigStrings.ticket_bighero) && config[ConfigStrings.ticket_bighero] != "")
             {
                 ticket = int.Parse(config[ConfigStrings.ticket_bighero]);
             }
-            this._factory.getMiscManager().ticketGetInfo(this._proto, this._logger, ref total_ticket, ref item);
-            if (item.id == -1 && item.tickets <= ticket && item.playerlevel <= this._user.Level)
+            this._factory.getMiscManager().ticketGetInfo(this._proto, this._logger, ref total_ticket, ref itemList);
+            foreach (TicketItem item in itemList)
             {
-                this._factory.getMiscManager().ticketExchangeBigHero(this._proto, this._logger, item);
+                if (item.tickets <= ticket && item.playerlevel <= this._user.Level)
+                {
+                    this._factory.getMiscManager().ticketExchangeBigHero(this._proto, this._logger, item);
+                }
+            }
+            if (this._user.Stone <= 1000000)
+            {
+                this._factory.getMiscManager().ticketExchangeWeapon(this._proto, this._logger, 33, "玉石", 1);
             }
 			this.refreshUi();
 		}

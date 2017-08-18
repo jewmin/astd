@@ -8637,63 +8637,56 @@ namespace com.lover.astd.common.logic
             return 0;
         }
 
-        public int ticketGetInfo(ProtocolMgr protocol, ILogger logger, ref int total_ticket, ref TicketItem item)
+        public int ticketGetInfo(ProtocolMgr protocol, ILogger logger, ref int total_ticket, ref List<TicketItem> list)
         {
+            list.Clear();
             string url = "/root/tickets.action";
             ServerResult xml = protocol.getXml(url, "获取玩家点券信息");
-            if (xml == null)
+            if (xml == null) return 1;
+            if (!xml.CmdSucceed) return 10;
+            XmlDocument cmdResult = xml.CmdResult;
+            XmlNode xmlNode = cmdResult.SelectSingleNode("/results/tickets");
+            if (xmlNode != null)
             {
-                return 1;
+                int.TryParse(xmlNode.InnerText, out total_ticket);
             }
-            else if (!xml.CmdSucceed)
+            XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/rewards/reward");
+            foreach (XmlNode node in xmlNodeList)
             {
-                return 10;
-            }
-            else
-            {
-                XmlDocument cmdResult = xml.CmdResult;
-                XmlNode xmlNode = cmdResult.SelectSingleNode("/results/tickets");
-                if (xmlNode != null)
+                int id = 0;
+                XmlNode childnode = node.SelectSingleNode("id");
+                if (childnode != null)
                 {
-                    int.TryParse(xmlNode.InnerText, out total_ticket);
+                    id = int.Parse(childnode.InnerText);
                 }
-                XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/rewards/reward");
-                foreach (XmlNode node in xmlNodeList)
+                if (id == -1 || id == -2)
                 {
-                    int id = 0;
-                    XmlNode childnode = node.SelectSingleNode("id");
+                    TicketItem item = new TicketItem();
+                    item.id = id;
+                    childnode = node.SelectSingleNode("playerlevel");
                     if (childnode != null)
                     {
-                        id = int.Parse(childnode.InnerText);
+                        item.playerlevel = int.Parse(childnode.InnerText);
                     }
-                    if (id == -1)
+                    childnode = node.SelectSingleNode("tickets");
+                    if (childnode != null)
                     {
-                        item.id = id;
-                        childnode = node.SelectSingleNode("playerlevel");
-                        if (childnode != null)
-                        {
-                            item.playerlevel = int.Parse(childnode.InnerText);
-                        }
-                        childnode = node.SelectSingleNode("tickets");
-                        if (childnode != null)
-                        {
-                            item.tickets = int.Parse(childnode.InnerText);
-                        }
-                        childnode = node.SelectSingleNode("item/name");
-                        if (childnode != null)
-                        {
-                            item.itemname = childnode.InnerText;
-                        }
-                        childnode = node.SelectSingleNode("item/num");
-                        if (childnode != null)
-                        {
-                            item.itemcount = int.Parse(childnode.InnerText);
-                        }
-                        break;
+                        item.tickets = int.Parse(childnode.InnerText);
                     }
+                    childnode = node.SelectSingleNode("item/name");
+                    if (childnode != null)
+                    {
+                        item.itemname = childnode.InnerText;
+                    }
+                    childnode = node.SelectSingleNode("item/num");
+                    if (childnode != null)
+                    {
+                        item.itemcount = int.Parse(childnode.InnerText);
+                    }
+                    list.Add(item);
                 }
-                return 0;
             }
+            return 0;
         }
 
         public bool ticketExchangeMoney(ProtocolMgr protocol, ILogger logger)
@@ -8728,31 +8721,17 @@ namespace com.lover.astd.common.logic
             string data = string.Format("rewardId={0}&num={1}", rewardId, count);
             string text = string.Format("点券兑换{0}*{1}", rewardName, count);
             ServerResult serverResult = protocol.postXml(url, data, text);
-            if (serverResult == null)
+            if (serverResult == null) return 1;
+            if (!serverResult.CmdSucceed)return 10;
+            XmlDocument cmdResult = serverResult.CmdResult;
+            int num = 1000;
+            XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/reward/cost");
+            if (xmlNode2 != null)
             {
-                return 1;
+                int.TryParse(xmlNode2.InnerText, out num);
             }
-            else if (!serverResult.CmdSucceed)
-            {
-                return 10;
-            }
-            else
-            {
-                XmlDocument cmdResult = serverResult.CmdResult;
-                XmlNode xmlNode = cmdResult.SelectSingleNode("/results/reward/item/name");
-                if (xmlNode != null)
-                {
-                    string innerText = xmlNode.InnerText;
-                }
-                int num = 1000;
-                XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/reward/cost");
-                if (xmlNode2 != null)
-                {
-                    int.TryParse(xmlNode2.InnerText, out num);
-                }
-                base.logInfo(logger, string.Format("{0}, 消耗点券{1}", text, num * count));
-                return 0;
-            }
+            base.logInfo(logger, string.Format("{0}, 消耗点券{1}", text, num * count));
+            return 0;
         }
         #endregion
 

@@ -390,6 +390,11 @@ namespace com.lover.astd.common.model
 
 		public int _storeTotalSize;
 
+        /// <summary>
+        /// 今天是否兑换玉石
+        /// </summary>
+        public bool changeStone_;
+
 		public List<Equipment> _qhEquips;
 
 		public List<Equipment> _mhEquips;
@@ -1624,6 +1629,7 @@ namespace com.lover.astd.common.model
 			this._storeEquips = new List<Equipment>();
 			this._weapon_info = "";
 			this._army_reach = "";
+            this.changeStone_ = false;
             this._specialEquipSkillInfo = new SkillInfo();
             this.special_treasure_list_ = new List<Specialtreasure>();
 			this._factory = factory;

@@ -53,8 +53,8 @@ namespace com.lover.astd.common.logicexe.temp
             else
             {
                 int total_ticket = 0;
-                TicketItem item = new TicketItem();
-                int result = this._factory.getMiscManager().ticketGetInfo(this._proto, this._logger, ref total_ticket, ref item);
+                List<TicketItem> list = new List<TicketItem>();
+                int result = this._factory.getMiscManager().ticketGetInfo(this._proto, this._logger, ref total_ticket, ref list);
                 if (result == 1)
                 {
                     return 60000L;
