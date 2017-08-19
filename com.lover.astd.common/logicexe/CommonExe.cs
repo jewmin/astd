@@ -65,6 +65,7 @@ namespace com.lover.astd.common.logicexe
             {
                 this._factory.getMiscManager().ticketExchangeWeapon(this._proto, this._logger, 33, "玉石", 1);
             }
+            this._factory.getTroopManager().makeSureForce(this._proto, this._logger, 0.5);
 			this.refreshUi();
 		}
 
