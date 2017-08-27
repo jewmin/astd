@@ -54,6 +54,7 @@ namespace com.lover.astd.common.logic
             int creditCostToWash = 0;
             int goldWashCount = 0;
             int superWashCount = 0;
+            int canawaken = 0;
             int heroAttributes = this.getHeroAttributes(protocol, logger, hero, ref level, ref old_attrib, ref new_attrib);
             if (heroAttributes == 0)
             {
@@ -64,7 +65,7 @@ namespace com.lover.astd.common.logic
             {
                 this.confirmHeroAttrib(protocol, logger, hero.Id, false);
             }
-            this.getWashModes(protocol, logger, ref creditCostToWash, ref goldWashCount, ref superWashCount);
+            this.getWashModes(protocol, logger, ref creditCostToWash, ref goldWashCount, ref superWashCount, ref canawaken);
             if (level == 400)
             {
                 level = user.Level;
@@ -316,7 +317,8 @@ namespace com.lover.astd.common.logic
         /// <param name="creditCostToWash">军功消耗</param>
         /// <param name="goldWashCount">免费白金洗</param>
         /// <param name="superWashCount">免费至尊洗</param>
-		public List<BigHero> getWashModes(ProtocolMgr protocol, ILogger logger, ref int creditCostToWash, ref int goldWashCount, ref int superWashCount)
+        /// <param name="canawaken">觉醒</param>
+        public List<BigHero> getWashModes(ProtocolMgr protocol, ILogger logger, ref int creditCostToWash, ref int goldWashCount, ref int superWashCount, ref int canawaken)
 		{
             List<BigHero> list = new List<BigHero>();
 			string url = "/root/general!getRefreshGeneralInfo.action";
@@ -326,6 +328,7 @@ namespace com.lover.astd.common.logic
                 return list;
 			}
             XmlDocument cmdResult = xml.CmdResult;
+            canawaken = XmlHelper.GetValue<int>(cmdResult.SelectSingleNode("/results/canawaken"));
             XmlNode xmlNode = cmdResult.SelectSingleNode("/results/freebaijintime");
             if (xmlNode != null)
             {
@@ -387,6 +390,10 @@ namespace com.lover.astd.common.logic
                     else if (attrs.Name == "generalid")
                     {
                         hero.Id = int.Parse(attrs.InnerText);
+                    }
+                    else if (attrs.Name == "isawaken")
+                    {
+                        hero.CanAwaken = 1;
                     }
                 }
                 if (hero.Id > 0 && hero.Name != null)
@@ -1129,6 +1136,35 @@ namespace com.lover.astd.common.logic
                 newattr_lea, newattr_str, newattr_int,
                 (type == 2 ? "维持" : "替换")));
             return true;
+        }
+        /// <summary>
+        /// 获取觉醒信息
+        /// </summary>
+        /// <param name="proto"></param>
+        /// <param name="logger"></param>
+        public GeneralAwakeInfo getAwakenGeneralInfo(ProtocolMgr proto, ILogger logger, BigHero hero)
+        {
+            string url = "/root/general!getAwakenGeneralInfo.action";
+            string data = string.Format("generalId={0}", hero.Id);
+            ServerResult xml = proto.postXml(url, data, "觉醒信息");
+            if (xml == null || !xml.CmdSucceed) return null;
+
+            return XmlHelper.GetClass<GeneralAwakeInfo>(xml.CmdResult.SelectSingleNode("/results/generalawakeinfo"));
+        }
+        /// <summary>
+        /// 觉醒
+        /// </summary>
+        /// <param name="proto"></param>
+        /// <param name="logger"></param>
+        /// <param name="hero"></param>
+        public void awakenGeneral(ProtocolMgr proto, ILogger logger, BigHero hero)
+        {
+            string url = "/root/general!awakenGeneral.action";
+            string data = string.Format("generalId={0}", hero.Id);
+            ServerResult xml = proto.postXml(url, data, "觉醒");
+            if (xml == null || !xml.CmdSucceed) return;
+
+            logInfo(logger, string.Format("觉醒大将[{0}]", hero.Name));
         }
 	}
 }

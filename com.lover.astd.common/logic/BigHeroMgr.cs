@@ -35,9 +35,10 @@ namespace com.lover.astd.common.logic
             indexs_["张飞"] = 2000;
             indexs_["荆轲"] = 2100;
             indexs_["鬼谷子"] = 2200;
-            indexs_["诸葛亮"] = 2201;
-            indexs_["曹操"] = 2202;
-            indexs_["大禹"] = 2203;
+            indexs_["戚继光"] = 2201;
+            indexs_["诸葛亮"] = 2202;
+            indexs_["曹操"] = 2203;
+            indexs_["大禹"] = 2204;
             indexs_["商汤"] = 2300;
             indexs_["周文王"] = 2400;
             indexs_["蒙恬"] = 2500;

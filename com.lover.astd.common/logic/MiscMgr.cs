@@ -5749,7 +5749,7 @@ namespace com.lover.astd.common.logic
         }
 
         //0:success, 1:null, 2:finish, 3:movable, 4:price, 10:error
-        public int handleRoyaltyWeaveInfo(ProtocolMgr protocol, ILogger logger, User user, int weave_count, ref int like, bool do_tired_weave = false)
+        public int handleRoyaltyWeaveInfo(ProtocolMgr protocol, ILogger logger, User user, int weave_count, int convert_type, int convert_limit, ref int like, bool do_tired_weave = false)
         {
             string url = "/root/make!royaltyWeaveInfo.action";
             ServerResult xml = protocol.getXml(url, "获取皇家织造厂信息");
@@ -5797,6 +5797,24 @@ namespace com.lover.astd.common.logic
             int heishimianfei = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/heishimianfei"));
             string heishistate = XmlHelper.GetString(xml.CmdResult.SelectSingleNode("/results/heishistate"));
 
+            //换购专属装备
+            int oncenum = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/oncenum"));
+            int maxnum = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/maxnum"));
+            int weavenum = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/weavenum"));
+            int needweavenum = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/needweavenum"));
+            string tradername = XmlHelper.GetString(xml.CmdResult.SelectSingleNode("/results/tradername"));
+            RewardInfo rewards = new RewardInfo();
+            rewards.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
+            List<Reward> convert_list = rewards.getRewardList(convert_type);
+            foreach (Reward item in convert_list)
+            {
+                if (weavenum >= needweavenum && needweavenum <= convert_limit)
+                {
+                    convertRoyaltyWeaveNew(protocol, logger);
+                    break;
+                }
+            }
+
             int use = limit - remainlimit;
             if (remainlimit <= 0)
             {
@@ -5828,7 +5846,19 @@ namespace com.lover.astd.common.logic
             return 10;
         }
 
-        public int handleWeaveInfo(ProtocolMgr protocol, ILogger logger, User user, int weave_price, int weave_count, out int weave_state, ref int like, bool do_tired_weave = false, bool only_free = true, bool only_task = true)
+        public bool convertRoyaltyWeaveNew(ProtocolMgr protocol, ILogger logger)
+        {
+            string url = "/root/make!convertRoyaltyWeaveNew.action";
+            ServerResult xml = protocol.getXml(url, "换购");
+            if (xml == null || !xml.CmdSucceed) return false;
+
+            RewardInfo reward = new RewardInfo();
+            reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
+            logInfo(logger, string.Format("换购, 获得{0}", reward.ToString()));
+            return true;
+        }
+
+        public int handleWeaveInfo(ProtocolMgr protocol, ILogger logger, User user, int weave_price, int weave_count, int convert_type, int convert_limit, out int weave_state, ref int like, bool do_tired_weave = false, bool only_free = true, bool only_task = true)
         {
             weave_state = 0;
             if (user.Level < 82)
@@ -5850,7 +5880,7 @@ namespace com.lover.astd.common.logic
             }
             if (isRoyaltyWeave)
             {
-                return handleRoyaltyWeaveInfo(protocol, logger, user, weave_count, ref like, do_tired_weave);
+                return handleRoyaltyWeaveInfo(protocol, logger, user, weave_count, convert_type, convert_limit, ref like, do_tired_weave);
             }
 
             string url = "/root/make.action";

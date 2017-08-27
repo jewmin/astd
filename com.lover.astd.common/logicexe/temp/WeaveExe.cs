@@ -22,7 +22,7 @@ namespace com.lover.astd.common.logicexe.temp
             int like = DbHelper.GetIntVariable(_user._db_userid, ConfigStrings.weave_item);
             do
             {
-                result = _factory.getMiscManager().handleWeaveInfo(_proto, _logger, _user, 130, 20, out weave_state, ref like, true, false, false);
+                result = _factory.getMiscManager().handleWeaveInfo(_proto, _logger, _user, 130, 20, 0, 0, out weave_state, ref like, true, false, false);
             }
             while (num > 0 && result != 2);
             DbHelper.SetVariable(_user._db_userid, ConfigStrings.weave_item, like.ToString());

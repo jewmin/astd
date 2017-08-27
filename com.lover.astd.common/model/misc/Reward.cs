@@ -126,6 +126,9 @@ namespace com.lover.astd.common.model.misc
                 case 50:
                     reward = "镔铁";
                     break;
+                case 51:
+                    reward = string.Format("{0}级专属装备[{1}]", Lv, ItemName);
+                    break;
                 case 52:
                 case 53:
                 case 54:
@@ -142,6 +145,16 @@ namespace com.lover.astd.common.model.misc
     public class RewardInfo
     {
         private List<Reward> _reward_list = new List<Reward>();
+
+        public List<Reward> getRewardList(int type)
+        {
+            List<Reward> list = new List<Reward>();
+            foreach (Reward item in _reward_list)
+            {
+                if (item.Type == type) list.Add(item);
+            }
+            return list;
+        }
 
         public Reward getReward(int idx)
         {

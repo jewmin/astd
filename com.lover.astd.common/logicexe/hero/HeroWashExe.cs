@@ -1,6 +1,7 @@
 using com.lover.astd.common.logic;
 using System;
 using System.Collections.Generic;
+using com.lover.astd.common.model;
 
 namespace com.lover.astd.common.logicexe.hero
 {
@@ -23,9 +24,25 @@ namespace com.lover.astd.common.logicexe.hero
             int creditCostToWash = 0;
             int goldWashCount = 0;
             int superWashCount = 0;
+            int canawaken = 0;
             HeroMgr heroManager = this._factory.getHeroManager();
-            List<com.lover.astd.common.model.BigHero> heros = heroManager.getWashModes(this._proto, this._logger, ref creditCostToWash, ref goldWashCount, ref superWashCount);
+            List<com.lover.astd.common.model.BigHero> heros = heroManager.getWashModes(this._proto, this._logger, ref creditCostToWash, ref goldWashCount, ref superWashCount, ref canawaken);
             heros.Sort();
+
+            if (canawaken == 1)
+            {
+                foreach (com.lover.astd.common.model.BigHero general in heros)
+                {
+                    if (general.CanAwaken == 1)
+                    {
+                        GeneralAwakeInfo info = heroManager.getAwakenGeneralInfo(this._proto, this._logger, general);
+                        if (info != null && info.freeliquornum >= info.needliquornum)
+                        {
+                            heroManager.awakenGeneral(this._proto, this._logger, general);
+                        }
+                    }
+                }
+            }
 
             if (goldWashCount == 0 && superWashCount == 0)
             {

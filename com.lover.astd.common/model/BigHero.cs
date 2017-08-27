@@ -17,6 +17,7 @@ namespace com.lover.astd.common.model
         private int change_;
         private int index_;
         private int generaltype_;
+        private int canawaken_;
         /// <summary>
         /// 武将等级
         /// </summary>
@@ -96,6 +97,14 @@ namespace com.lover.astd.common.model
         {
             get { return index_; }
             set { index_ = value; }
+        }
+        /// <summary>
+        /// 是否觉醒
+        /// </summary>
+        public int CanAwaken
+        {
+            get { return canawaken_; }
+            set { canawaken_ = value; }
         }
         /// <summary>
         /// 大将描述

@@ -32,6 +32,7 @@ ExeTable = {}
 require("config.luaexeid") -- lua执行事件Id
 require("config.activity") -- 活动配置
 require("config.equip") -- 装备配置
+require("config.execonfig") -- 功能配置
 require("module.event") -- 事件模块
 require("module.global") -- 全局模块
 require("module.refine") -- 炼制模块
@@ -106,7 +107,7 @@ table.insert(ExeTable, MoralExe.exe)
 table.insert(ExeTable, SnowTradingExe.exe)
 table.insert(ExeTable, SpringFestivalWishExe.exe)
 table.insert(ExeTable, NewYearActivityExe.exe)
-table.insert(ExeTable, SpecialEquipExe.exe)
+-- table.insert(ExeTable, SpecialEquipExe.exe)
 table.insert(ExeTable, ZhugeExe.exe)
 table.insert(ExeTable, TechnologyExe.exe)
 table.insert(ExeTable, BorrowingArrowsExe.exe)
