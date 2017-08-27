@@ -36,9 +36,13 @@ namespace com.lover.astd.common.logicexe.hero
                     if (general.CanAwaken == 1)
                     {
                         GeneralAwakeInfo info = heroManager.getAwakenGeneralInfo(this._proto, this._logger, general);
-                        if (info != null && info.freeliquornum >= info.needliquornum)
+                        if (info != null)
                         {
-                            heroManager.awakenGeneral(this._proto, this._logger, general);
+                            while (info.freeliquornum >= info.needliquornum)
+                            {
+                                heroManager.awakenGeneral(this._proto, this._logger, general);
+                                info.freeliquornum -= info.needliquornum;
+                            }
                         }
                     }
                 }
