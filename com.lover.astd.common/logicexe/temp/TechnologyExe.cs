@@ -32,6 +32,7 @@ namespace com.lover.astd.common.logicexe.temp
                 this.get_bintie_--;
             }
 
+            _factory.getEquipManager().getSpecialEquipInfo(_proto, _logger, _user);
             int bintie = _user._specialEquipSkillInfo.material2num - this.left_bintie_;
             if (bintie <= 0)
             {
@@ -42,10 +43,13 @@ namespace com.lover.astd.common.logicexe.temp
             List<Technology> list = _factory.getEquipManager().getNewTech(_proto, _logger);
             foreach (Technology item in list)
             {
-                while (bintie > 0 && item.progress_ < item.requireprogress_ && item.consumebintie_ <= this.cost_bintie_)
+                if (item.consumerestype_ == "bintie")
                 {
-                    _factory.getEquipManager().researchNewTech(_proto, _logger, item);
-                    bintie -= item.consumebintie_;
+                    while (bintie > 0 && item.progress_ < item.requireprogress_ && item.consumenum_ <= this.cost_bintie_)
+                    {
+                        _factory.getEquipManager().researchNewTech(_proto, _logger, item);
+                        bintie -= item.consumenum_;
+                    }
                 }
             }
 

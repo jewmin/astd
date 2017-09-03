@@ -40,8 +40,13 @@ namespace com.lover.astd.common.logicexe.hero
                         {
                             while (info.freeliquornum >= info.needliquornum)
                             {
-                                heroManager.awakenGeneral(this._proto, this._logger, general);
+                                heroManager.awakenGeneral(this._proto, this._logger, general, true, ref info.needliquornum);
                                 info.freeliquornum -= info.needliquornum;
+                            }
+                            while (info.liquornum >= info.needliquornum)
+                            {
+                                heroManager.awakenGeneral(this._proto, this._logger, general, false, ref info.needliquornum);
+                                info.liquornum -= info.needliquornum;
                             }
                         }
                     }

@@ -74,6 +74,8 @@
             this.btn_hongbao = new System.Windows.Forms.Button();
             this.btn_juedou = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.num_getbintie = new System.Windows.Forms.NumericUpDown();
+            this.label17 = new System.Windows.Forms.Label();
             this.num_bintie = new System.Windows.Forms.NumericUpDown();
             this.technology = new System.Windows.Forms.Button();
             this.num_bintiecost = new System.Windows.Forms.NumericUpDown();
@@ -89,8 +91,6 @@
             this.cb_ticket_item = new System.Windows.Forms.ComboBox();
             this.label14 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
-            this.num_getbintie = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.num_ticketWeapons)).BeginInit();
             this.groupBox4.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -101,12 +101,12 @@
             this.groupBox3.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_getbintie)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_bintie)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_bintiecost)).BeginInit();
             this.groupBox8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_ticket_total)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_ticket_num)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.num_getbintie)).BeginInit();
             this.SuspendLayout();
             // 
             // btn_ticketWeapon
@@ -616,6 +616,32 @@
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "新科技";
             // 
+            // num_getbintie
+            // 
+            this.num_getbintie.Location = new System.Drawing.Point(129, 87);
+            this.num_getbintie.Maximum = new decimal(new int[] {
+            500000,
+            0,
+            0,
+            0});
+            this.num_getbintie.Name = "num_getbintie";
+            this.num_getbintie.Size = new System.Drawing.Size(66, 21);
+            this.num_getbintie.TabIndex = 15;
+            this.num_getbintie.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(10, 92);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(113, 12);
+            this.label17.TabIndex = 14;
+            this.label17.Text = "领取监狱镔铁次数：";
+            // 
             // num_bintie
             // 
             this.num_bintie.Location = new System.Drawing.Point(81, 33);
@@ -809,37 +835,6 @@
             this.label13.TabIndex = 0;
             this.label13.Text = "商品：";
             // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(10, 92);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(113, 12);
-            this.label17.TabIndex = 14;
-            this.label17.Text = "领取监狱镔铁次数：";
-            // 
-            // num_getbintie
-            // 
-            this.num_getbintie.Location = new System.Drawing.Point(129, 87);
-            this.num_getbintie.Maximum = new decimal(new int[] {
-            500000,
-            0,
-            0,
-            0});
-            this.num_getbintie.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.num_getbintie.Name = "num_getbintie";
-            this.num_getbintie.Size = new System.Drawing.Size(66, 21);
-            this.num_getbintie.TabIndex = 15;
-            this.num_getbintie.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            // 
             // NewTempServerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -874,13 +869,13 @@
             this.groupBox6.ResumeLayout(false);
             this.groupBox7.ResumeLayout(false);
             this.groupBox7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_getbintie)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_bintie)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_bintiecost)).EndInit();
             this.groupBox8.ResumeLayout(false);
             this.groupBox8.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_ticket_total)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_ticket_num)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.num_getbintie)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

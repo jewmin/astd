@@ -34,11 +34,15 @@ namespace com.lover.astd.common.model
         /// <summary>
         /// 需要消耗镔铁
         /// </summary>
-        public int consumebintie_;
+        public int consumenum_;
         /// <summary>
         /// 效果
         /// </summary>
         public string effectvalue_;
+        /// <summary>
+        /// 消耗类型
+        /// </summary>
+        public string consumerestype_;
         /// <summary>
         /// 解析xml
         /// </summary>
@@ -57,7 +61,19 @@ namespace com.lover.astd.common.model
         //    consumebintie_ = lua.GetIntValue("technology.consumebintie");
         //    effectvalue_ = lua.GetStringValue("technology.effectvalue");
         //}
-
+        /// <summary>
+        /// <techid>8</techid>
+        /// <techname>雁行阵</techname>
+        /// <intro>升级增加部队防御能力</intro>
+        /// <pic>new_tech_8</pic>
+        /// <consumerestype>bintie</consumerestype>
+        /// <techlevel>4</techlevel>
+        /// <progress>214</progress>
+        /// <requireprogress>500</requireprogress>
+        /// <consumenum>500</consumenum>
+        /// <effectvalue>0.015</effectvalue>
+        /// </summary>
+        /// <param name="node"></param>
         public override void Parse(XmlNode node)
         {
             foreach (XmlNode item in node.ChildNodes)
@@ -68,8 +84,9 @@ namespace com.lover.astd.common.model
                 else if (item.Name == "techlevel") techlevel_ = int.Parse(item.InnerText);
                 else if (item.Name == "progress") progress_ = int.Parse(item.InnerText);
                 else if (item.Name == "requireprogress") requireprogress_ = int.Parse(item.InnerText);
-                else if (item.Name == "consumebintie") consumebintie_ = int.Parse(item.InnerText);
+                else if (item.Name == "consumenum") consumenum_ = int.Parse(item.InnerText);
                 else if (item.Name == "effectvalue") effectvalue_ = item.InnerText;
+                else if (item.Name == "consumerestype") consumerestype_ = item.InnerText;
             }
         }
 

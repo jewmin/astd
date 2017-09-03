@@ -1157,14 +1157,19 @@ namespace com.lover.astd.common.logic
         /// <param name="proto"></param>
         /// <param name="logger"></param>
         /// <param name="hero"></param>
-        public void awakenGeneral(ProtocolMgr proto, ILogger logger, BigHero hero)
+        public void awakenGeneral(ProtocolMgr proto, ILogger logger, BigHero hero, bool free, ref int neednum)
         {
             string url = "/root/general!awakenGeneral.action";
             string data = string.Format("generalId={0}", hero.Id);
             ServerResult xml = proto.postXml(url, data, "觉醒");
             if (xml == null || !xml.CmdSucceed) return;
 
-            logInfo(logger, string.Format("觉醒大将[{0}]", hero.Name));
+            string tip;
+            if (free) tip = "免费";
+            else tip = string.Format("消耗{0}觉醒酒", neednum);
+            logInfo(logger, string.Format("{0}, 觉醒大将[{1}]", tip, hero.Name));
+
+            neednum = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/needliquornum"));
         }
 	}
 }

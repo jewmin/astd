@@ -3281,10 +3281,13 @@ namespace com.lover.astd.common.logic
             List<Technology> list = getNewTech(protocol, logger);
             foreach (Technology item in list)
             {
-                if (item.progress_ < item.requireprogress_ && item.consumebintie_ <= consumebintie)
+                if (item.consumerestype_ == "bintie")
                 {
-                    researchNewTech(protocol, logger, item);
-                    action = true;
+                    if (item.progress_ < item.requireprogress_ && item.consumenum_ <= consumebintie)
+                    {
+                        researchNewTech(protocol, logger, item);
+                        action = true;
+                    }
                 }
             }
             if (action)
