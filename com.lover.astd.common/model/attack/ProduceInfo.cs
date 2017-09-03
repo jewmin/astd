@@ -31,6 +31,8 @@ namespace com.lover.astd.common.model.attack
                     return "兵器";
                 case 4:
                     return string.Format("大将令【{0}】", bigname);
+                case 5:
+                    return "觉醒酒";
                 default:
                     return "无效资源";
             }
@@ -65,7 +67,7 @@ namespace com.lover.astd.common.model.attack
             {
                 return true;
             }
-            else if (bigname == "大禹" || bigname == "夏桀" || bigname == "商汤" || bigname == "周文王" || bigname == "姜子牙" || bigname == "王翦" || bigname == "秦始皇" || bigname == "李牧")
+            else if (bigname == "夏桀" || bigname == "王翦" || bigname == "后羿" || bigname == "黄帝" || bigname == "黄帝" || bigname == "李白")
             {
                 return true;
             }

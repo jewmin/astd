@@ -2,6 +2,6 @@
 MovableConfig =
 {
     -- 纺织兑换
-    ConvertType = 51, -- 专属
-    ConvertLimit = 400, -- 兑换花费上限
+    -- 类型,品质,等级,兑换上限;类型,品质,等级,兑换上限;
+    ConvertConditions = "51,6,3,400;51,6,4,1500",
 }

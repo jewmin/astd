@@ -87,7 +87,7 @@ MovableExe.execute = function()
   		end
   	elseif order == "2" then -- ·ÄÖ¯
       local result, weave_state
-  		result, weave_state, MovableExe.weave_like = MiscManager():handleWeaveInfo(ProtocolMgr(), ILogger(), User(), weave_price, weave_count, MovableConfig.ConvertType, MovableConfig.ConvertLimit, MovableExe.weave_like, true, false, false)
+  		result, weave_state, MovableExe.weave_like = MiscManager():handleWeaveInfo(ProtocolMgr(), ILogger(), User(), weave_price, weave_count, MovableConfig.ConvertConditions, MovableExe.weave_like, true, false, false)
       -- ILogger():logInfo(string.format("²¼Æ¥_%d", MovableExe.weave_like))
       SetDbConfig(ConfigStrings.weave_item, tostring(MovableExe.weave_like))
   		if result == 0 then

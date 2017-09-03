@@ -16,7 +16,7 @@ namespace com.lover.astd.common.model.attack
         /// </summary>
         public int type;
         /// <summary>
-        /// 生产资源，1：宝石，2：镔铁，3：兵器，4：大将令
+        /// 生产资源，1：宝石，2：镔铁，3：兵器，4：大将令，5：觉醒酒
         /// </summary>
         public int resid;
         /// <summary>

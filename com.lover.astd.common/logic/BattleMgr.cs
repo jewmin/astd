@@ -4325,7 +4325,7 @@ namespace com.lover.astd.common.logic
         /// <returns></returns>
         public bool startProduce(ProtocolMgr proto, ILogger logger, int areaId, List<ProduceInfo> produceList, int resId = 0, int times = 5)
         {
-            int[] order = new int[] { 4, 2, 3, 1 };
+            int[] order = new int[] { 5, 4, 2, 3, 1 };
             ProduceInfo produce = getValiableProduceInfo(resId, produceList);
             if (produce == null)
             {
