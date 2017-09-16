@@ -44,7 +44,7 @@ namespace com.lover.astd.common.logicexe
             this._factory.getActivityManager().getPayHongbaoEventInfo(this._proto, this._logger);
             if (this._user.Silver < 10000000)
             {
-                this._factory.getMiscManager().ticketExchangeMoney(this._proto, this._logger);
+                this._factory.getMiscManager().ticketExchangeMoney(this._proto, this._logger, 3);
             }
             int ticket = 0;
             int total_ticket = 0;

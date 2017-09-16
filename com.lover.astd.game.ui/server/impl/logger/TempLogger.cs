@@ -26,7 +26,7 @@ namespace com.lover.astd.game.ui.server.impl.logger
 
 		public void log(string text, Color color)
 		{
-			_partner.LogTemp(text, LogLevel.Info, Color.Black);
+            _partner.LogTemp(text, LogLevel.Info, color);
 		}
 
 		public void logSingle(string text)

@@ -4352,7 +4352,7 @@ namespace com.lover.astd.common.logic
         {
             if (user.Silver < 10000000)
             {
-                ticketExchangeMoney(protocol, logger);
+                ticketExchangeMoney(protocol, logger, 3);
             }
 
             map_count = 0;
@@ -4650,7 +4650,7 @@ namespace com.lover.astd.common.logic
         {
             if (user.Silver < 10000000)
             {
-                ticketExchangeMoney(protocol, logger);
+                ticketExchangeMoney(protocol, logger, 3);
             }
 
             state = 0;
@@ -7011,7 +7011,7 @@ namespace com.lover.astd.common.logic
         {
             if (user.Silver < 10000000)
             {
-                ticketExchangeMoney(protocol, logger);
+                ticketExchangeMoney(protocol, logger, 5);
             }
 
             int result;
@@ -8746,17 +8746,23 @@ namespace com.lover.astd.common.logic
             return 0;
         }
 
-        public bool ticketExchangeMoney(ProtocolMgr protocol, ILogger logger)
+        public bool ticketExchangeMoney(ProtocolMgr protocol, ILogger logger, int times)
         {
-            string url = "/root/tickets!getTicketsReward.action";
-            string data = string.Format("rewardId={0}&num={1}", 2, 10);
-            ServerResult xml = protocol.postXml(url, data, "点券兑换银币");
-            if (xml != null && xml.CmdSucceed)
+            while (times > 0)
             {
+                string url = "/root/tickets!getTicketsReward.action";
+                string data = string.Format("rewardId={0}&num={1}", 2, 10);
+                ServerResult xml = protocol.postXml(url, data, "点券兑换银币");
+                if (xml == null || !xml.CmdSucceed)
+                {
+                    logInfo(logger, string.Format("点券兑换银币10000000, 失败:{0}", xml.CmdError));
+                    return false;
+                }
                 logInfo(logger, string.Format("点券兑换银币10000000, 消耗点券10000"));
-                return true;
+                times--;
             }
-            return false;
+            
+            return true;
         }
 
         public bool ticketExchangeBigHero(ProtocolMgr protocol, ILogger logger, TicketItem item)
@@ -8865,7 +8871,7 @@ namespace com.lover.astd.common.logic
         {
             if (user.Silver < 10000000)
             {
-                ticketExchangeMoney(protocol, logger);
+                ticketExchangeMoney(protocol, logger, 5);
             }
 
             string url = "/root/refine!doRefineBintieFactory.action";

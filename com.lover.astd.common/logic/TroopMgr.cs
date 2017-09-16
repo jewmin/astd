@@ -55,6 +55,12 @@ namespace com.lover.astd.common.logic
                 }
 			}
 			int forces = (int)((double)user.MaxForces * min_troop_percent);
+            int needcopper = (int)((forces - user.Forces) * 0.5);
+            if (user.Silver < needcopper)
+            {
+                int times = needcopper / 10000000;
+                this._factory.getMiscManager().ticketExchangeMoney(protocol, logger, times);
+            }
 			if (user.Forces < forces && !this.draught(protocol, logger, forces - user.Forces))
 			{
 				return 1;

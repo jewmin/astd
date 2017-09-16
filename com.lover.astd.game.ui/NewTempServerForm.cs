@@ -64,6 +64,8 @@ namespace com.lover.astd.game.ui
 
         private ProtocolMgr protocol_;
 
+        private DataTable equipment_list_;
+
         public NewTempServerForm(NewMainForm frm)
         {
             InitializeComponent();
@@ -327,9 +329,64 @@ namespace com.lover.astd.game.ui
             lbl_ticket.Text = tickets_.ToString();
         }
 
+        private void loadEquipment()
+        {
+            long ticketnumber = 0;
+            int maxtaozhuanglv = 0;
+            _frm.Factory.getCommonManager().equip_getUpgradeInfo(protocol_, logger_, ref ticketnumber, ref maxtaozhuanglv, ref equipment_list_);
+            cb_playerequipdto.DataSource = equipment_list_;
+            cb_playerequipdto.DisplayMember = "generalname";
+            cb_playerequipdto.ValueMember = "composite";
+        }
+
         private void NewTempServerForm_Load(object sender, EventArgs e)
         {
             loadTicketInfo();
+            loadEquipment();
+        }
+
+        private void btn_moli_Click(object sender, EventArgs e)
+        {
+            int idx = cb_playerequipdto.SelectedIndex;
+            if (idx < 0) return;
+            
+            int time = Convert.ToInt32(num_moli.Value);
+            DataRow dr = equipment_list_.Rows[idx];
+            string name = string.Format("{0}({1})", dr["equipname"], dr["generalname"]);
+            int composite = Convert.ToInt32(dr["composite"]);
+            int molicost = Convert.ToInt32(dr["molicost"]);
+            while (time > 0 && tickets_ >= molicost)
+            {
+                _frm.Factory.getCommonManager().equip_moli(protocol_, logger_, name, composite, 1);
+                tickets_ -= molicost;
+                time--;
+            }
+            loadEquipment();
+            lbl_ticket.Text = tickets_.ToString();
+        }
+
+        private void cb_playerequipdto_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int idx = cb_playerequipdto.SelectedIndex;
+            if (idx < 0) return;
+
+            DataRow dr = equipment_list_.Rows[idx];
+            int att = 0, def = 0, canmoli = 0;
+            string[] powerstr = Convert.ToString(dr["powerstr"]).Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            if (powerstr.Length == 2)
+            {
+                att = int.Parse(powerstr[0]);
+                def = int.Parse(powerstr[1]);
+            }
+            canmoli = Convert.ToInt32(dr["canmoli"]);
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(string.Format("套装: {0}", dr["equipname"]));
+            sb.AppendLine(string.Format("武将: {0}", dr["generalname"]));
+            sb.AppendLine(string.Format("强攻: {0}/{1}", att, dr["attfull"]));
+            sb.AppendLine(string.Format("强防: {0}/{1}", def, dr["deffull"]));
+            sb.AppendLine(string.Format("状态: {0}", canmoli == 1 ? "可磨砺" : "不可磨砺"));
+            sb.AppendLine(string.Format("费用: {0}点券", dr["molicost"]));
+            label_playerequipdto.Text = sb.ToString();
         }
     }
 }

@@ -247,6 +247,29 @@ namespace com.lover.astd.common.logic
             logInfo(logger, sb.ToString());
             return 0;
         }
+
+        public int equip_moli(ProtocolMgr proto, ILogger logger, string name, int composite, int num)
+        {
+            string url = "/root/equip!moli.action";
+            string data = string.Format("composite={0}&num={1}", composite, num);
+            ServerResult xml = proto.postXml(url, data, "猴子套装-磨砺");
+            if (xml == null || !xml.CmdSucceed) return 10;
+
+            int costtickets = GetValue(xml.CmdResult, "/results/costtickets", 0);
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat("花费 {0} 点券, 磨砺 {1} 成功", costtickets, name);
+            int baoji = GetValue(xml.CmdResult, "/results/molireward/baoji", 0);
+            int att = GetValue(xml.CmdResult, "/results/molireward/att", 0);
+            int def = GetValue(xml.CmdResult, "/results/molireward/def", 0);
+            if (att > 0) sb.AppendFormat(", 强攻+{0}({1}倍)", att, baoji);
+            if (def > 0) sb.AppendFormat(", 强防+{0}({1}倍)", def, baoji);
+            Color color = Color.Black;
+            if (baoji >= 10) color = Color.Purple;
+            else if (baoji >= 4) color = Color.Crimson;
+            else if (baoji >= 2) color = Color.Gold;
+            logger.log(sb.ToString(), color);
+            return 0;
+        }
         #endregion
     }
 }
