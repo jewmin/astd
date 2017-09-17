@@ -3893,7 +3893,7 @@ namespace com.lover.astd.common.logic
         }
 
         /// <summary>
-        /// 使用诱敌锦囊,0:成功,-1:没有锦囊,-2:目标太远,-3:没有找到目标,-4:不能对本国玩家使用,-5:请求空值或出错
+        /// 使用诱敌锦囊,0:成功,-1:没有锦囊,-2:目标太远,-3:没有找到目标,-4:不能对本国玩家使用,-5:请求空值或出错,-6:获取区域失败
         /// </summary>
         /// <param name="protocol"></param>
         /// <param name="logger"></param>
@@ -3908,13 +3908,11 @@ namespace com.lover.astd.common.logic
             {
                 if (areaId > 0)
                 {
-                    for (int scopeId = 1; scopeId < 10; scopeId++)
+                    for (int scopeId = 1; scopeId < 50; scopeId++)
                     {
                         List<ScopeCity> areaScopeInfo = this.getAreaScopeInfo(protocol, logger, user, areaId, scopeId);
-                        if (areaScopeInfo == null || areaScopeInfo.Count == 0)
-                        {
-                            continue;
-                        }
+                        if (areaScopeInfo == null) return -6;
+                        if (areaScopeInfo.Count == 0) continue;
                         foreach (ScopeCity city in areaScopeInfo)
                         {
                             if (city.citylevel >= min_level && city.citylevel <= max_level && city.arreststate != 1 && city.protectcd == 0 && city.citytype == 1)
