@@ -1285,47 +1285,44 @@ namespace com.lover.astd.common.model
                     {
                         this._attack_cityHp = int.Parse(xmlNode.InnerText);
                     }
-                    else
+                    else if (xmlNode.Name == "maxcityhp")
                     {
-                        if (xmlNode.Name == "maxcityhp")
+                        this._attack_maxCityHp = int.Parse(xmlNode.InnerText);
+                    }
+                    else if (xmlNode.Name == "cityhprecovercd")
+                    {
+                        this._attack_cityHpRecoverCd = int.Parse(xmlNode.InnerText);
+                    }
+                    else if (xmlNode.Name == "inspirestate")
+                    {
+                        this._attack_inspiredState = int.Parse(xmlNode.InnerText);
+                    }
+                    else if (xmlNode.Name == "inspireeffect")
+                    {
+                        this._attack_inspiredEffect = float.Parse(xmlNode.InnerText);
+                    }
+                    else if (xmlNode.Name == "battlescore")
+                    {
+                        this._attack_battleScore = int.Parse(xmlNode.InnerText);
+                    }
+                    else if (xmlNode.Name == "curactive")
+                    {
+                        this._curMovable = int.Parse(xmlNode.InnerText);
+                    }
+                    else if (xmlNode.Name == "bowlder")
+                    {
+                        string innerText = xmlNode.InnerText;
+                        this._stone = int.Parse(innerText.Substring(0, innerText.Length - 3));
+                    }
+                    else if (xmlNode.Name == "arreststate")
+                    {
+                        if (xmlNode.InnerText == "null")
                         {
-                            this._attack_maxCityHp = int.Parse(xmlNode.InnerText);
+                            this._arrest_state = 0;
                         }
-                        else if (xmlNode.Name == "cityhprecovercd")
+                        else
                         {
-                            this._attack_cityHpRecoverCd = int.Parse(xmlNode.InnerText);
-                        }
-                        else if (xmlNode.Name == "inspirestate")
-                        {
-                            this._attack_inspiredState = int.Parse(xmlNode.InnerText);
-                        }
-                        else if (xmlNode.Name == "inspireeffect")
-                        {
-                            this._attack_inspiredEffect = float.Parse(xmlNode.InnerText);
-                        }
-                        else if (xmlNode.Name == "battlescore")
-                        {
-                            this._attack_battleScore = int.Parse(xmlNode.InnerText);
-                        }
-                        else if (xmlNode.Name == "curactive")
-                        {
-                            this._curMovable = int.Parse(xmlNode.InnerText);
-                        }
-                        else if (xmlNode.Name == "bowlder")
-                        {
-                            string innerText = xmlNode.InnerText;
-                            this._stone = int.Parse(innerText.Substring(0, innerText.Length - 3));
-                        }
-                        else if (xmlNode.Name == "arreststate")
-                        {
-                            if (xmlNode.InnerText == "null")
-                            {
-                                this._arrest_state = 0;
-                            }
-                            else
-                            {
-                                this._arrest_state = int.Parse(xmlNode.InnerText);
-                            }
+                            this._arrest_state = int.Parse(xmlNode.InnerText);
                         }
                     }
                 }

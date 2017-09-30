@@ -50,6 +50,7 @@ MovableExe.execute = function()
 
   local is_new_trade = User()._is_new_trade -- 新通商
   local is_refine_bintie = User()._is_refine_bintie -- 炼制镔铁
+  local limit_active = 50 -- 西域通商行动力上限
 
   if User().CurMovable <= reserve then
   	ILogger():logInfo("已经达到保留行动力下限, 下个小时再检测")
@@ -60,7 +61,7 @@ MovableExe.execute = function()
   	local order = string.sub(movable_order, i, i)
   	if order == "1" then -- 通商
   		if is_new_trade then
-  			local result, _, boxnum = MiscManager():handleNewTradeInfo(ProtocolMgr(), ILogger(), User(), visit_merchants, max_visit_fail_count, global.getSilverAvailable(), global.getGoldAvailable())
+  			local result, _, boxnum = MiscManager():handleNewTradeInfo(ProtocolMgr(), ILogger(), User(), visit_merchants, max_visit_fail_count, global.getSilverAvailable(), global.getGoldAvailable(), limit_active)
   			while boxnum > 0 do
   				_, boxnum = MiscManager():openNewTradeBox(ProtocolMgr(), ILogger())
   			end

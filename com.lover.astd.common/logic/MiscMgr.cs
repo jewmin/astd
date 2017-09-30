@@ -4348,7 +4348,7 @@ namespace com.lover.astd.common.logic
             }
         }
 
-        public int handleNewTradeInfo(ProtocolMgr protocol, ILogger logger, User user, string visit_merchants, int max_fail_count, int silver_available, int gold_available, out int map_count, out int boxnum)
+        public int handleNewTradeInfo(ProtocolMgr protocol, ILogger logger, User user, string visit_merchants, int max_fail_count, int silver_available, int gold_available, int limit_active, out int map_count, out int boxnum)
         {
             if (user.Silver < 10000000)
             {
@@ -4357,6 +4357,12 @@ namespace com.lover.astd.common.logic
 
             map_count = 0;
             boxnum = 0;
+
+            if (user.Level >= 400)
+            {
+                return getWesternTradeInfo(protocol, logger, user, limit_active);
+            }
+
             string url = "/root/caravan!getNewTrade.action";
             ServerResult xml = protocol.getXml(url, "获取新通商信息");
             if (xml == null)
@@ -8886,6 +8892,92 @@ namespace com.lover.astd.common.logic
             logInfo(logger, tips);
             return true;
         }
+        #endregion
+
+        #region 西域通商
+        public int getWesternTradeInfo(ProtocolMgr protocol, ILogger logger, User user, int limit_active)
+        {
+            string url = "/root/caravan!getWesternTradeInfo.action";
+            ServerResult xml = protocol.getXml(url, "西域通商");
+            if (xml == null || !xml.CmdSucceed) return 10;
+
+            List<TradeInfo> list;
+            int nowplace = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/nowplace"));
+            int needclicknext = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/needclicknext"), 0);
+            if (needclicknext == 1)
+            {
+                list = nextPlace(protocol, logger);
+            }
+            else
+            {
+                list = XmlHelper.GetClassList<TradeInfo>(xml.CmdResult.SelectNodes("/results/tradeinfo"));
+            }
+            
+            if (list != null)
+            {
+                foreach (TradeInfo item in list)
+                {
+                    if (user.CurMovable >= item.active && item.active <= limit_active)
+                    {
+                        if (westernTrade(protocol, logger, item))
+                        {
+                            getWesternTradeReward(protocol, logger);
+                        }
+                    }
+                }
+            }
+
+            return 10;
+        }
+
+        public List<TradeInfo> nextPlace(ProtocolMgr protocol, ILogger logger)
+        {
+            string url = "/root/caravan!nextPlace.action";
+            ServerResult xml = protocol.getXml(url, "西域通商-下一站");
+            if (xml == null || !xml.CmdSucceed) return null;
+
+            logInfo(logger, string.Format("西域通商, 进入下一个城市"));
+            return XmlHelper.GetClassList<TradeInfo>(xml.CmdResult.SelectNodes("/results/tradeinfo"));
+        }
+
+        public bool westernTrade(ProtocolMgr protocol, ILogger logger, TradeInfo item)
+        {
+            string url = "/root/caravan!westernTrade.action";
+            string data = string.Format("tradeId={0}", item.id);
+            ServerResult xml = protocol.postXml(url, data, "西域通商-通商");
+            if (xml == null || !xml.CmdSucceed) return false;
+
+            StringBuilder sb = new StringBuilder("西域通商, 获取宝箱");
+            XmlNodeList nodelist = xml.CmdResult.SelectNodes("/results/box");
+            foreach (XmlNode node in nodelist)
+            {
+                RewardInfo info = new RewardInfo();
+                info.handleXmlNode(node.SelectSingleNode("rewardinfo"));
+                sb.AppendFormat(", {0}", info.ToString());
+            }
+            logInfo(logger, sb.ToString());
+            return true;
+        }
+
+        public bool getWesternTradeReward(ProtocolMgr protocol, ILogger logger)
+        {
+            string url = "/root/caravan!getWesternTradeReward.action";
+            string data = string.Format("isdouble=0");
+            ServerResult xml = protocol.postXml(url, data, "西域通商-领取奖励");
+            if (xml == null || !xml.CmdSucceed) return false;
+
+            StringBuilder sb = new StringBuilder("西域通商, 打开宝箱");
+            XmlNodeList nodelist = xml.CmdResult.SelectNodes("/results/rewardinfo");
+            foreach (XmlNode node in nodelist)
+            {
+                RewardInfo info = new RewardInfo();
+                info.handleXmlNode(node);
+                sb.AppendFormat(", {0}", info.ToString());
+            }
+            logInfo(logger, sb.ToString());
+            return true;
+        }
+
         #endregion
     }
 }

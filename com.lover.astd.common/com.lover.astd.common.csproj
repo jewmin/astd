@@ -183,6 +183,7 @@
     <Compile Include="model\misc\SlaveInfo.cs" />
     <Compile Include="model\misc\TGame.cs" />
     <Compile Include="model\misc\TicketItem.cs" />
+    <Compile Include="model\misc\TradeInfo.cs" />
     <Compile Include="model\ServerResult.cs" />
     <Compile Include="model\SheetInfo.cs" />
     <Compile Include="model\Specialtreasure.cs" />
