@@ -43,6 +43,7 @@
     <Compile Include="activity\ActivitySnowTrading.cs" />
     <Compile Include="activity\ArrestEvent.cs" />
     <Compile Include="activity\BorrowingArrowsEvent.cs" />
+    <Compile Include="activity\ParadeEvent.cs" />
     <Compile Include="ClientCache.cs" />
     <Compile Include="CommonReceiver.cs" />
     <Compile Include="ConfigStrings.cs" />

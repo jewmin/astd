@@ -104,3 +104,11 @@ arrestEventConfig =
   -- 鞭子费用
   hishenlimit = 0,
 }
+
+ParadeEventConfig =
+{
+    -- 阅兵费用
+    costlimit = 0,
+    -- 轮次购买费用
+    roundcostlimit = 2,
+}

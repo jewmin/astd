@@ -15,4 +15,5 @@ LuaExeId =
   eTech = 12, -- 新科技
   eBorrowingArrows = 13, -- 草船借箭
   eArrestEvent = 14, -- 端午
+  eParadeEvent = 15, -- 新国庆阅兵
 }

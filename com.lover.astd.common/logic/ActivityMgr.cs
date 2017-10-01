@@ -30,6 +30,10 @@ namespace com.lover.astd.common.logic
         /// 端午活动
         /// </summary>
         private ArrestEvent arrestEvent_;
+        /// <summary>
+        /// 新国庆阅兵
+        /// </summary>
+        private ParadeEvent paradeEvent_;
 
         public class KfzbItem
         {
@@ -293,6 +297,7 @@ namespace com.lover.astd.common.logic
             snowTrading_ = new ActivitySnowTrading(tmrMgr, factory);
             borrowingArrows_ = new BorrowingArrowsEvent(tmrMgr, factory);
             arrestEvent_ = new ArrestEvent(tmrMgr, factory);
+            paradeEvent_ = new ParadeEvent(tmrMgr, factory);
         }
 
         private bool doSilverFlopStep(char[,] s, int pos)
@@ -10084,6 +10089,13 @@ namespace com.lover.astd.common.logic
         public long ArrestEventExecute(ProtocolMgr protocol, ILogger logger, User user, int goldavailable, int hishengold, int ricedumplingcostgold, int arresttokencostgold)
         {
             return arrestEvent_.execute(protocol, logger, user, goldavailable, hishengold, ricedumplingcostgold, arresttokencostgold);
+        }
+        #endregion
+
+        #region 新国庆阅兵
+        public long ParadeEventExecute(ProtocolMgr protocol, ILogger logger, User user, int gold_available, int limit_cost, int limit_roundcost)
+        {
+            return paradeEvent_.execute(protocol, logger, user, gold_available, limit_cost, limit_roundcost);
         }
         #endregion
 
