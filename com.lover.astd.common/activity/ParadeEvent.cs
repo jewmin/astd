@@ -254,7 +254,7 @@ namespace com.lover.astd.common.activity
 
         public bool getParadeReward(ProtocolMgr protocol, ILogger logger, paradestate parade)
         {
-            string url = "/root/paradeEvent!addRoundTimes.action";
+            string url = "/root/paradeEvent!getParadeReward.action";
             string data = string.Format("rewardId={0}", parade.id);
             ServerResult result = protocol.postXml(url, data, "新国庆阅兵 - 领取奖励");
             if (result == null || !result.CmdSucceed) return false;
