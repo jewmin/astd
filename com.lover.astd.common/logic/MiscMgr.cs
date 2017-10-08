@@ -8638,7 +8638,7 @@ namespace com.lover.astd.common.logic
         }
 
         #region 点券商城
-        public List<TicketItem> getTicketsInfo(ProtocolMgr protocol, ILogger logger, ref int tickets)
+        public List<TicketItem> getTicketsInfo(ProtocolMgr protocol, ILogger logger, ref long tickets)
         {
             List<TicketItem> list = new List<TicketItem>();
             string url = "/root/tickets.action";
@@ -8649,7 +8649,7 @@ namespace com.lover.astd.common.logic
                 XmlNode xmlNode = cmdResult.SelectSingleNode("/results/tickets");
                 if (xmlNode != null)
                 {
-                    int.TryParse(xmlNode.InnerText, out tickets);
+                    long.TryParse(xmlNode.InnerText, out tickets);
                 }
 
                 XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/rewards/reward");

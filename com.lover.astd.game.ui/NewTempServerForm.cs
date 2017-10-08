@@ -56,7 +56,7 @@ namespace com.lover.astd.game.ui
 
         private List<HeroWashInfo> _heroes_to_wash = new List<HeroWashInfo>();
 
-        private int tickets_ = 0;
+        private long tickets_ = 0;
 
         private List<TicketItem> ticket_item_list_ = new List<TicketItem>();
 

@@ -9459,6 +9459,14 @@ namespace com.lover.astd.common.logic
                 {
                     int.TryParse(xmlNode.InnerText, out goldcost);
                 }
+                List<ProgressState> progressstate_list = XmlHelper.GetClassList<ProgressState>(cmdResult.SelectNodes("/results/progressstate"));
+                if (progressstate_list.Count > 0)
+                {
+                    foreach (ProgressState current in progressstate_list)
+                    {
+                        this.getBanquetReward(protocol, logger, current);
+                    }
+                }
                 if (xiqi >= maxxiqi)
                 {
                     this.consumeXiqi(protocol, logger);
@@ -9530,6 +9538,19 @@ namespace com.lover.astd.common.logic
                 RewardInfo rewardInfo = new RewardInfo();
                 rewardInfo.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
                 base.logInfo(logger, string.Format("消耗喜气, {0}", rewardInfo.ToString()));
+            }
+        }
+
+        public void getBanquetReward(ProtocolMgr protocol, ILogger logger, ProgressState state)
+        {
+            string url = "/root/event!getBanquetReward.action";
+            string data = string.Format("rewardId={0}", state.id);
+            ServerResult xml = protocol.postXml(url, data, "大宴宴会开启宝箱");
+            if (xml != null && xml.CmdSucceed)
+            {
+                RewardInfo rewardInfo = new RewardInfo();
+                rewardInfo.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
+                base.logInfo(logger, string.Format("开启宝箱, {0}", rewardInfo.ToString()));
             }
         }
         #endregion
