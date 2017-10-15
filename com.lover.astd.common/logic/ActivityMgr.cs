@@ -9525,6 +9525,14 @@ namespace com.lover.astd.common.logic
                 {
                     this.consumeXiqi(protocol, logger);
                 }
+                List<ProgressState> progressstate_list = XmlHelper.GetClassList<ProgressState>(cmdResult.SelectNodes("/results/progressstate"));
+                if (progressstate_list.Count > 0)
+                {
+                    foreach (ProgressState current in progressstate_list)
+                    {
+                        this.getBanquetReward(protocol, logger, current);
+                    }
+                }
                 return goldcost;
             }
         }
