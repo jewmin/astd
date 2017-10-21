@@ -26,6 +26,10 @@ namespace com.lover.astd.common.logic
         /// </summary>
         private void initIndex()
         {
+            indexs_["李白"] = 1000;
+            indexs_["蚩尤"] = 1100;
+            indexs_["炎帝"] = 1200;
+            indexs_["黄帝"] = 1300;
             indexs_["后羿"] = 1400;
             indexs_["夏桀"] = 1500;
             indexs_["王翦"] = 1700;

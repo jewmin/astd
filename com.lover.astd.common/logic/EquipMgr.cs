@@ -55,6 +55,18 @@ namespace com.lover.astd.common.logic
             public int quality;
 
             public string generalname;
+
+            public int attribute_lea;
+
+            public int attribute_str;
+            
+            public int attribute_int;
+
+            public bool IsNormalBaowu()
+            {
+                if (attribute_lea == 50 && attribute_str == 50 && attribute_int == 50) return true;
+                return false;
+            }
         }
 
         private class Officer
@@ -951,6 +963,18 @@ namespace com.lover.astd.common.logic
                     {
                         decoration.generalname = xmlNode4.InnerText;
                     }
+                    else if (xmlNode4.Name == "attribute_lea")
+                    {
+                        decoration.attribute_lea = int.Parse(xmlNode4.InnerText);
+                    }
+                    else if (xmlNode4.Name == "attribute_str")
+                    {
+                        decoration.attribute_str = int.Parse(xmlNode4.InnerText);
+                    }
+                    else if (xmlNode4.Name == "attribute_int")
+                    {
+                        decoration.attribute_int = int.Parse(xmlNode4.InnerText);
+                    }
                 }
                 if (decoration.polishtimes < 10)
                 {
@@ -965,6 +989,10 @@ namespace com.lover.astd.common.logic
                     equipList.Add(decoration);
                 }
                 else if (decoration.eventsrc == 1)
+                {
+                    upgradeList.Add(decoration);
+                }
+                else if (decoration.IsNormalBaowu())
                 {
                     upgradeList.Add(decoration);
                 }
@@ -1168,7 +1196,7 @@ namespace com.lover.astd.common.logic
             if (node != null) int.TryParse(node.InnerText, out succint);
             
             StringBuilder sb = new StringBuilder();
-            sb.Append("专属玉佩升级");
+            sb.AppendFormat("专属玉佩[{0}]升级", dst.NameWithGeneral);
             if (upgraderesult == 1)
             {
                 sb.Append("成功");
