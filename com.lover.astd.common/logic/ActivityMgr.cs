@@ -10304,6 +10304,48 @@ namespace com.lover.astd.common.logic
                 firecrackerscost = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/cost/firecrackerscost"));
                 stringfirecrackerscost = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/cost/stringfirecrackerscost"));
                 springthundercost = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/cost/springthundercost"));
+
+                int canget = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/canget"));
+                Dictionary<int, RewardInfo> rewards = new Dictionary<int, RewardInfo>();
+                XmlNodeList rewardlist = xml.CmdResult.SelectNodes("/results/reward");
+                if (rewardlist != null)
+                {
+                    foreach (XmlNode item in rewardlist)
+                    {
+                        int id = 0;
+                        int state = 0;
+                        RewardInfo info = new RewardInfo();
+                        XmlNodeList node = item.ChildNodes;
+                        foreach (XmlNode child_node in node)
+                        {
+                            if (child_node.Name == "id")
+                            {
+                                id = int.Parse(child_node.InnerText);
+                            }
+                            else if (child_node.Name == "state")
+                            {
+                                state = int.Parse(child_node.InnerText);
+                            }
+                            else if (child_node.Name == "rewardinfo")
+                            {
+                                info.handleXmlNode(child_node);
+                            }
+                        }
+                        if (state == 1) rewards.Add(id, info);
+                    }
+                }
+                if (canget == 1 && rewards.Count > 0)
+                {
+                    foreach (KeyValuePair<int, RewardInfo> item in rewards)
+                    {
+                        int type = item.Value.getReward(0).Type;
+                        if (type == 56 || type == 57)
+                        {
+                            if (!openGift(protocol, logger, user, item.Key)) return 1;
+                        }
+                    }
+                }
+
                 bool result = false;
                 //float precent = (float)nianhp / (float)nianmaxhp;
                 //if (precent >= 0.75)
@@ -10476,6 +10518,27 @@ namespace com.lover.astd.common.logic
             {
                 logInfo(logger, string.Format("年兽捕抓失败"));
             }
+            return true;
+        }
+
+        /// <summary>
+        /// 捡起奖励
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="logger"></param>
+        /// <param name="user"></param>
+        /// <param name="giftId"></param>
+        /// <returns></returns>
+        public bool openGift(ProtocolMgr protocol, ILogger logger, User user, int giftId)
+        {
+            string url = "/root/bombNianEvent!openGift.action";
+            string data = string.Format("giftId={0}", giftId);
+            ServerResult xml = protocol.postXml(url, data, "捡起奖励");
+            if (xml == null || !xml.CmdSucceed) return false;
+
+            RewardInfo reward = new RewardInfo();
+            reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
+            logInfo(logger, string.Format("捡起奖励，获得{0}", reward.ToString()));
             return true;
         }
         #endregion

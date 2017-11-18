@@ -182,10 +182,26 @@ namespace com.lover.astd.common.logic
             }
             int storeUsedSize = user._storeUsedSize;
             int storeTotalSize = user._storeTotalSize;
+            //领取道具
             for (int j = 0; j < storeEquips.Count; j++)
             {
                 Equipment equipment2 = storeEquips[j];
-                if (equipment2.goodstype != GoodsType.Weapon && equipment2.RemainTime > 0 && storeUsedSize < storeTotalSize)
+                if (equipment2.Name == "日月光华" && equipment2.RemainTime > 0 && storeUsedSize < storeTotalSize)
+                {
+                    int equip = equipManager.getEquip(protocol, logger, equipment2);
+                    if (equip == 2)
+                    {
+                        storeUsedSize = storeTotalSize;
+                        break;
+                    }
+                    storeUsedSize++;
+                    flag = true;
+                }
+            }
+            for (int j = 0; j < storeEquips.Count; j++)
+            {
+                Equipment equipment2 = storeEquips[j];
+                if (equipment2.goodstype != GoodsType.Weapon && equipment2.RemainTime > 0 && storeUsedSize < storeTotalSize - 10)
                 {
                     int equip = equipManager.getEquip(protocol, logger, equipment2);
                     if (equip == 2)
@@ -988,10 +1004,10 @@ namespace com.lover.astd.common.logic
                 {
                     equipList.Add(decoration);
                 }
-                else if (decoration.eventsrc == 1)
-                {
-                    upgradeList.Add(decoration);
-                }
+                //else if (decoration.eventsrc == 1)
+                //{
+                //    upgradeList.Add(decoration);
+                //}
                 else if (decoration.IsNormalBaowu())
                 {
                     upgradeList.Add(decoration);

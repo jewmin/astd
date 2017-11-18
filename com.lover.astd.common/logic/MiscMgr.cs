@@ -8901,6 +8901,27 @@ namespace com.lover.astd.common.logic
             ServerResult xml = protocol.getXml(url, "西域通商");
             if (xml == null || !xml.CmdSucceed) return 10;
 
+            int eventtype = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/eventtype"), 0);
+            if (eventtype == 1)
+            {
+                int pos = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/pos"), -1);
+                if (pos == 0)
+                {
+                    if (!getKingReward(protocol, logger, 0, 1)) return 10;
+                    else return 0;
+                }
+                else if (pos > 0)
+                {
+                    if (!getKingReward(protocol, logger, -1, 1)) return 10;
+                    else return 0;
+                }
+            }
+            else if (eventtype == 2)
+            {
+                if (!getTraderReward(protocol, logger, -1)) return 10;
+                else return 0;
+            }
+
             List<TradeInfo> list;
             int nowplace = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/nowplace"));
             int needclicknext = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/needclicknext"), 0);
@@ -8975,6 +8996,32 @@ namespace com.lover.astd.common.logic
                 sb.AppendFormat(", {0}", info.ToString());
             }
             logInfo(logger, sb.ToString());
+            return true;
+        }
+
+        public bool getKingReward(ProtocolMgr protocol, ILogger logger, int isdouble, int pos)
+        {
+            string url = "/root/caravan!getKingReward.action";
+            string data = string.Format("isdouble={0}&pos={1}", isdouble, pos);
+            ServerResult xml = protocol.postXml(url, data, "西域通商-国王事件");
+            if (xml == null || !xml.CmdSucceed) return false;
+
+            RewardInfo reward = new RewardInfo();
+            reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
+            if (!string.IsNullOrEmpty(reward.ToString())) logInfo(logger, string.Format("西域通商-国王事件, 打开宝箱, 获得{0}", reward.ToString()));
+            return true;
+        }
+
+        public bool getTraderReward(ProtocolMgr protocol, ILogger logger, int isBuy)
+        {
+            string url = "/root/caravan!getTraderReward.action";
+            string data = string.Format("isBuy={0}", isBuy);
+            ServerResult xml = protocol.postXml(url, data, "西域通商-神秘商人事件");
+            if (xml == null || !xml.CmdSucceed) return false;
+
+            RewardInfo reward = new RewardInfo();
+            reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
+            if (!string.IsNullOrEmpty(reward.ToString())) logInfo(logger, string.Format("西域通商-神秘商人事件, 打开宝箱, 获得{0}", reward.ToString()));
             return true;
         }
 
