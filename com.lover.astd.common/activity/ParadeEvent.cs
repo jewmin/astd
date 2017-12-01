@@ -136,22 +136,22 @@ namespace com.lover.astd.common.activity
             }
 
             //检查阵型
-            checkFormation();
-            if (finish_formation)
-            {
-                if (!getNextGeneral(protocol, logger)) return 10;
-                return 0;
-            }
+            //checkFormation();
+            //if (finish_formation)
+            //{
+            //    if (!getNextGeneral(protocol, logger)) return 10;
+            //    return 0;
+            //}
 
             //免费阅兵
             while (freetimes > 0)
             {
                 if (!paradeArmy(protocol, logger, freetimes, cost)) return 10;
-                if (finish_formation)
-                {
-                    if (!getNextGeneral(protocol, logger)) return 10;
-                    return 0;
-                }
+                //if (finish_formation)
+                //{
+                //    if (!getNextGeneral(protocol, logger)) return 10;
+                //    return 0;
+                //}
             }
 
             //金币阅兵

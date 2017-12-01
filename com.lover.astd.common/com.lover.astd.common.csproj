@@ -162,6 +162,7 @@
     <Compile Include="model\battle\CampaignItem.cs" />
     <Compile Include="model\battle\Npc.cs" />
     <Compile Include="model\battle\ResCampaign.cs" />
+    <Compile Include="model\battle\WorldExpansionInfo.cs" />
     <Compile Include="model\BigHero.cs" />
     <Compile Include="model\building\Building.cs" />
     <Compile Include="model\building\BuildingLine.cs" />

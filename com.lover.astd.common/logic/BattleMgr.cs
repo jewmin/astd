@@ -12,9 +12,9 @@ using com.lover.astd.common.model.misc;
 
 namespace com.lover.astd.common.logic
 {
-	public class BattleMgr : MgrBase
-	{
-		private string[] _formations = new string[]
+    public class BattleMgr : MgrBase
+    {
+        private string[] _formations = new string[]
 		{
 			"不变阵",
 			"鱼鳞阵",
@@ -27,425 +27,425 @@ namespace com.lover.astd.common.logic
 			"雁行阵"
 		};
 
-		public BattleMgr(TimeMgr tmrMgr, ServiceFactory factory)
-		{
-			this._logColor = Color.Purple;
-			this._tmrMgr = tmrMgr;
-			this._factory = factory;
-		}
+        public BattleMgr(TimeMgr tmrMgr, ServiceFactory factory)
+        {
+            this._logColor = Color.Purple;
+            this._tmrMgr = tmrMgr;
+            this._factory = factory;
+        }
 
-		public void getWeaponEventInfo(ProtocolMgr protocol, ILogger logger, User user)
-		{
-			string url = "/root/server!get51EventTime.action";
-			ServerResult xml = protocol.getXml(url, "获取兵器活动信息");
-			bool flag = xml == null || !xml.CmdSucceed;
-			if (!flag)
-			{
-				XmlDocument cmdResult = xml.CmdResult;
-				XmlNode xmlNode = cmdResult.SelectSingleNode("/results/message/canrecvforcetoken");
-				bool flag2 = xmlNode != null;
-				if (flag2)
-				{
-					user._battle_got_weapon_event_free_token = xmlNode.InnerText.Equals("0");
-				}
-				else
-				{
-					user._battle_got_weapon_event_free_token = false;
-				}
-				int num = 0;
-				XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/message/forcetokennum");
-				bool flag3 = xmlNode2 != null;
-				if (flag3)
-				{
-					int.TryParse(xmlNode2.InnerText, out num);
-				}
-				bool flag4 = !user._battle_got_weapon_event_free_token;
-				if (flag4)
-				{
-					url = "/root/market!recvForceToken.action";
-					xml = protocol.getXml(url, "获取兵器活动免费强攻令");
-					bool flag5 = xml == null;
-					if (!flag5)
-					{
-						bool flag6 = !xml.CmdSucceed && xml.CmdError.Contains("已领取");
-						if (flag6)
-						{
-							user._battle_got_weapon_event_free_token = true;
-						}
-						else
-						{
-							cmdResult = xml.CmdResult;
-							base.logInfo(logger, string.Format("领取兵器活动免费强攻令[{0}]个", num));
-							user._battle_got_weapon_event_free_token = true;
-						}
-					}
-				}
-			}
-		}
+        public void getWeaponEventInfo(ProtocolMgr protocol, ILogger logger, User user)
+        {
+            string url = "/root/server!get51EventTime.action";
+            ServerResult xml = protocol.getXml(url, "获取兵器活动信息");
+            bool flag = xml == null || !xml.CmdSucceed;
+            if (!flag)
+            {
+                XmlDocument cmdResult = xml.CmdResult;
+                XmlNode xmlNode = cmdResult.SelectSingleNode("/results/message/canrecvforcetoken");
+                bool flag2 = xmlNode != null;
+                if (flag2)
+                {
+                    user._battle_got_weapon_event_free_token = xmlNode.InnerText.Equals("0");
+                }
+                else
+                {
+                    user._battle_got_weapon_event_free_token = false;
+                }
+                int num = 0;
+                XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/message/forcetokennum");
+                bool flag3 = xmlNode2 != null;
+                if (flag3)
+                {
+                    int.TryParse(xmlNode2.InnerText, out num);
+                }
+                bool flag4 = !user._battle_got_weapon_event_free_token;
+                if (flag4)
+                {
+                    url = "/root/market!recvForceToken.action";
+                    xml = protocol.getXml(url, "获取兵器活动免费强攻令");
+                    bool flag5 = xml == null;
+                    if (!flag5)
+                    {
+                        bool flag6 = !xml.CmdSucceed && xml.CmdError.Contains("已领取");
+                        if (flag6)
+                        {
+                            user._battle_got_weapon_event_free_token = true;
+                        }
+                        else
+                        {
+                            cmdResult = xml.CmdResult;
+                            base.logInfo(logger, string.Format("领取兵器活动免费强攻令[{0}]个", num));
+                            user._battle_got_weapon_event_free_token = true;
+                        }
+                    }
+                }
+            }
+        }
 
-		public int tryFindArmy(ProtocolMgr protocol, ILogger logger, User user, string armyid, bool onlyFirstBattle)
-		{
-			string url = "/root/multiBattle!getTeamInfo.action";
-			string data = "armiesId=" + armyid;
-			ServerResult serverResult = protocol.postXml(url, data, "获取军团征战信息");
-			bool flag = serverResult == null;
-			int result;
-			if (flag)
-			{
-				result = 1;
-			}
-			else
-			{
-				bool flag2 = !serverResult.CmdSucceed;
-				if (flag2)
-				{
-					result = 10;
-				}
-				else
-				{
-					XmlDocument cmdResult = serverResult.CmdResult;
-					string innerText = cmdResult.SelectSingleNode("/results/armies/name").InnerText;
-					XmlNode xmlNode = cmdResult.SelectSingleNode("/results/currentnum");
-					bool flag3 = xmlNode != null;
-					if (flag3)
-					{
-						user._battle_current_army_id = armyid;
-						result = 0;
-					}
-					else
-					{
-						XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/sceneevent");
-						bool flag4 = xmlNode2 != null;
-						if (flag4)
-						{
-							string arg = "";
-							string text = "";
-							XmlNode xmlNode3 = xmlNode2.SelectSingleNode("battlereport/report/describe");
-							bool flag5 = xmlNode3 != null;
-							if (flag5)
-							{
-								arg = xmlNode3.InnerText;
-							}
-							XmlNode xmlNode4 = xmlNode2.SelectSingleNode("battlereport/report/gains");
-							bool flag6 = xmlNode4 != null;
-							if (flag6)
-							{
-								text = xmlNode4.InnerText;
-							}
-							bool flag7 = text != "";
-							if (flag7)
-							{
-								string text2 = string.Format("攻打{0}, {1}, {2}", innerText, arg, text);
-								base.logInfo(logger, text2);
-							}
-							user._battle_current_army_id = "";
-							XmlNode xmlNode5 = xmlNode2.SelectSingleNode("playerbattleinfo");
-							bool flag8 = xmlNode5 != null;
-							if (flag8)
-							{
-								user.refreshPlayerInfo(xmlNode5);
-								user.addUiToQueue("global");
-							}
-						}
-						XmlNode xmlNode6 = cmdResult.SelectSingleNode("/results");
-						XmlNodeList childNodes = xmlNode6.ChildNodes;
-						string nation = user.Nation;
-						string group = user.Group;
-						int level = user.Level;
-						int num = -1;
-						foreach (XmlNode xmlNode7 in childNodes)
-						{
-							bool flag9 = xmlNode7.Name == "team";
-							if (flag9)
-							{
-								XmlNodeList childNodes2 = xmlNode7.ChildNodes;
-								string text3 = "";
-								string teamname = "";
-								string text4 = "";
-								int num2 = 0;
-								int num3 = 0;
-								int num4 = 0;
-								foreach (XmlNode xmlNode8 in childNodes2)
-								{
-									bool flag10 = xmlNode8.Name == "teamid";
-									if (flag10)
-									{
-										text3 = xmlNode8.InnerText;
-									}
-									else
-									{
-										bool flag11 = xmlNode8.Name == "teamname";
-										if (flag11)
-										{
-											teamname = xmlNode8.InnerText;
-										}
-										else
-										{
-											bool flag12 = xmlNode8.Name == "maxnum";
-											if (flag12)
-											{
-												num3 = int.Parse(xmlNode8.InnerText);
-											}
-											else
-											{
-												bool flag13 = xmlNode8.Name == "currentnum";
-												if (flag13)
-												{
-													num2 = int.Parse(xmlNode8.InnerText);
-												}
-												else
-												{
-													bool flag14 = xmlNode8.Name == "condition";
-													if (flag14)
-													{
-														text4 = xmlNode8.InnerText;
-													}
-													else
-													{
-														bool flag15 = xmlNode8.Name == "firstbattle";
-														if (flag15)
-														{
-															num4 = int.Parse(xmlNode8.InnerText);
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-								bool flag16 = !(text3 == "") && num3 != num2 && (!onlyFirstBattle || num4 != 0) && (text4.IndexOf("军团") < 0 || text4.IndexOf(group) >= 0) && this.getArmyJoinLevel(text4) <= level;
-								if (flag16)
-								{
-									num = this.tryJoinTeam(protocol, logger, text3, innerText, teamname);
-									bool flag17 = num >= 0;
-									if (flag17)
-									{
-										bool flag18 = num == 0;
-										if (flag18)
-										{
-											user._battle_current_army_id = armyid;
-										}
-										result = num;
-										return result;
-									}
-								}
-							}
-						}
-						result = num;
-					}
-				}
-			}
-			return result;
-		}
+        public int tryFindArmy(ProtocolMgr protocol, ILogger logger, User user, string armyid, bool onlyFirstBattle)
+        {
+            string url = "/root/multiBattle!getTeamInfo.action";
+            string data = "armiesId=" + armyid;
+            ServerResult serverResult = protocol.postXml(url, data, "获取军团征战信息");
+            bool flag = serverResult == null;
+            int result;
+            if (flag)
+            {
+                result = 1;
+            }
+            else
+            {
+                bool flag2 = !serverResult.CmdSucceed;
+                if (flag2)
+                {
+                    result = 10;
+                }
+                else
+                {
+                    XmlDocument cmdResult = serverResult.CmdResult;
+                    string innerText = cmdResult.SelectSingleNode("/results/armies/name").InnerText;
+                    XmlNode xmlNode = cmdResult.SelectSingleNode("/results/currentnum");
+                    bool flag3 = xmlNode != null;
+                    if (flag3)
+                    {
+                        user._battle_current_army_id = armyid;
+                        result = 0;
+                    }
+                    else
+                    {
+                        XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/sceneevent");
+                        bool flag4 = xmlNode2 != null;
+                        if (flag4)
+                        {
+                            string arg = "";
+                            string text = "";
+                            XmlNode xmlNode3 = xmlNode2.SelectSingleNode("battlereport/report/describe");
+                            bool flag5 = xmlNode3 != null;
+                            if (flag5)
+                            {
+                                arg = xmlNode3.InnerText;
+                            }
+                            XmlNode xmlNode4 = xmlNode2.SelectSingleNode("battlereport/report/gains");
+                            bool flag6 = xmlNode4 != null;
+                            if (flag6)
+                            {
+                                text = xmlNode4.InnerText;
+                            }
+                            bool flag7 = text != "";
+                            if (flag7)
+                            {
+                                string text2 = string.Format("攻打{0}, {1}, {2}", innerText, arg, text);
+                                base.logInfo(logger, text2);
+                            }
+                            user._battle_current_army_id = "";
+                            XmlNode xmlNode5 = xmlNode2.SelectSingleNode("playerbattleinfo");
+                            bool flag8 = xmlNode5 != null;
+                            if (flag8)
+                            {
+                                user.refreshPlayerInfo(xmlNode5);
+                                user.addUiToQueue("global");
+                            }
+                        }
+                        XmlNode xmlNode6 = cmdResult.SelectSingleNode("/results");
+                        XmlNodeList childNodes = xmlNode6.ChildNodes;
+                        string nation = user.Nation;
+                        string group = user.Group;
+                        int level = user.Level;
+                        int num = -1;
+                        foreach (XmlNode xmlNode7 in childNodes)
+                        {
+                            bool flag9 = xmlNode7.Name == "team";
+                            if (flag9)
+                            {
+                                XmlNodeList childNodes2 = xmlNode7.ChildNodes;
+                                string text3 = "";
+                                string teamname = "";
+                                string text4 = "";
+                                int num2 = 0;
+                                int num3 = 0;
+                                int num4 = 0;
+                                foreach (XmlNode xmlNode8 in childNodes2)
+                                {
+                                    bool flag10 = xmlNode8.Name == "teamid";
+                                    if (flag10)
+                                    {
+                                        text3 = xmlNode8.InnerText;
+                                    }
+                                    else
+                                    {
+                                        bool flag11 = xmlNode8.Name == "teamname";
+                                        if (flag11)
+                                        {
+                                            teamname = xmlNode8.InnerText;
+                                        }
+                                        else
+                                        {
+                                            bool flag12 = xmlNode8.Name == "maxnum";
+                                            if (flag12)
+                                            {
+                                                num3 = int.Parse(xmlNode8.InnerText);
+                                            }
+                                            else
+                                            {
+                                                bool flag13 = xmlNode8.Name == "currentnum";
+                                                if (flag13)
+                                                {
+                                                    num2 = int.Parse(xmlNode8.InnerText);
+                                                }
+                                                else
+                                                {
+                                                    bool flag14 = xmlNode8.Name == "condition";
+                                                    if (flag14)
+                                                    {
+                                                        text4 = xmlNode8.InnerText;
+                                                    }
+                                                    else
+                                                    {
+                                                        bool flag15 = xmlNode8.Name == "firstbattle";
+                                                        if (flag15)
+                                                        {
+                                                            num4 = int.Parse(xmlNode8.InnerText);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                bool flag16 = !(text3 == "") && num3 != num2 && (!onlyFirstBattle || num4 != 0) && (text4.IndexOf("军团") < 0 || text4.IndexOf(group) >= 0) && this.getArmyJoinLevel(text4) <= level;
+                                if (flag16)
+                                {
+                                    num = this.tryJoinTeam(protocol, logger, text3, innerText, teamname);
+                                    bool flag17 = num >= 0;
+                                    if (flag17)
+                                    {
+                                        bool flag18 = num == 0;
+                                        if (flag18)
+                                        {
+                                            user._battle_current_army_id = armyid;
+                                        }
+                                        result = num;
+                                        return result;
+                                    }
+                                }
+                            }
+                        }
+                        result = num;
+                    }
+                }
+            }
+            return result;
+        }
 
-		public int tryJoinTeam(ProtocolMgr protocol, ILogger logger, string teamid, string armyname, string teamname)
-		{
-			string url = "/root/multiBattle!joinTeam.action";
-			string data = "teamId=" + teamid;
-			string text = string.Format("攻打[ {0} ], 加入[ {1} ]队伍", armyname, teamname);
-			ServerResult serverResult = protocol.postXml(url, data, text);
-			bool flag = serverResult == null;
-			int result;
-			if (flag)
-			{
-				result = 1;
-			}
-			else
-			{
-				bool cmdSucceed = serverResult.CmdSucceed;
-				if (cmdSucceed)
-				{
-					XmlDocument cmdResult = serverResult.CmdResult;
-					base.logInfo(logger, text);
-					result = 0;
-				}
-				else
-				{
-					string cmdError = serverResult.CmdError;
-					bool flag2 = cmdError == null;
-					if (flag2)
-					{
-						result = 1;
-					}
-					else
-					{
-						bool flag3 = cmdError.IndexOf("军令还没有冷却") >= 0;
-						if (flag3)
-						{
-							result = 2;
-						}
-						else
-						{
-							bool flag4 = cmdError.IndexOf("没有可用的军令") >= 0;
-							if (flag4)
-							{
-								result = 3;
-							}
-							else
-							{
-								bool flag5 = cmdError.IndexOf("不能攻击") >= 0;
-								if (flag5)
-								{
-									result = 4;
-								}
-								else
-								{
-									bool flag6 = cmdError.IndexOf("满") >= 0;
-									if (flag6)
-									{
-										result = -1;
-									}
-									else
-									{
-										result = 5;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			return result;
-		}
+        public int tryJoinTeam(ProtocolMgr protocol, ILogger logger, string teamid, string armyname, string teamname)
+        {
+            string url = "/root/multiBattle!joinTeam.action";
+            string data = "teamId=" + teamid;
+            string text = string.Format("攻打[ {0} ], 加入[ {1} ]队伍", armyname, teamname);
+            ServerResult serverResult = protocol.postXml(url, data, text);
+            bool flag = serverResult == null;
+            int result;
+            if (flag)
+            {
+                result = 1;
+            }
+            else
+            {
+                bool cmdSucceed = serverResult.CmdSucceed;
+                if (cmdSucceed)
+                {
+                    XmlDocument cmdResult = serverResult.CmdResult;
+                    base.logInfo(logger, text);
+                    result = 0;
+                }
+                else
+                {
+                    string cmdError = serverResult.CmdError;
+                    bool flag2 = cmdError == null;
+                    if (flag2)
+                    {
+                        result = 1;
+                    }
+                    else
+                    {
+                        bool flag3 = cmdError.IndexOf("军令还没有冷却") >= 0;
+                        if (flag3)
+                        {
+                            result = 2;
+                        }
+                        else
+                        {
+                            bool flag4 = cmdError.IndexOf("没有可用的军令") >= 0;
+                            if (flag4)
+                            {
+                                result = 3;
+                            }
+                            else
+                            {
+                                bool flag5 = cmdError.IndexOf("不能攻击") >= 0;
+                                if (flag5)
+                                {
+                                    result = 4;
+                                }
+                                else
+                                {
+                                    bool flag6 = cmdError.IndexOf("满") >= 0;
+                                    if (flag6)
+                                    {
+                                        result = -1;
+                                    }
+                                    else
+                                    {
+                                        result = 5;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return result;
+        }
 
-		public int attackNpc(ProtocolMgr protocol, ILogger logger, User user, string npcid, bool force, string formation)
-		{
-			string url = "/root/battle!battleArmy.action";
-			if (force)
-			{
-				url = "/root/battle!forceBattleArmy.action";
-			}
-			string data = "armyId=" + npcid;
-			ServerResult serverResult = protocol.postXml(url, data, "攻打Npc");
-			int result;
-			if (serverResult == null)
-			{
-				result = 1;
-			}
-			else if (serverResult.CmdSucceed)
-			{
-				XmlDocument cmdResult = serverResult.CmdResult;
-				XmlNode xmlNode = cmdResult.SelectSingleNode("/results/playerbattleinfo");
-				if (xmlNode != null)
-				{
-					user.refreshPlayerInfo(xmlNode);
-					user.addUiToQueue("global");
-				}
-				XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/battlereport");
-				XmlNodeList childNodes = xmlNode2.ChildNodes;
-				string text = "";
-				string text2 = "";
-				string text3 = "";
-				foreach (XmlNode xmlNode3 in childNodes)
-				{
-					if (xmlNode3.Name == "attlost")
-					{
-						text = xmlNode3.InnerText;
-					}
-					else if (xmlNode3.Name == "deflost")
-					{
-						text2 = xmlNode3.InnerText;
-					}
-					else if (xmlNode3.Name == "message")
-					{
-						text3 = xmlNode3.InnerText;
-					}
-				}
-				string text4 = string.Format("{0}NPC, {1}, 你损失兵力{2}, 敌方损失兵力{3} ", force ? "强征" : "征战", text3, text, text2);
-				XmlNode xmlNode4 = cmdResult.SelectSingleNode("/results/items/list");
-				if (xmlNode4.HasChildNodes)
-				{
-					XmlNodeList childNodes2 = xmlNode4.ChildNodes;
-					text4 += ", 获得";
-					foreach (XmlNode xmlNode5 in childNodes2)
-					{
-						if (xmlNode5.Name == "value")
-						{
-							string[] array = this.translateGainItem(xmlNode5.InnerText);
-							string text5 = array[0];
-							string text6 = array[1];
-							if (text5 == null || text5 == "")
-							{
-								text5 = xmlNode5.InnerText;
-							}
-							text4 += text5 + "  ";
-						}
-					}
-				}
-				base.logInfo(logger, text4);
-				result = 0;
-			}
-			else
-			{
-				if (serverResult.CmdError.IndexOf("还没有冷却") >= 0)
-				{
-					result = 2;
-				}
-				else
-				{
-					result = 3;
-				}
-			}
-			return result;
-		}
+        public int attackNpc(ProtocolMgr protocol, ILogger logger, User user, string npcid, bool force, string formation)
+        {
+            string url = "/root/battle!battleArmy.action";
+            if (force)
+            {
+                url = "/root/battle!forceBattleArmy.action";
+            }
+            string data = "armyId=" + npcid;
+            ServerResult serverResult = protocol.postXml(url, data, "攻打Npc");
+            int result;
+            if (serverResult == null)
+            {
+                result = 1;
+            }
+            else if (serverResult.CmdSucceed)
+            {
+                XmlDocument cmdResult = serverResult.CmdResult;
+                XmlNode xmlNode = cmdResult.SelectSingleNode("/results/playerbattleinfo");
+                if (xmlNode != null)
+                {
+                    user.refreshPlayerInfo(xmlNode);
+                    user.addUiToQueue("global");
+                }
+                XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/battlereport");
+                XmlNodeList childNodes = xmlNode2.ChildNodes;
+                string text = "";
+                string text2 = "";
+                string text3 = "";
+                foreach (XmlNode xmlNode3 in childNodes)
+                {
+                    if (xmlNode3.Name == "attlost")
+                    {
+                        text = xmlNode3.InnerText;
+                    }
+                    else if (xmlNode3.Name == "deflost")
+                    {
+                        text2 = xmlNode3.InnerText;
+                    }
+                    else if (xmlNode3.Name == "message")
+                    {
+                        text3 = xmlNode3.InnerText;
+                    }
+                }
+                string text4 = string.Format("{0}NPC, {1}, 你损失兵力{2}, 敌方损失兵力{3} ", force ? "强征" : "征战", text3, text, text2);
+                XmlNode xmlNode4 = cmdResult.SelectSingleNode("/results/items/list");
+                if (xmlNode4.HasChildNodes)
+                {
+                    XmlNodeList childNodes2 = xmlNode4.ChildNodes;
+                    text4 += ", 获得";
+                    foreach (XmlNode xmlNode5 in childNodes2)
+                    {
+                        if (xmlNode5.Name == "value")
+                        {
+                            string[] array = this.translateGainItem(xmlNode5.InnerText);
+                            string text5 = array[0];
+                            string text6 = array[1];
+                            if (text5 == null || text5 == "")
+                            {
+                                text5 = xmlNode5.InnerText;
+                            }
+                            text4 += text5 + "  ";
+                        }
+                    }
+                }
+                base.logInfo(logger, text4);
+                result = 0;
+            }
+            else
+            {
+                if (serverResult.CmdError.IndexOf("还没有冷却") >= 0)
+                {
+                    result = 2;
+                }
+                else
+                {
+                    result = 3;
+                }
+            }
+            return result;
+        }
 
-		public string getFormation(ProtocolMgr protocol, ILogger logger)
-		{
-			string text = this._formations[0];
-			string url = "/root/general!formation.action";
-			ServerResult xml = protocol.getXml(url, "获取阵型");
-			bool flag = xml == null || !xml.CmdSucceed;
-			string result;
-			if (flag)
-			{
-				result = text;
-			}
-			else
-			{
-				bool flag2 = !xml.CmdSucceed;
-				if (flag2)
-				{
-					result = text;
-				}
-				else
-				{
-					XmlDocument cmdResult = xml.CmdResult;
-					XmlNode xmlNode = cmdResult.SelectSingleNode("/results/formation/formationid");
-					bool flag3 = xmlNode == null;
-					if (flag3)
-					{
-						result = text;
-					}
-					else
-					{
-						int num = 0;
-						int.TryParse(xmlNode.InnerText, out num);
-						bool flag4 = num == 0;
-						if (flag4)
-						{
-							result = text;
-						}
-						else
-						{
-							num /= 20;
-							bool flag5 = num > this._formations.Length;
-							if (flag5)
-							{
-								result = text;
-							}
-							else
-							{
-								result = this._formations[num];
-							}
-						}
-					}
-				}
-			}
-			return result;
-		}
+        public string getFormation(ProtocolMgr protocol, ILogger logger)
+        {
+            string text = this._formations[0];
+            string url = "/root/general!formation.action";
+            ServerResult xml = protocol.getXml(url, "获取阵型");
+            bool flag = xml == null || !xml.CmdSucceed;
+            string result;
+            if (flag)
+            {
+                result = text;
+            }
+            else
+            {
+                bool flag2 = !xml.CmdSucceed;
+                if (flag2)
+                {
+                    result = text;
+                }
+                else
+                {
+                    XmlDocument cmdResult = xml.CmdResult;
+                    XmlNode xmlNode = cmdResult.SelectSingleNode("/results/formation/formationid");
+                    bool flag3 = xmlNode == null;
+                    if (flag3)
+                    {
+                        result = text;
+                    }
+                    else
+                    {
+                        int num = 0;
+                        int.TryParse(xmlNode.InnerText, out num);
+                        bool flag4 = num == 0;
+                        if (flag4)
+                        {
+                            result = text;
+                        }
+                        else
+                        {
+                            num /= 20;
+                            bool flag5 = num > this._formations.Length;
+                            if (flag5)
+                            {
+                                result = text;
+                            }
+                            else
+                            {
+                                result = this._formations[num];
+                            }
+                        }
+                    }
+                }
+            }
+            return result;
+        }
 
-		public bool changeFormation(ProtocolMgr protocol, ILogger logger, string formation)
-		{
+        public bool changeFormation(ProtocolMgr protocol, ILogger logger, string formation)
+        {
             int formationId = 0;
             for (int i = 0; i < this._formations.Length; i++)
             {
@@ -476,600 +476,600 @@ namespace com.lover.astd.common.logic
                     return true;
                 }
             }
-		}
+        }
 
-		public List<int> getAllPowerList(ProtocolMgr protocol, ILogger logger, User user, List<int> nowPowerIds)
-		{
-			int powerId = nowPowerIds[nowPowerIds.Count - 1];
-			int num = 0;
-			List<int> powerList = this.getPowerList(protocol, logger, user, powerId, out num);
-			int num2;
-			for (int i = 0; i < powerList.Count; i = num2 + 1)
-			{
-				bool flag = !nowPowerIds.Contains(powerList[i]);
-				if (flag)
-				{
-					nowPowerIds.Add(powerList[i]);
-				}
-				num2 = i;
-			}
-			bool flag2 = num == 0;
-			List<int> result;
-			if (flag2)
-			{
-				result = nowPowerIds;
-			}
-			else
-			{
-				nowPowerIds.Add(num);
-				result = this.getAllPowerList(protocol, logger, user, nowPowerIds);
-			}
-			return result;
-		}
+        public List<int> getAllPowerList(ProtocolMgr protocol, ILogger logger, User user, List<int> nowPowerIds)
+        {
+            int powerId = nowPowerIds[nowPowerIds.Count - 1];
+            int num = 0;
+            List<int> powerList = this.getPowerList(protocol, logger, user, powerId, out num);
+            int num2;
+            for (int i = 0; i < powerList.Count; i = num2 + 1)
+            {
+                bool flag = !nowPowerIds.Contains(powerList[i]);
+                if (flag)
+                {
+                    nowPowerIds.Add(powerList[i]);
+                }
+                num2 = i;
+            }
+            bool flag2 = num == 0;
+            List<int> result;
+            if (flag2)
+            {
+                result = nowPowerIds;
+            }
+            else
+            {
+                nowPowerIds.Add(num);
+                result = this.getAllPowerList(protocol, logger, user, nowPowerIds);
+            }
+            return result;
+        }
 
-		public List<int> getPowerList(ProtocolMgr protocol, ILogger logger, User user, int powerId, out int nextId)
-		{
-			nextId = 0;
-			List<int> list = new List<int>();
-			string url = "/root/battle!getPowerList.action";
-			ServerResult serverResult = protocol.postXml(url, "powerId=" + powerId, "获取征战军团信息");
-			bool flag = serverResult == null || !serverResult.CmdSucceed;
-			List<int> result;
-			if (flag)
-			{
-				result = list;
-			}
-			else
-			{
-				XmlDocument cmdResult = serverResult.CmdResult;
-				XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/power");
-				foreach (XmlNode xmlNode in xmlNodeList)
-				{
-					XmlNodeList childNodes = xmlNode.ChildNodes;
-					bool flag2 = false;
-					int item = 0;
-					int num = 0;
-					foreach (XmlNode xmlNode2 in childNodes)
-					{
-						bool flag3 = xmlNode2.Name == "attackable";
-						if (flag3)
-						{
-							flag2 = (xmlNode2.InnerText == "1");
-						}
-						else
-						{
-							bool flag4 = xmlNode2.Name == "ratio";
-							if (flag4)
-							{
-								int.TryParse(xmlNode2.InnerText, out num);
-							}
-							else
-							{
-								bool flag5 = xmlNode2.Name == "powerid";
-								if (flag5)
-								{
-									int.TryParse(xmlNode2.InnerText, out item);
-								}
-							}
-						}
-					}
-					bool flag6 = flag2 && num == 100;
-					if (flag6)
-					{
-						list.Add(item);
-					}
-				}
-				XmlNode xmlNode3 = cmdResult.SelectSingleNode("/results/nextid");
-				bool flag7 = xmlNode3 != null;
-				if (flag7)
-				{
-					int.TryParse(xmlNode3.InnerText, out nextId);
-				}
-				result = list;
-			}
-			return result;
-		}
+        public List<int> getPowerList(ProtocolMgr protocol, ILogger logger, User user, int powerId, out int nextId)
+        {
+            nextId = 0;
+            List<int> list = new List<int>();
+            string url = "/root/battle!getPowerList.action";
+            ServerResult serverResult = protocol.postXml(url, "powerId=" + powerId, "获取征战军团信息");
+            bool flag = serverResult == null || !serverResult.CmdSucceed;
+            List<int> result;
+            if (flag)
+            {
+                result = list;
+            }
+            else
+            {
+                XmlDocument cmdResult = serverResult.CmdResult;
+                XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/power");
+                foreach (XmlNode xmlNode in xmlNodeList)
+                {
+                    XmlNodeList childNodes = xmlNode.ChildNodes;
+                    bool flag2 = false;
+                    int item = 0;
+                    int num = 0;
+                    foreach (XmlNode xmlNode2 in childNodes)
+                    {
+                        bool flag3 = xmlNode2.Name == "attackable";
+                        if (flag3)
+                        {
+                            flag2 = (xmlNode2.InnerText == "1");
+                        }
+                        else
+                        {
+                            bool flag4 = xmlNode2.Name == "ratio";
+                            if (flag4)
+                            {
+                                int.TryParse(xmlNode2.InnerText, out num);
+                            }
+                            else
+                            {
+                                bool flag5 = xmlNode2.Name == "powerid";
+                                if (flag5)
+                                {
+                                    int.TryParse(xmlNode2.InnerText, out item);
+                                }
+                            }
+                        }
+                    }
+                    bool flag6 = flag2 && num == 100;
+                    if (flag6)
+                    {
+                        list.Add(item);
+                    }
+                }
+                XmlNode xmlNode3 = cmdResult.SelectSingleNode("/results/nextid");
+                bool flag7 = xmlNode3 != null;
+                if (flag7)
+                {
+                    int.TryParse(xmlNode3.InnerText, out nextId);
+                }
+                result = list;
+            }
+            return result;
+        }
 
-		public void getAllPowerInfo(ProtocolMgr protocol, ILogger logger, User user)
-		{
-			for (int i = 90; i <= 300; i++)
-			{
-				bool flag = true;
-				this.getPowerInfo(protocol, logger, user, i, out flag);
-				if (!flag && i > 30)
-				{
-					break;
-				}
-			}
-		}
+        public void getAllPowerInfo(ProtocolMgr protocol, ILogger logger, User user)
+        {
+            for (int i = 90; i <= 300; i++)
+            {
+                bool flag = true;
+                this.getPowerInfo(protocol, logger, user, i, out flag);
+                if (!flag && i > 30)
+                {
+                    break;
+                }
+            }
+        }
 
-		public List<int> getPowerInfo(ProtocolMgr protocol, ILogger logger, User user, int powerId, out bool success)
-		{
-			success = true;
-			List<int> list = new List<int>();
-			string url = "/root/battle!getPowerInfo.action";
-			ServerResult serverResult = protocol.postXml(url, "powerId=" + powerId, "获取征战信息");
-			List<int> result;
-			if (serverResult == null || !serverResult.CmdSucceed)
-			{
-				success = false;
-				result = list;
-			}
-			else
-			{
-				XmlDocument cmdResult = serverResult.CmdResult;
-				XmlNode xmlNode = cmdResult.SelectSingleNode("/results/power");
-				int armyId = 0;
-				string arg = "";
-				if (xmlNode != null)
-				{
-					XmlNode xmlNode2 = xmlNode.SelectSingleNode("powerid");
-					if (xmlNode2 != null)
-					{
-						armyId = int.Parse(xmlNode2.InnerText);
-					}
-					XmlNode xmlNode3 = xmlNode.SelectSingleNode("powername");
-					if (xmlNode3 != null)
-					{
-						arg = xmlNode3.InnerText;
-					}
-					XmlNode xmlNode4 = xmlNode.SelectSingleNode("nextpower");
-					if (xmlNode4 != null && xmlNode4.HasChildNodes)
-					{
-						XmlNodeList childNodes = xmlNode4.ChildNodes;
-						int item = 0;
-						int num = 0;
-						foreach (XmlNode xmlNode5 in childNodes)
-						{
-							if (xmlNode5.HasChildNodes)
-							{
-								item = 0;
-								num = 0;
-								foreach (XmlNode xmlNode6 in xmlNode5.ChildNodes)
-								{
-									if (xmlNode6.Name == "powerid")
-									{
-										item = int.Parse(xmlNode6.InnerText);
-									}
-									else if (xmlNode6.Name == "attackable")
-									{
-										num = int.Parse(xmlNode6.InnerText);
-									}
-								}
-								if (num == 1)
-								{
-									list.Add(item);
-								}
-							}
-						}
-					}
-				}
-				XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/army");
-				foreach (XmlNode xmlNode7 in xmlNodeList)
-				{
-					XmlNodeList childNodes2 = xmlNode7.ChildNodes;
-					int id = 0;
-					int num2 = 0;
-					int num3 = 0;
-					string arg2 = "";
-					string text = "";
-					string itemColor = "";
-					foreach (XmlNode xmlNode8 in childNodes2)
-					{
-						if (xmlNode8.Name == "armyid")
-						{
-							id = int.Parse(xmlNode8.InnerText);
-						}
-						else if (xmlNode8.Name == "armyname")
-						{
-							arg2 = xmlNode8.InnerText;
-						}
-						else if (xmlNode8.Name == "itemname")
-						{
-							string[] array = this.translateItem(xmlNode8.InnerText);
-							text = array[0];
-							itemColor = array[1];
-						}
-						else if (xmlNode8.Name == "type")
-						{
-							num2 = int.Parse(xmlNode8.InnerText);
-						}
-						else if (xmlNode8.Name == "attackable")
-						{
-							num3 = int.Parse(xmlNode8.InnerText);
-						}
-					}
-					if (num3 != 0 && ((text == "" && num2 == 5) || text != ""))
-					{
-						Npc npc = new Npc();
-						npc.Id = id;
-						npc.ArmyId = armyId;
-						npc.ItemName = text;
-						npc.Name = string.Format("{0}({1})", arg2, arg);
-						npc.Type = num2;
-						npc.ItemColor = itemColor;
-						if (npc.Type == 5)
-						{
-							this.addArmies(user, npc);
-						}
-						else
-						{
-							this.addNpcs(user, npc);
-						}
-					}
-				}
-				result = list;
-			}
-			return result;
-		}
+        public List<int> getPowerInfo(ProtocolMgr protocol, ILogger logger, User user, int powerId, out bool success)
+        {
+            success = true;
+            List<int> list = new List<int>();
+            string url = "/root/battle!getPowerInfo.action";
+            ServerResult serverResult = protocol.postXml(url, "powerId=" + powerId, "获取征战信息");
+            List<int> result;
+            if (serverResult == null || !serverResult.CmdSucceed)
+            {
+                success = false;
+                result = list;
+            }
+            else
+            {
+                XmlDocument cmdResult = serverResult.CmdResult;
+                XmlNode xmlNode = cmdResult.SelectSingleNode("/results/power");
+                int armyId = 0;
+                string arg = "";
+                if (xmlNode != null)
+                {
+                    XmlNode xmlNode2 = xmlNode.SelectSingleNode("powerid");
+                    if (xmlNode2 != null)
+                    {
+                        armyId = int.Parse(xmlNode2.InnerText);
+                    }
+                    XmlNode xmlNode3 = xmlNode.SelectSingleNode("powername");
+                    if (xmlNode3 != null)
+                    {
+                        arg = xmlNode3.InnerText;
+                    }
+                    XmlNode xmlNode4 = xmlNode.SelectSingleNode("nextpower");
+                    if (xmlNode4 != null && xmlNode4.HasChildNodes)
+                    {
+                        XmlNodeList childNodes = xmlNode4.ChildNodes;
+                        int item = 0;
+                        int num = 0;
+                        foreach (XmlNode xmlNode5 in childNodes)
+                        {
+                            if (xmlNode5.HasChildNodes)
+                            {
+                                item = 0;
+                                num = 0;
+                                foreach (XmlNode xmlNode6 in xmlNode5.ChildNodes)
+                                {
+                                    if (xmlNode6.Name == "powerid")
+                                    {
+                                        item = int.Parse(xmlNode6.InnerText);
+                                    }
+                                    else if (xmlNode6.Name == "attackable")
+                                    {
+                                        num = int.Parse(xmlNode6.InnerText);
+                                    }
+                                }
+                                if (num == 1)
+                                {
+                                    list.Add(item);
+                                }
+                            }
+                        }
+                    }
+                }
+                XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/army");
+                foreach (XmlNode xmlNode7 in xmlNodeList)
+                {
+                    XmlNodeList childNodes2 = xmlNode7.ChildNodes;
+                    int id = 0;
+                    int num2 = 0;
+                    int num3 = 0;
+                    string arg2 = "";
+                    string text = "";
+                    string itemColor = "";
+                    foreach (XmlNode xmlNode8 in childNodes2)
+                    {
+                        if (xmlNode8.Name == "armyid")
+                        {
+                            id = int.Parse(xmlNode8.InnerText);
+                        }
+                        else if (xmlNode8.Name == "armyname")
+                        {
+                            arg2 = xmlNode8.InnerText;
+                        }
+                        else if (xmlNode8.Name == "itemname")
+                        {
+                            string[] array = this.translateItem(xmlNode8.InnerText);
+                            text = array[0];
+                            itemColor = array[1];
+                        }
+                        else if (xmlNode8.Name == "type")
+                        {
+                            num2 = int.Parse(xmlNode8.InnerText);
+                        }
+                        else if (xmlNode8.Name == "attackable")
+                        {
+                            num3 = int.Parse(xmlNode8.InnerText);
+                        }
+                    }
+                    if (num3 != 0 && ((text == "" && num2 == 5) || text != ""))
+                    {
+                        Npc npc = new Npc();
+                        npc.Id = id;
+                        npc.ArmyId = armyId;
+                        npc.ItemName = text;
+                        npc.Name = string.Format("{0}({1})", arg2, arg);
+                        npc.Type = num2;
+                        npc.ItemColor = itemColor;
+                        if (npc.Type == 5)
+                        {
+                            this.addArmies(user, npc);
+                        }
+                        else
+                        {
+                            this.addNpcs(user, npc);
+                        }
+                    }
+                }
+                result = list;
+            }
+            return result;
+        }
 
-		private void addArmies(User user, Npc army)
-		{
-			bool flag = false;
-			int i = 0;
-			int count = user._all_armys.Count;
-			while (i < count)
-			{
-				bool flag2 = user._all_armys[i].Id == army.Id;
-				if (flag2)
-				{
-					flag = true;
-					break;
-				}
-				int num = i;
-				i = num + 1;
-			}
-			bool flag3 = !flag;
-			if (flag3)
-			{
-				bool flag4 = user._battle_max_army_id < army.Id;
-				if (flag4)
-				{
-					user._battle_max_army_id = army.Id;
-				}
-				user._all_armys.Insert(0, army);
-			}
-		}
+        private void addArmies(User user, Npc army)
+        {
+            bool flag = false;
+            int i = 0;
+            int count = user._all_armys.Count;
+            while (i < count)
+            {
+                bool flag2 = user._all_armys[i].Id == army.Id;
+                if (flag2)
+                {
+                    flag = true;
+                    break;
+                }
+                int num = i;
+                i = num + 1;
+            }
+            bool flag3 = !flag;
+            if (flag3)
+            {
+                bool flag4 = user._battle_max_army_id < army.Id;
+                if (flag4)
+                {
+                    user._battle_max_army_id = army.Id;
+                }
+                user._all_armys.Insert(0, army);
+            }
+        }
 
-		private void addNpcs(User user, Npc npc)
-		{
-			bool flag = false;
-			int i = 0;
-			int count = user._all_npcs.Count;
-			while (i < count)
-			{
-				bool flag2 = user._all_npcs[i].Id == npc.Id;
-				if (flag2)
-				{
-					flag = true;
-					break;
-				}
-				int num = i;
-				i = num + 1;
-			}
-			bool flag3 = !flag;
-			if (flag3)
-			{
-				user._all_npcs.Insert(0, npc);
-			}
-		}
+        private void addNpcs(User user, Npc npc)
+        {
+            bool flag = false;
+            int i = 0;
+            int count = user._all_npcs.Count;
+            while (i < count)
+            {
+                bool flag2 = user._all_npcs[i].Id == npc.Id;
+                if (flag2)
+                {
+                    flag = true;
+                    break;
+                }
+                int num = i;
+                i = num + 1;
+            }
+            bool flag3 = !flag;
+            if (flag3)
+            {
+                user._all_npcs.Insert(0, npc);
+            }
+        }
 
-		private string[] translateItem(string rawtext)
-		{
-			string[] array = new string[2];
-			Regex regex = new Regex("(#\\w{6})'>(.+)</font>(.+)");
-			Match match = regex.Match(rawtext);
-			GroupCollection groups = match.Groups;
-			array[1] = groups[1].Value;
-			array[0] = groups[2].Value + groups[3].Value;
-			return array;
-		}
+        private string[] translateItem(string rawtext)
+        {
+            string[] array = new string[2];
+            Regex regex = new Regex("(#\\w{6})'>(.+)</font>(.+)");
+            Match match = regex.Match(rawtext);
+            GroupCollection groups = match.Groups;
+            array[1] = groups[1].Value;
+            array[0] = groups[2].Value + groups[3].Value;
+            return array;
+        }
 
-		private string[] translateGainItem(string rawtext)
-		{
-			string[] array = new string[2];
-			bool flag = rawtext == null || rawtext == "";
-			string[] result;
-			if (flag)
-			{
-				result = array;
-			}
-			else
-			{
-				rawtext = rawtext.Replace("\r", "").Replace("\n", "");
-				Regex regex = new Regex("([^<]*?).*?(#\\w{6})'>(.+)</font>");
-				Match match = regex.Match(rawtext);
-				GroupCollection groups = match.Groups;
-				array[1] = groups[2].Value;
-				array[0] = groups[3].Value;
-				result = array;
-			}
-			return result;
-		}
+        private string[] translateGainItem(string rawtext)
+        {
+            string[] array = new string[2];
+            bool flag = rawtext == null || rawtext == "";
+            string[] result;
+            if (flag)
+            {
+                result = array;
+            }
+            else
+            {
+                rawtext = rawtext.Replace("\r", "").Replace("\n", "");
+                Regex regex = new Regex("([^<]*?).*?(#\\w{6})'>(.+)</font>");
+                Match match = regex.Match(rawtext);
+                GroupCollection groups = match.Groups;
+                array[1] = groups[2].Value;
+                array[0] = groups[3].Value;
+                result = array;
+            }
+            return result;
+        }
 
-		private int getArmyJoinLevel(string rawtext)
-		{
-			Regex regex = new Regex(".*(\\d+)级.*");
-			Match match = regex.Match(rawtext);
-			GroupCollection groups = match.Groups;
-			return int.Parse(groups[1].Value);
-		}
+        private int getArmyJoinLevel(string rawtext)
+        {
+            Regex regex = new Regex(".*(\\d+)级.*");
+            Match match = regex.Match(rawtext);
+            GroupCollection groups = match.Groups;
+            return int.Parse(groups[1].Value);
+        }
 
-		public void getBattleInfo(ProtocolMgr protocol, ILogger logger, User user, int gold_available, bool do_event, string eventId)
-		{
-			string url = "/root/battle.action";
-			ServerResult xml = protocol.getXml(url, "获取战争信息");
-			if (xml == null || !xml.CmdSucceed)
-			{
-				return;
-			}
-			XmlDocument cmdResult = xml.CmdResult;
-			XmlNode xmlNode = cmdResult.SelectSingleNode("/results/freeattnum");
-			if (xmlNode != null)
-			{
-				int.TryParse(xmlNode.InnerText, out user._battle_free_force_token);
-			}
-			else
-			{
-				user._battle_free_force_token = 0;
-			}
-			if (do_event)
-			{
-				int eventid = 0;
-				XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/battleevent");
-				if (xmlNode2 == null || !xmlNode2.HasChildNodes)
-				{
-					return;
-				}
-				if (xmlNode2 != null)
-				{
-					XmlNode xmlNode3 = cmdResult.SelectSingleNode("/results/battleevent/state");
-					int state = 0;
-					if (xmlNode3 != null)
-					{
-						int.TryParse(xmlNode3.InnerText, out state);
-					}
-					if (state == 2)
-					{
-						this.recvBattleEventReward(protocol, logger);
-					}
-					else if (state == 0)
-					{
-						int repeatgold = 5;
-						XmlNode xmlNode4 = cmdResult.SelectSingleNode("/results/battleevent/repeatgold");
-						if (xmlNode4 != null)
-						{
-							int.TryParse(xmlNode4.InnerText, out repeatgold);
-						}
-						int[] array = new int[3];
-						XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/battleevent/event");
-						foreach (XmlNode xmlNode5 in xmlNodeList)
-						{
-							int id = 0;
-							int free = 0;
-							XmlNode xmlNode6 = xmlNode5.SelectSingleNode("id");
-							if (xmlNode6 != null)
-							{
-								int.TryParse(xmlNode6.InnerText, out id);
-							}
-							XmlNode xmlNode7 = xmlNode5.SelectSingleNode("free");
-							if (xmlNode7 != null)
-							{
-								int.TryParse(xmlNode7.InnerText, out free);
-							}
-							array[id - 1] = free;
-						}
-						for (int i = 1; i <= 3 && eventid <= 0; i++)
-						{
-							if (eventId.Contains(i.ToString()))
-							{
-								if (array[i - 1] == 0)
-								{
-									if (eventId.Contains((i + 3).ToString()) && gold_available >= repeatgold)
-									{
-										eventid = i;
-									}
-								}
-								else
-								{
-									eventid = i;
-								}
-							}
-						}
-						if (eventid == 0)
-						{
-							return;
-						}
-						this.chooseBattleEvent(protocol, logger, eventid);
-					}
-					else
-					{
-						XmlNode xmlNode8 = cmdResult.SelectSingleNode("/results/battleevent/eventid");
-						if (xmlNode8 != null)
-						{
-							int.TryParse(xmlNode8.InnerText, out eventid);
-						}
-					}
-					if (eventid == 1)
-					{
-						int times = 10;
-						while (user.Token > 0)
-						{
-							if (times <= 0)
-							{
-								break;
-							}
-							this.doBattleEvent(protocol, logger, out times);
-							if (times == 0)
-							{
-								this.recvBattleEventReward(protocol, logger);
-							}
-						}
-					}
-					else if (eventid == 2)
-					{
-						int handletime = 10000;
-						XmlNode xmlNode9 = cmdResult.SelectSingleNode("/results/battleevent/handletime");
-						if (xmlNode9 != null)
-						{
-							int.TryParse(xmlNode9.InnerText, out handletime);
-						}
-						if (handletime <= 0)
-						{
-							this.recvBattleEventReward(protocol, logger);
-						}
-					}
-					else if (eventid == 3)
-					{
-						XmlNodeList xmlNodeList2 = cmdResult.SelectNodes("/results/battleevent/armys");
-						foreach (XmlNode xmlNode10 in xmlNodeList2)
-						{
-							int armyid = 0;
-							int isatt = 0;
-							XmlNode xmlNode11 = xmlNode10.SelectSingleNode("armyid");
-							if (xmlNode11 != null)
-							{
-								int.TryParse(xmlNode11.InnerText, out armyid);
-							}
-							XmlNode xmlNode12 = xmlNode10.SelectSingleNode("isatt");
-							if (xmlNode12 != null)
-							{
-								int.TryParse(xmlNode12.InnerText, out isatt);
-							}
-							if (armyid > 0 && isatt == 0)
-							{
-								if (user.Token <= 0)
-								{
-									return;
-								}
-								base.logInfo(logger, "征战事件攻打NPC");
-								if (this.attackNpc(protocol, logger, user, string.Concat(armyid), false, "不变阵") > 0)
-								{
-									return;
-								}
-							}
-						}
-						this.recvBattleEventReward(protocol, logger);
-					}
-				}
-			}
-		}
+        public void getBattleInfo(ProtocolMgr protocol, ILogger logger, User user, int gold_available, bool do_event, string eventId)
+        {
+            string url = "/root/battle.action";
+            ServerResult xml = protocol.getXml(url, "获取战争信息");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return;
+            }
+            XmlDocument cmdResult = xml.CmdResult;
+            XmlNode xmlNode = cmdResult.SelectSingleNode("/results/freeattnum");
+            if (xmlNode != null)
+            {
+                int.TryParse(xmlNode.InnerText, out user._battle_free_force_token);
+            }
+            else
+            {
+                user._battle_free_force_token = 0;
+            }
+            if (do_event)
+            {
+                int eventid = 0;
+                XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/battleevent");
+                if (xmlNode2 == null || !xmlNode2.HasChildNodes)
+                {
+                    return;
+                }
+                if (xmlNode2 != null)
+                {
+                    XmlNode xmlNode3 = cmdResult.SelectSingleNode("/results/battleevent/state");
+                    int state = 0;
+                    if (xmlNode3 != null)
+                    {
+                        int.TryParse(xmlNode3.InnerText, out state);
+                    }
+                    if (state == 2)
+                    {
+                        this.recvBattleEventReward(protocol, logger);
+                    }
+                    else if (state == 0)
+                    {
+                        int repeatgold = 5;
+                        XmlNode xmlNode4 = cmdResult.SelectSingleNode("/results/battleevent/repeatgold");
+                        if (xmlNode4 != null)
+                        {
+                            int.TryParse(xmlNode4.InnerText, out repeatgold);
+                        }
+                        int[] array = new int[3];
+                        XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/battleevent/event");
+                        foreach (XmlNode xmlNode5 in xmlNodeList)
+                        {
+                            int id = 0;
+                            int free = 0;
+                            XmlNode xmlNode6 = xmlNode5.SelectSingleNode("id");
+                            if (xmlNode6 != null)
+                            {
+                                int.TryParse(xmlNode6.InnerText, out id);
+                            }
+                            XmlNode xmlNode7 = xmlNode5.SelectSingleNode("free");
+                            if (xmlNode7 != null)
+                            {
+                                int.TryParse(xmlNode7.InnerText, out free);
+                            }
+                            array[id - 1] = free;
+                        }
+                        for (int i = 1; i <= 3 && eventid <= 0; i++)
+                        {
+                            if (eventId.Contains(i.ToString()))
+                            {
+                                if (array[i - 1] == 0)
+                                {
+                                    if (eventId.Contains((i + 3).ToString()) && gold_available >= repeatgold)
+                                    {
+                                        eventid = i;
+                                    }
+                                }
+                                else
+                                {
+                                    eventid = i;
+                                }
+                            }
+                        }
+                        if (eventid == 0)
+                        {
+                            return;
+                        }
+                        this.chooseBattleEvent(protocol, logger, eventid);
+                    }
+                    else
+                    {
+                        XmlNode xmlNode8 = cmdResult.SelectSingleNode("/results/battleevent/eventid");
+                        if (xmlNode8 != null)
+                        {
+                            int.TryParse(xmlNode8.InnerText, out eventid);
+                        }
+                    }
+                    if (eventid == 1)
+                    {
+                        int times = 10;
+                        while (user.Token > 0)
+                        {
+                            if (times <= 0)
+                            {
+                                break;
+                            }
+                            this.doBattleEvent(protocol, logger, out times);
+                            if (times == 0)
+                            {
+                                this.recvBattleEventReward(protocol, logger);
+                            }
+                        }
+                    }
+                    else if (eventid == 2)
+                    {
+                        int handletime = 10000;
+                        XmlNode xmlNode9 = cmdResult.SelectSingleNode("/results/battleevent/handletime");
+                        if (xmlNode9 != null)
+                        {
+                            int.TryParse(xmlNode9.InnerText, out handletime);
+                        }
+                        if (handletime <= 0)
+                        {
+                            this.recvBattleEventReward(protocol, logger);
+                        }
+                    }
+                    else if (eventid == 3)
+                    {
+                        XmlNodeList xmlNodeList2 = cmdResult.SelectNodes("/results/battleevent/armys");
+                        foreach (XmlNode xmlNode10 in xmlNodeList2)
+                        {
+                            int armyid = 0;
+                            int isatt = 0;
+                            XmlNode xmlNode11 = xmlNode10.SelectSingleNode("armyid");
+                            if (xmlNode11 != null)
+                            {
+                                int.TryParse(xmlNode11.InnerText, out armyid);
+                            }
+                            XmlNode xmlNode12 = xmlNode10.SelectSingleNode("isatt");
+                            if (xmlNode12 != null)
+                            {
+                                int.TryParse(xmlNode12.InnerText, out isatt);
+                            }
+                            if (armyid > 0 && isatt == 0)
+                            {
+                                if (user.Token <= 0)
+                                {
+                                    return;
+                                }
+                                base.logInfo(logger, "征战事件攻打NPC");
+                                if (this.attackNpc(protocol, logger, user, string.Concat(armyid), false, "不变阵") > 0)
+                                {
+                                    return;
+                                }
+                            }
+                        }
+                        this.recvBattleEventReward(protocol, logger);
+                    }
+                }
+            }
+        }
 
-		public bool chooseBattleEvent(ProtocolMgr protocol, ILogger logger, int eventId)
-		{
-			string url = "/root/battle!chooseBattleEvent.action";
-			string data = "eventId=" + eventId;
-			string str = "";
-			bool flag = eventId < 1 || eventId > 3;
-			if (flag)
-			{
-				eventId = 1;
-			}
-			bool flag2 = eventId == 1;
-			if (flag2)
-			{
-				str = "宝石事件";
-			}
-			else
-			{
-				bool flag3 = eventId == 2;
-				if (flag3)
-				{
-					str = "玉石事件";
-				}
-				else
-				{
-					bool flag4 = eventId == 3;
-					if (flag4)
-					{
-						str = "兵器事件";
-					}
-				}
-			}
-			ServerResult serverResult = protocol.postXml(url, data, "选择征战事件:" + str);
-			bool flag5 = serverResult == null || !serverResult.CmdSucceed;
-			bool result;
-			if (flag5)
-			{
-				result = false;
-			}
-			else
-			{
-				XmlDocument cmdResult = serverResult.CmdResult;
-				base.logInfo(logger, "选择征战事件:" + str);
-				result = true;
-			}
-			return result;
-		}
+        public bool chooseBattleEvent(ProtocolMgr protocol, ILogger logger, int eventId)
+        {
+            string url = "/root/battle!chooseBattleEvent.action";
+            string data = "eventId=" + eventId;
+            string str = "";
+            bool flag = eventId < 1 || eventId > 3;
+            if (flag)
+            {
+                eventId = 1;
+            }
+            bool flag2 = eventId == 1;
+            if (flag2)
+            {
+                str = "宝石事件";
+            }
+            else
+            {
+                bool flag3 = eventId == 2;
+                if (flag3)
+                {
+                    str = "玉石事件";
+                }
+                else
+                {
+                    bool flag4 = eventId == 3;
+                    if (flag4)
+                    {
+                        str = "兵器事件";
+                    }
+                }
+            }
+            ServerResult serverResult = protocol.postXml(url, data, "选择征战事件:" + str);
+            bool flag5 = serverResult == null || !serverResult.CmdSucceed;
+            bool result;
+            if (flag5)
+            {
+                result = false;
+            }
+            else
+            {
+                XmlDocument cmdResult = serverResult.CmdResult;
+                base.logInfo(logger, "选择征战事件:" + str);
+                result = true;
+            }
+            return result;
+        }
 
-		public void doBattleEvent(ProtocolMgr protocol, ILogger logger, out int remains)
-		{
-			remains = 0;
-			string url = "/root/battle!doBattleEvent.action";
-			ServerResult xml = protocol.getXml(url, "进行征战事件(宝石)");
-			if (xml == null || !xml.CmdSucceed)
-			{
-				return;
-			}
-			XmlDocument cmdResult = xml.CmdResult;
-			XmlNode xmlNode = cmdResult.SelectSingleNode("/results/battleevent/process");
-			int num = 0;
-			int num2 = 10;
-			string text;
-			if (xmlNode != null)
-			{
-				text = xmlNode.InnerText;
-				int num3 = text.IndexOf('/');
-				if (num3 >= 0)
-				{
-					int.TryParse(text.Substring(0, num3), out num);
-					int.TryParse(text.Substring(num3 + 1), out num2);
-					remains = num2 - num;
-				}
-			}
-			else
-			{
-				text = "完毕";
-			}
-			base.logInfo(logger, "进行征战事件(宝石): " + text);
-		}
+        public void doBattleEvent(ProtocolMgr protocol, ILogger logger, out int remains)
+        {
+            remains = 0;
+            string url = "/root/battle!doBattleEvent.action";
+            ServerResult xml = protocol.getXml(url, "进行征战事件(宝石)");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return;
+            }
+            XmlDocument cmdResult = xml.CmdResult;
+            XmlNode xmlNode = cmdResult.SelectSingleNode("/results/battleevent/process");
+            int num = 0;
+            int num2 = 10;
+            string text;
+            if (xmlNode != null)
+            {
+                text = xmlNode.InnerText;
+                int num3 = text.IndexOf('/');
+                if (num3 >= 0)
+                {
+                    int.TryParse(text.Substring(0, num3), out num);
+                    int.TryParse(text.Substring(num3 + 1), out num2);
+                    remains = num2 - num;
+                }
+            }
+            else
+            {
+                text = "完毕";
+            }
+            base.logInfo(logger, "进行征战事件(宝石): " + text);
+        }
 
-		public void recvBattleEventReward(ProtocolMgr protocol, ILogger logger)
-		{
-			string url = "/root/battle!recvBattleEventReward.action";
-			ServerResult xml = protocol.getXml(url, "获取征战事件奖励");
-			if (xml == null || !xml.CmdSucceed)
-			{
-				return;
-			}
-			XmlDocument cmdResult = xml.CmdResult;
-			string text = "获取征战事件奖励: ";
-			XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/rewardinfo/reward");
-			foreach (XmlNode xmlNode in xmlNodeList)
-			{
-				int num = int.Parse(xmlNode.SelectSingleNode("type").InnerText);
-				int num2 = int.Parse(xmlNode.SelectSingleNode("num").InnerText);
-				if (num == 2)
-				{
-					text += string.Format("玉石+{0}", num2);
-				}
-				else if (num == 5)
-				{
-					text += string.Format("宝石+{0}", num2);
-				}
-				else if (num == 7)
-				{
-					string innerText = xmlNode.SelectSingleNode("itemname").InnerText;
-					text += string.Format("{0}碎片*{1}", innerText, num2);
-				}
-			}
-			base.logInfo(logger, text);
-		}
+        public void recvBattleEventReward(ProtocolMgr protocol, ILogger logger)
+        {
+            string url = "/root/battle!recvBattleEventReward.action";
+            ServerResult xml = protocol.getXml(url, "获取征战事件奖励");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return;
+            }
+            XmlDocument cmdResult = xml.CmdResult;
+            string text = "获取征战事件奖励: ";
+            XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/rewardinfo/reward");
+            foreach (XmlNode xmlNode in xmlNodeList)
+            {
+                int num = int.Parse(xmlNode.SelectSingleNode("type").InnerText);
+                int num2 = int.Parse(xmlNode.SelectSingleNode("num").InnerText);
+                if (num == 2)
+                {
+                    text += string.Format("玉石+{0}", num2);
+                }
+                else if (num == 5)
+                {
+                    text += string.Format("宝石+{0}", num2);
+                }
+                else if (num == 7)
+                {
+                    string innerText = xmlNode.SelectSingleNode("itemname").InnerText;
+                    text += string.Format("{0}碎片*{1}", innerText, num2);
+                }
+            }
+            base.logInfo(logger, text);
+        }
 
-		public void getNewAreaInfo(ProtocolMgr protocol, ILogger logger, User user)
-		{
-			string url = "/root/world!getNewArea.action";
-			ServerResult xml = protocol.getXml(url, "新世界世界界面");
+        public void getNewAreaInfo(ProtocolMgr protocol, ILogger logger, User user)
+        {
+            string url = "/root/world!getNewArea.action";
+            ServerResult xml = protocol.getXml(url, "新世界世界界面");
             if (xml == null || !xml.CmdSucceed)
             {
                 return;
@@ -1204,7 +1204,10 @@ namespace com.lover.astd.common.logic
                     }
                 }
             }
-		}
+            //招兵买马
+            user.WorldExpansion_.Parse(cmdResult.SelectSingleNode("/results/worldexpansioninfo"));
+            logInfo(logger, user.WorldExpansion_.ToString());
+        }
 
         public void getBattleScoreInfo(ProtocolMgr protocol, ILogger logger, User user)
         {
@@ -1292,11 +1295,11 @@ namespace com.lover.astd.common.logic
             }
         }
 
-		public void getBattleScoreAward(ProtocolMgr protocol, ILogger logger, int position)
-		{
-			string url = "/root/world!getBattleScoreReward.action";
-			string data = "pos=" + position;
-			ServerResult serverResult = protocol.postXml(url, data, "新世界获取战绩宝箱");
+        public void getBattleScoreAward(ProtocolMgr protocol, ILogger logger, int position)
+        {
+            string url = "/root/world!getBattleScoreReward.action";
+            string data = "pos=" + position;
+            ServerResult serverResult = protocol.postXml(url, data, "新世界获取战绩宝箱");
             if (serverResult == null || !serverResult.CmdSucceed)
             {
                 return;
@@ -1309,7 +1312,7 @@ namespace com.lover.astd.common.logic
                 int.TryParse(xmlNode.InnerText, out baoshi);
             }
             base.logInfo(logger, string.Format("领取战绩奖励, 宝石+{0}", baoshi));
-		}
+        }
 
         public void openScoreBox(ProtocolMgr protocol, ILogger logger, int box)
         {
@@ -1354,9 +1357,9 @@ namespace com.lover.astd.common.logic
         /// <param name="logger"></param>
         /// <param name="user"></param>
         public void getUserTokens(ProtocolMgr protocol, ILogger logger, User user)
-		{
-			string url = "/root/world!getNewAreaToken.action";
-			ServerResult xml = protocol.getXml(url, "新世界获取个人令");
+        {
+            string url = "/root/world!getNewAreaToken.action";
+            ServerResult xml = protocol.getXml(url, "新世界获取个人令");
             if (xml == null || !xml.CmdSucceed)
             {
                 return;
@@ -1436,7 +1439,7 @@ namespace com.lover.astd.common.logic
             {
                 int.TryParse(xmlNode8.InnerText, out user._tucd);
             }
-		}
+        }
         /// <summary>
         /// 使用鼓舞令
         /// </summary>
@@ -1444,15 +1447,15 @@ namespace com.lover.astd.common.logic
         /// <param name="logger"></param>
         /// <param name="newTokenId"></param>
         /// <returns></returns>
-		private bool useInspireToken(ProtocolMgr protocol, ILogger logger, int newTokenId)
-		{
-			string url = "/root/world!useInspireToken.action";
-			string data = "newTokenId=" + newTokenId;
-			ServerResult serverResult = protocol.postXml(url, data, "使用鼓舞令");
-			if (serverResult == null || !serverResult.CmdSucceed)
-			{
-				return false;
-			}
+        private bool useInspireToken(ProtocolMgr protocol, ILogger logger, int newTokenId)
+        {
+            string url = "/root/world!useInspireToken.action";
+            string data = "newTokenId=" + newTokenId;
+            ServerResult serverResult = protocol.postXml(url, data, "使用鼓舞令");
+            if (serverResult == null || !serverResult.CmdSucceed)
+            {
+                return false;
+            }
             XmlDocument cmdResult = serverResult.CmdResult;
             int tokenlevel = 0;
             XmlNode xmlNode = cmdResult.SelectSingleNode("/results/tokenlevel");
@@ -1468,7 +1471,7 @@ namespace com.lover.astd.common.logic
             }
             base.logInfo(logger, string.Format("使用[{0}级鼓舞令], 成功, 攻防+{1}%, 持续24小时", tokenlevel, effect));
             return true;
-		}
+        }
         /// <summary>
         /// 使用建造令
         /// </summary>
@@ -1476,34 +1479,34 @@ namespace com.lover.astd.common.logic
         /// <param name="logger"></param>
         /// <param name="newTokenId"></param>
         /// <returns></returns>
-		private bool useConstructToken(ProtocolMgr protocol, ILogger logger, int newTokenId)
-		{
-			string url = "/root/world!useConstuctToken.action";
-			string data = "newTokenId=" + newTokenId;
-			ServerResult serverResult = protocol.postXml(url, data, "使用建造令");
-			if (serverResult == null || !serverResult.CmdSucceed)
-			{
-				return false;
-			}
-			else
-			{
-				XmlDocument cmdResult = serverResult.CmdResult;
+        private bool useConstructToken(ProtocolMgr protocol, ILogger logger, int newTokenId)
+        {
+            string url = "/root/world!useConstuctToken.action";
+            string data = "newTokenId=" + newTokenId;
+            ServerResult serverResult = protocol.postXml(url, data, "使用建造令");
+            if (serverResult == null || !serverResult.CmdSucceed)
+            {
+                return false;
+            }
+            else
+            {
+                XmlDocument cmdResult = serverResult.CmdResult;
                 int tokenlevel = 0;
-				XmlNode xmlNode = cmdResult.SelectSingleNode("/results/tokenlevel");
-				if (xmlNode != null)
-				{
+                XmlNode xmlNode = cmdResult.SelectSingleNode("/results/tokenlevel");
+                if (xmlNode != null)
+                {
                     int.TryParse(xmlNode.InnerText, out tokenlevel);
-				}
+                }
                 float effect = 0f;
-				XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/effect");
-				if (xmlNode2 != null)
-				{
+                XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/effect");
+                if (xmlNode2 != null)
+                {
                     float.TryParse(xmlNode2.InnerText, out effect);
-				}
+                }
                 base.logInfo(logger, string.Format("使用[{0}级建造令], 成功, 城防+{1}", tokenlevel, effect));
-				return true;
-			}
-		}
+                return true;
+            }
+        }
         /// <summary>
         /// 使用战绩令
         /// </summary>
@@ -1511,24 +1514,24 @@ namespace com.lover.astd.common.logic
         /// <param name="logger"></param>
         /// <param name="newTokenId"></param>
         /// <returns></returns>
-		private bool useScoreToken(ProtocolMgr protocol, ILogger logger, int newTokenId)
-		{
-			string url = "/root/world!useScoreToken.action";
-			string data = "newTokenId=" + newTokenId;
-			ServerResult serverResult = protocol.postXml(url, data, "使用战绩令");
-			if (serverResult == null || !serverResult.CmdSucceed)
-			{
-				return false;
-			}
-			else
-			{
-				base.logInfo(logger, "使用战绩令");
-				return true;
-			}
-		}
+        private bool useScoreToken(ProtocolMgr protocol, ILogger logger, int newTokenId)
+        {
+            string url = "/root/world!useScoreToken.action";
+            string data = "newTokenId=" + newTokenId;
+            ServerResult serverResult = protocol.postXml(url, data, "使用战绩令");
+            if (serverResult == null || !serverResult.CmdSucceed)
+            {
+                return false;
+            }
+            else
+            {
+                base.logInfo(logger, "使用战绩令");
+                return true;
+            }
+        }
 
-		public void useToken(ProtocolMgr protocol, ILogger logger, User user, int target_min_battle_score)
-		{
+        public void useToken(ProtocolMgr protocol, ILogger logger, User user, int target_min_battle_score)
+        {
             if (user._attack_user_tokens == null || user._attack_user_tokens.Count == 0)
             {
                 return;
@@ -1557,281 +1560,281 @@ namespace com.lover.astd.common.logic
                     }
                 }
             }
-		}
+        }
         #endregion
         public AreaInfo getNextMoveArea(ProtocolMgr protocol, ILogger logger, User user, AreaInfo target_area, bool is_doing_cityevent, bool is_doing_nation)
-		{
-			AreaInfo areaById = user.getAreaById(user._attack_selfCityId);
-			AreaInfo areaInfo = user._get_attack_move_target();
-			AreaInfo result;
-			if (areaInfo != null && areaInfo.areaid == target_area.areaid && user._attack_move_path.Count > 0)
-			{
-				AreaInfo areaInfo2 = user._attack_move_path[0];
-				string text = string.Format("移动目标为[{0}],当前在[{1}], 途经城市: ", target_area.areaname, areaById.areaname);
-				foreach (AreaInfo current in user._attack_move_path)
-				{
-					if (current.areaid != areaById.areaid && current.areaid != target_area.areaid)
-					{
-						text += string.Format("[{0}],", current.areaname);
-					}
-				}
-				if (areaInfo2.areaid == areaById.areaid)
-				{
-					areaInfo2 = null;
-					text = string.Format("移动目标为[{0}], 当前已在该城市, 不移动", areaById.areaname);
-				}
-				base.logInfo(logger, text);
-				return areaInfo2;
-			}
-			else
-			{
-				List<AreaInfo> list = this.findAttackPath(user, user._attack_selfCityId, target_area.areaid, is_doing_cityevent, is_doing_nation);
-				if (list.Count == 0)
-				{
-					base.logInfo(logger, string.Format("设定移动目标为[{0}], 该目标从当前城市无法到达, 重新计算最近城市", target_area.areaname));
-					int num = 0;
-					int num2 = (areaById.areaid - 101) / 6;
-					int num3 = (areaById.areaid - 101) % 6;
-					int num4 = (target_area.areaid - 101) / 6;
-					int num5 = (target_area.areaid - 101) % 6;
-					bool flag5 = num2 < num4;
-					bool flag6 = num3 < num5;
-					int num6 = num4;
-					int num7 = num5;
-					while (list.Count == 0 && num < 30 && (num6 != num2 || num7 != num3))
-					{
-						int num8;
-						if (num % 2 == 1)
-						{
-							if (num6 != num2)
-							{
-								if (flag5)
-								{
-									num8 = num6;
-									num6 = num8 - 1;
-								}
-								else
-								{
-									num8 = num6;
-									num6 = num8 + 1;
-								}
-							}
-							else
-							{
-								if (flag6)
-								{
-									num8 = num7;
-									num7 = num8 - 1;
-								}
-								else
-								{
-									num8 = num7;
-									num7 = num8 + 1;
-								}
-							}
-						}
-						else
-						{
-							if (num7 != num3)
-							{
-								if (flag6)
-								{
-									num8 = num7;
-									num7 = num8 - 1;
-								}
-								else
-								{
-									num8 = num7;
-									num7 = num8 + 1;
-								}
-							}
-							else
-							{
-								if (flag5)
-								{
-									num8 = num6;
-									num6 = num8 - 1;
-								}
-								else
-								{
-									num8 = num6;
-									num6 = num8 + 1;
-								}
-							}
-						}
-						num8 = num;
-						num = num8 + 1;
-						int num9 = 101 + num6 * 6 + num7;
-						list = this.findAttackPath(user, areaById.areaid, num9, is_doing_cityevent, is_doing_nation);
-						if (list.Count > 0)
-						{
-							target_area = user.getAreaById(num9);
-							break;
-						}
-					}
-					if (list.Count > 0)
-					{
-						base.logInfo(logger, string.Format("重新计算移动城市为[{0}], 开始计算路径", target_area.areaname));
-					}
-				}
-				if (list.Count > 0)
-				{
-					AreaInfo areaInfo3 = null;
-					string text2 = string.Format("移动目标为[{0}],当前在[{1}], 途经城市: ", target_area.areaname, areaById.areaname);
-					if (target_area.areaid == areaById.areaid)
-					{
-						areaInfo3 = null;
-						text2 = string.Format("移动目标为[{0}], 当前已在该城市, 不移动", areaById.areaname);
-					}
-					else
-					{
-						foreach (AreaInfo current2 in list)
-						{
-							if (current2.areaid != areaById.areaid && current2.areaid != target_area.areaid)
-							{
-								if (areaInfo3 == null)
-								{
-									areaInfo3 = current2;
-								}
-								text2 += string.Format("[{0}],", current2.areaname);
-							}
-						}
-						if (areaInfo3 == null)
-						{
-							areaInfo3 = target_area;
-						}
-						if (areaInfo3.areaid == areaById.areaid)
-						{
-							areaInfo3 = null;
-							text2 = string.Format("移动目标为[{0}], 当前已在该城市, 不移动", areaById.areaname);
-						}
-					}
-					base.logInfo(logger, text2);
-					user._attack_move_path.Clear();
-					int i = 0;
-					int count = list.Count;
-					while (i < count)
-					{
-						if (list[i].areaid != user._attack_selfCityId && list[i].areaid != areaInfo3.areaid)
-						{
-							user._attack_move_path.Add(list[i]);
-						}
-						int num8 = i;
-						i = num8 + 1;
-					}
-					result = areaInfo3;
-				}
-				else
-				{
-					result = null;
-				}
-			}
-			return result;
-		}
+        {
+            AreaInfo areaById = user.getAreaById(user._attack_selfCityId);
+            AreaInfo areaInfo = user._get_attack_move_target();
+            AreaInfo result;
+            if (areaInfo != null && areaInfo.areaid == target_area.areaid && user._attack_move_path.Count > 0)
+            {
+                AreaInfo areaInfo2 = user._attack_move_path[0];
+                string text = string.Format("移动目标为[{0}],当前在[{1}], 途经城市: ", target_area.areaname, areaById.areaname);
+                foreach (AreaInfo current in user._attack_move_path)
+                {
+                    if (current.areaid != areaById.areaid && current.areaid != target_area.areaid)
+                    {
+                        text += string.Format("[{0}],", current.areaname);
+                    }
+                }
+                if (areaInfo2.areaid == areaById.areaid)
+                {
+                    areaInfo2 = null;
+                    text = string.Format("移动目标为[{0}], 当前已在该城市, 不移动", areaById.areaname);
+                }
+                base.logInfo(logger, text);
+                return areaInfo2;
+            }
+            else
+            {
+                List<AreaInfo> list = this.findAttackPath(user, user._attack_selfCityId, target_area.areaid, is_doing_cityevent, is_doing_nation);
+                if (list.Count == 0)
+                {
+                    base.logInfo(logger, string.Format("设定移动目标为[{0}], 该目标从当前城市无法到达, 重新计算最近城市", target_area.areaname));
+                    int num = 0;
+                    int num2 = (areaById.areaid - 101) / 6;
+                    int num3 = (areaById.areaid - 101) % 6;
+                    int num4 = (target_area.areaid - 101) / 6;
+                    int num5 = (target_area.areaid - 101) % 6;
+                    bool flag5 = num2 < num4;
+                    bool flag6 = num3 < num5;
+                    int num6 = num4;
+                    int num7 = num5;
+                    while (list.Count == 0 && num < 30 && (num6 != num2 || num7 != num3))
+                    {
+                        int num8;
+                        if (num % 2 == 1)
+                        {
+                            if (num6 != num2)
+                            {
+                                if (flag5)
+                                {
+                                    num8 = num6;
+                                    num6 = num8 - 1;
+                                }
+                                else
+                                {
+                                    num8 = num6;
+                                    num6 = num8 + 1;
+                                }
+                            }
+                            else
+                            {
+                                if (flag6)
+                                {
+                                    num8 = num7;
+                                    num7 = num8 - 1;
+                                }
+                                else
+                                {
+                                    num8 = num7;
+                                    num7 = num8 + 1;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (num7 != num3)
+                            {
+                                if (flag6)
+                                {
+                                    num8 = num7;
+                                    num7 = num8 - 1;
+                                }
+                                else
+                                {
+                                    num8 = num7;
+                                    num7 = num8 + 1;
+                                }
+                            }
+                            else
+                            {
+                                if (flag5)
+                                {
+                                    num8 = num6;
+                                    num6 = num8 - 1;
+                                }
+                                else
+                                {
+                                    num8 = num6;
+                                    num6 = num8 + 1;
+                                }
+                            }
+                        }
+                        num8 = num;
+                        num = num8 + 1;
+                        int num9 = 101 + num6 * 6 + num7;
+                        list = this.findAttackPath(user, areaById.areaid, num9, is_doing_cityevent, is_doing_nation);
+                        if (list.Count > 0)
+                        {
+                            target_area = user.getAreaById(num9);
+                            break;
+                        }
+                    }
+                    if (list.Count > 0)
+                    {
+                        base.logInfo(logger, string.Format("重新计算移动城市为[{0}], 开始计算路径", target_area.areaname));
+                    }
+                }
+                if (list.Count > 0)
+                {
+                    AreaInfo areaInfo3 = null;
+                    string text2 = string.Format("移动目标为[{0}],当前在[{1}], 途经城市: ", target_area.areaname, areaById.areaname);
+                    if (target_area.areaid == areaById.areaid)
+                    {
+                        areaInfo3 = null;
+                        text2 = string.Format("移动目标为[{0}], 当前已在该城市, 不移动", areaById.areaname);
+                    }
+                    else
+                    {
+                        foreach (AreaInfo current2 in list)
+                        {
+                            if (current2.areaid != areaById.areaid && current2.areaid != target_area.areaid)
+                            {
+                                if (areaInfo3 == null)
+                                {
+                                    areaInfo3 = current2;
+                                }
+                                text2 += string.Format("[{0}],", current2.areaname);
+                            }
+                        }
+                        if (areaInfo3 == null)
+                        {
+                            areaInfo3 = target_area;
+                        }
+                        if (areaInfo3.areaid == areaById.areaid)
+                        {
+                            areaInfo3 = null;
+                            text2 = string.Format("移动目标为[{0}], 当前已在该城市, 不移动", areaById.areaname);
+                        }
+                    }
+                    base.logInfo(logger, text2);
+                    user._attack_move_path.Clear();
+                    int i = 0;
+                    int count = list.Count;
+                    while (i < count)
+                    {
+                        if (list[i].areaid != user._attack_selfCityId && list[i].areaid != areaInfo3.areaid)
+                        {
+                            user._attack_move_path.Add(list[i]);
+                        }
+                        int num8 = i;
+                        i = num8 + 1;
+                    }
+                    result = areaInfo3;
+                }
+                else
+                {
+                    result = null;
+                }
+            }
+            return result;
+        }
 
         public List<AreaInfo> findAttackPath(User user, int selfAreaId, int targetAreaId, bool is_doing_cityevent = false, bool is_doing_nation = false)
-		{
-			List<AreaInfo> list = new List<AreaInfo>();
-			int x = (selfAreaId - 101) / 6;
-			int y = (selfAreaId - 101) % 6;
-			int x2 = (targetAreaId - 101) / 6;
-			int y2 = (targetAreaId - 101) % 6;
-			int[,] array = new int[6, 6];
-			int num;
-			for (int i = 0; i < 6; i = num + 1)
-			{
-				for (int j = 0; j < 6; j = num + 1)
-				{
-					array[i, j] = -1;
-					num = j;
-				}
-				num = i;
-			}
-			int nationInt = user.NationInt;
-			foreach (AreaInfo current in user._attack_all_areas)
-			{
-				int areaid = current.areaid;
-				if (areaid != 112 && areaid != 113 && areaid != 134)
-				{
-					int num2 = (areaid - 101) / 6;
-					int num3 = (areaid - 101) % 6;
+        {
+            List<AreaInfo> list = new List<AreaInfo>();
+            int x = (selfAreaId - 101) / 6;
+            int y = (selfAreaId - 101) % 6;
+            int x2 = (targetAreaId - 101) / 6;
+            int y2 = (targetAreaId - 101) % 6;
+            int[,] array = new int[6, 6];
+            int num;
+            for (int i = 0; i < 6; i = num + 1)
+            {
+                for (int j = 0; j < 6; j = num + 1)
+                {
+                    array[i, j] = -1;
+                    num = j;
+                }
+                num = i;
+            }
+            int nationInt = user.NationInt;
+            foreach (AreaInfo current in user._attack_all_areas)
+            {
+                int areaid = current.areaid;
+                if (areaid != 112 && areaid != 113 && areaid != 134)
+                {
+                    int num2 = (areaid - 101) / 6;
+                    int num3 = (areaid - 101) % 6;
                     if (is_doing_nation)
                     {
                         array[num2, num3] = 1;
                     }
                     else if (is_doing_cityevent)
-					{
-						array[num2, num3] = 1;
-					}
-					else
-					{
-						if (current.nation == nationInt || current.nation == 0)
-						{
-							array[num2, num3] = 1;
-						}
-						else
-						{
-							array[num2, num3] = -1;
-						}
-					}
-				}
-			}
-			List<Point> aStarPath = CommonUtils.getAStarPath(array, new Point(x, y), new Point(x2, y2));
-			foreach (Point current2 in aStarPath)
-			{
-				int areaId = 101 + current2.X * 6 + current2.Y;
-				AreaInfo areaById = user.getAreaById(areaId);
-				if (areaById != null)
-				{
-					list.Add(areaById);
-				}
-			}
-			return list;
-		}
+                    {
+                        array[num2, num3] = 1;
+                    }
+                    else
+                    {
+                        if (current.nation == nationInt || current.nation == 0)
+                        {
+                            array[num2, num3] = 1;
+                        }
+                        else
+                        {
+                            array[num2, num3] = -1;
+                        }
+                    }
+                }
+            }
+            List<Point> aStarPath = CommonUtils.getAStarPath(array, new Point(x, y), new Point(x2, y2));
+            foreach (Point current2 in aStarPath)
+            {
+                int areaId = 101 + current2.X * 6 + current2.Y;
+                AreaInfo areaById = user.getAreaById(areaId);
+                if (areaById != null)
+                {
+                    list.Add(areaById);
+                }
+            }
+            return list;
+        }
 
         /// <summary>
         /// 获取相邻的地区
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-		public List<AreaInfo> getNearAreas(User user)
-		{
-			int attack_selfCityId = user._attack_selfCityId;
-			List<AreaInfo> list = new List<AreaInfo>();
-			int up = attack_selfCityId - 6;
-			int down = attack_selfCityId + 6;
-			int left = attack_selfCityId - 1;
-			int right = attack_selfCityId + 1;
+        public List<AreaInfo> getNearAreas(User user)
+        {
+            int attack_selfCityId = user._attack_selfCityId;
+            List<AreaInfo> list = new List<AreaInfo>();
+            int up = attack_selfCityId - 6;
+            int down = attack_selfCityId + 6;
+            int left = attack_selfCityId - 1;
+            int right = attack_selfCityId + 1;
             int self = attack_selfCityId;
-			if ((attack_selfCityId - 100) % 6 == 0 || attack_selfCityId == 105)
-			{
-				right = 0;
-			}
+            if ((attack_selfCityId - 100) % 6 == 0 || attack_selfCityId == 105)
+            {
+                right = 0;
+            }
             else if ((attack_selfCityId - 100) % 6 == 1 || attack_selfCityId == 102)
             {
                 left = 0;
             }
-			if (up == 112 || up == 113 || up == 134)
-			{
-				up = 0;
-			}
-			if (down == 112 || down == 113 || down == 134)
-			{
-				down = 0;
-			}
-			if (left == 112 || left == 113 || left == 134)
-			{
-				left = 0;
-			}
-			if (right == 112 || right == 113 || right == 134)
-			{
-				right = 0;
-			}
+            if (up == 112 || up == 113 || up == 134)
+            {
+                up = 0;
+            }
+            if (down == 112 || down == 113 || down == 134)
+            {
+                down = 0;
+            }
+            if (left == 112 || left == 113 || left == 134)
+            {
+                left = 0;
+            }
+            if (right == 112 || right == 113 || right == 134)
+            {
+                right = 0;
+            }
             if (self == 112 || self == 113 || self == 134)
             {
                 self = 0;
             }
-			AreaInfo areaById;
+            AreaInfo areaById;
             if (up > 0)
             {
                 areaById = user.getAreaById(up);
@@ -1864,37 +1867,37 @@ namespace com.lover.astd.common.logic
             {
                 list.Add(null);
             }
-			if (left > 0)
-			{
-				areaById = user.getAreaById(left);
-				if (areaById != null)
-				{
-					list.Add(areaById);
-				}
-				else
-				{
-					list.Add(null);
-				}
-			}
-			else
-			{
-				list.Add(null);
-			}
-			if (right > 0)
-			{
-				areaById = user.getAreaById(right);
-				if (areaById != null)
-				{
-					list.Add(areaById);
-				}
-				else
-				{
-					list.Add(null);
-				}
-			}
-			else
-			{
-				list.Add(null);
+            if (left > 0)
+            {
+                areaById = user.getAreaById(left);
+                if (areaById != null)
+                {
+                    list.Add(areaById);
+                }
+                else
+                {
+                    list.Add(null);
+                }
+            }
+            else
+            {
+                list.Add(null);
+            }
+            if (right > 0)
+            {
+                areaById = user.getAreaById(right);
+                if (areaById != null)
+                {
+                    list.Add(areaById);
+                }
+                else
+                {
+                    list.Add(null);
+                }
+            }
+            else
+            {
+                list.Add(null);
             }
             if (self > 0)
             {
@@ -1912,8 +1915,8 @@ namespace com.lover.astd.common.logic
             {
                 list.Add(null);
             }
-			return list;
-		}
+            return list;
+        }
 
         /// <summary>
         /// 获取附近的都城
@@ -1970,16 +1973,16 @@ namespace com.lover.astd.common.logic
             return null;
         }
 
-		public int moveToArea(ProtocolMgr protocol, ILogger logger, User user, int areaId)
-		{
-			string url = "/root/world!transferInNewArea.action";
-			string data = "areaId=" + areaId;
-			ServerResult serverResult = protocol.postXml(url, data, "新世界移动城市");
-			int result;
-			if (serverResult == null)
-			{
-				result = 1;
-			}
+        public int moveToArea(ProtocolMgr protocol, ILogger logger, User user, int areaId)
+        {
+            string url = "/root/world!transferInNewArea.action";
+            string data = "areaId=" + areaId;
+            ServerResult serverResult = protocol.postXml(url, data, "新世界移动城市");
+            int result;
+            if (serverResult == null)
+            {
+                result = 1;
+            }
             else if (!serverResult.CmdSucceed)
             {
                 if (serverResult.CmdError.IndexOf("城防自动恢复完毕") >= 0)
@@ -2012,20 +2015,20 @@ namespace com.lover.astd.common.logic
                     result = 3;
                 }
             }
-			return result;
-		}
+            return result;
+        }
 
         public int newMoveToArea(ProtocolMgr protocol, ILogger logger, User user, int areaId, int reservetime, out long remaintime)
-		{
-			remaintime = 60000L;
-			string url = "/root/world!transferInNewArea.action";
-			string data = "areaId=" + areaId;
-			ServerResult serverResult = protocol.postXml(url, data, "新世界移动城市");
-			int result;
-			if (serverResult == null)
-			{
-				result = 1;
-			}
+        {
+            remaintime = 60000L;
+            string url = "/root/world!transferInNewArea.action";
+            string data = "areaId=" + areaId;
+            ServerResult serverResult = protocol.postXml(url, data, "新世界移动城市");
+            int result;
+            if (serverResult == null)
+            {
+                result = 1;
+            }
             else if (!serverResult.CmdSucceed)
             {
                 if (serverResult.CmdError.IndexOf("城防自动恢复完毕") >= 0)
@@ -2092,8 +2095,8 @@ namespace com.lover.astd.common.logic
                     result = 3;
                 }
             }
-			return result;
-		}
+            return result;
+        }
 
         /// <summary>
         /// 寻找并攻击玩家
@@ -2278,13 +2281,13 @@ namespace com.lover.astd.common.logic
         /// <param name="areaId"></param>
         /// <param name="scopeId"></param>
         /// <returns></returns>
-		public List<ScopeCity> getAreaScopeInfo(ProtocolMgr protocol, ILogger logger, User user, int areaId, int scopeId)
-		{
-			AreaInfo areaById = user.getAreaById(areaId);
-			if (areaById == null)
-			{
-				return null;
-			}
+        public List<ScopeCity> getAreaScopeInfo(ProtocolMgr protocol, ILogger logger, User user, int areaId, int scopeId)
+        {
+            AreaInfo areaById = user.getAreaById(areaId);
+            if (areaById == null)
+            {
+                return null;
+            }
             List<ScopeCity> list = new List<ScopeCity>();
             string url = "/root/area!getAllCity.action";
             string data = string.Format("areaId={0}&scopeId={1}", areaId, scopeId);
@@ -2356,7 +2359,7 @@ namespace com.lover.astd.common.logic
                 }
                 return list;
             }
-		}
+        }
 
         /// <summary>
         /// 攻击玩家 0:成功,-1:失败,>0:出错
@@ -2369,17 +2372,17 @@ namespace com.lover.astd.common.logic
         /// <param name="cityId"></param>
         /// <returns></returns>
         public int attackPlayer(ProtocolMgr protocol, ILogger logger, User user, int areaId, int scopeId, int cityId, out int worldevent, out int seniorslaves)
-		{
+        {
             worldevent = 0;
             seniorslaves = 0;
-			string url = "/root/world!attackOtherAreaCity.action";
-			string data = string.Format("areaId={0}&scopeId={1}&cityId={2}", areaId, scopeId, cityId);
-			ServerResult serverResult = protocol.postXml(url, data, "攻击玩家");
+            string url = "/root/world!attackOtherAreaCity.action";
+            string data = string.Format("areaId={0}&scopeId={1}&cityId={2}", areaId, scopeId, cityId);
+            ServerResult serverResult = protocol.postXml(url, data, "攻击玩家");
             //logger.logInfo("攻击结果：" + serverResult.getDebugInfo());
-			if (serverResult == null)
-			{
-				return 1;
-			}
+            if (serverResult == null)
+            {
+                return 1;
+            }
             else if (!serverResult.CmdSucceed)
             {
                 if (serverResult.CmdError.IndexOf("军令还没有冷却") >= 0)
@@ -2561,7 +2564,7 @@ namespace com.lover.astd.common.logic
                     return -1;
                 }
             }
-		}
+        }
 
         /// <summary>
         /// 攻击天降奇兵,0:成功,1:空值,2:军令还没有冷却,3:请先逃跑,4:距离太远or不能在都城攻击敌方玩家,5:没有足够的攻击令,6:组队,7:其他错误
@@ -2572,9 +2575,9 @@ namespace com.lover.astd.common.logic
         /// <param name="areaId"></param>
         /// <param name="force"></param>
         /// <returns></returns>
-		public int attackNationDayNpc(ProtocolMgr protocol, ILogger logger, User user, int areaId, int force)
-		{
-			string[] array = new string[]
+        public int attackNationDayNpc(ProtocolMgr protocol, ILogger logger, User user, int areaId, int force)
+        {
+            string[] array = new string[]
 			{
 				"蛮族密探",
 				"蛮族山贼",
@@ -2582,13 +2585,13 @@ namespace com.lover.astd.common.logic
 				"蛮族统领",
 				"蛮族头目"
 			};
-			string url = "/root/world!lookAreaCity.action";
-			string data = string.Format("areaId={0}", areaId);
-			ServerResult serverResult = protocol.postXml(url, data, "地区信息");
-			if (serverResult == null)
-			{
-				return 1;
-			}
+            string url = "/root/world!lookAreaCity.action";
+            string data = string.Format("areaId={0}", areaId);
+            ServerResult serverResult = protocol.postXml(url, data, "地区信息");
+            if (serverResult == null)
+            {
+                return 1;
+            }
             url = "/root/nationDay!getNationDayNpcInfo.action";
             serverResult = protocol.getXml(url, "奇兵信息");
             if (serverResult == null)
@@ -2684,62 +2687,62 @@ namespace com.lover.astd.common.logic
                 base.logInfo(logger, text);
                 return 0;
             }
-		}
+        }
 
         public void doJail(ProtocolMgr protocol, ILogger logger, User user, bool _do_jail_tech, int gold_available, int jailwork_type)
-		{
-			bool flag = user.Level < User.Level_Jail;
-			if (!flag)
-			{
-				bool flag2 = !user._attack_have_jail;
-				if (!flag2)
-				{
+        {
+            bool flag = user.Level < User.Level_Jail;
+            if (!flag)
+            {
+                bool flag2 = !user._attack_have_jail;
+                if (!flag2)
+                {
                     List<int> jailInfo = this.getJailInfo(protocol, logger, user, _do_jail_tech, gold_available, jailwork_type);
-					bool flag3 = !user._attack_have_jail;
-					if (!flag3)
-					{
-						bool flag4 = jailInfo == null;
-						if (!flag4)
-						{
-							bool flag5 = jailInfo.Count > 0;
-							if (flag5)
-							{
-								foreach (int current in jailInfo)
-								{
-									this.slashJailWorker(protocol, logger, current);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+                    bool flag3 = !user._attack_have_jail;
+                    if (!flag3)
+                    {
+                        bool flag4 = jailInfo == null;
+                        if (!flag4)
+                        {
+                            bool flag5 = jailInfo.Count > 0;
+                            if (flag5)
+                            {
+                                foreach (int current in jailInfo)
+                                {
+                                    this.slashJailWorker(protocol, logger, current);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-		public bool escapeFromJail(ProtocolMgr protocol, ILogger logger)
-		{
-			string url = "/root/jail!escape.action";
-			ServerResult xml = protocol.getXml(url, "从监狱逃跑");
-			bool flag = xml == null || !xml.CmdSucceed;
-			bool result;
-			if (flag)
-			{
-				result = false;
-			}
-			else
-			{
-				base.logInfo(logger, "从监狱逃跑, 1分钟后成功");
-				result = true;
-			}
-			return result;
-		}
+        public bool escapeFromJail(ProtocolMgr protocol, ILogger logger)
+        {
+            string url = "/root/jail!escape.action";
+            ServerResult xml = protocol.getXml(url, "从监狱逃跑");
+            bool flag = xml == null || !xml.CmdSucceed;
+            bool result;
+            if (flag)
+            {
+                result = false;
+            }
+            else
+            {
+                base.logInfo(logger, "从监狱逃跑, 1分钟后成功");
+                result = true;
+            }
+            return result;
+        }
 
         public List<int> getJailInfo(ProtocolMgr protocol, ILogger logger, User user, bool _do_jail_tech, int gold_available, int jailwork_type)
-		{
-			List<int> list = new List<int>();
-			if (user.Level < User.Level_Jail)
-			{
-				return list;
-			}
+        {
+            List<int> list = new List<int>();
+            if (user.Level < User.Level_Jail)
+            {
+                return list;
+            }
             string url = "/root/jail.action";
             ServerResult xml = protocol.getXml(url, "获取监狱信息");
             if (xml == null)
@@ -2837,7 +2840,7 @@ namespace com.lover.astd.common.logic
                 }
                 return list;
             }
-		}
+        }
 
         public void recvJailWork(ProtocolMgr protocol, ILogger logger, int type, int weizhi)
         {
@@ -2889,10 +2892,10 @@ namespace com.lover.astd.common.logic
             base.logInfo(logger, string.Format("典狱劳力充足额外奖励, 宝石+{0}", baoshi));
         }
 
-		public void doJailTech(ProtocolMgr protocol, ILogger logger, int gold_need)
-		{
-			string url = "/root/jail!techResearch.action";
-			ServerResult xml = protocol.getXml(url, "典狱技术研究");
+        public void doJailTech(ProtocolMgr protocol, ILogger logger, int gold_need)
+        {
+            string url = "/root/jail!techResearch.action";
+            ServerResult xml = protocol.getXml(url, "典狱技术研究");
             if (xml == null || !xml.CmdSucceed)
             {
                 return;
@@ -2900,7 +2903,7 @@ namespace com.lover.astd.common.logic
             base.logInfo(logger, "典狱劳作技术研究成功, 花费金币" + gold_need);
             XmlDocument cmdResult = xml.CmdResult;
             this.slashFreeWorker(protocol, logger, cmdResult);
-		}
+        }
 
         public void slashFreeWorker(ProtocolMgr protocol, ILogger logger, XmlDocument xml)
         {
@@ -2924,19 +2927,19 @@ namespace com.lover.astd.common.logic
             }
         }
 
-		public void slashJailWorker(ProtocolMgr protocol, ILogger logger, int slaveId)
-		{
-			string url = "/root/jail!slash.action";
-			string data;
+        public void slashJailWorker(ProtocolMgr protocol, ILogger logger, int slaveId)
+        {
+            string url = "/root/jail!slash.action";
+            string data;
             if (slaveId != 0)
-			{
-				data = "slaveId=" + slaveId;
-			}
-			else
-			{
-				data = "slaveId=Free";
-			}
-			ServerResult serverResult = protocol.postXml(url, data, "监狱训诫");
+            {
+                data = "slaveId=" + slaveId;
+            }
+            else
+            {
+                data = "slaveId=Free";
+            }
+            ServerResult serverResult = protocol.postXml(url, data, "监狱训诫");
             if (serverResult == null || !serverResult.CmdSucceed)
             {
                 return;
@@ -2952,133 +2955,133 @@ namespace com.lover.astd.common.logic
                     base.logInfo(logger, string.Format("典狱训诫成功, 获得宝石{0}个", num));
                 }
             }
-		}
+        }
 
-		public void handleTransferInfo(ProtocolMgr protocol, ILogger logger, User user)
-		{
-			string url = "/root/world!getTranferInfo.action";
-			ServerResult xml = protocol.getXml(url, "获取马车信息");
-			bool flag = xml == null;
-			if (!flag)
-			{
-				bool flag2 = !xml.CmdSucceed;
-				if (!flag2)
-				{
-					XmlDocument cmdResult = xml.CmdResult;
-					bool flag3 = false;
-					int num = 0;
-					XmlNode xmlNode = cmdResult.SelectSingleNode("/results/canget");
-					bool flag4 = xmlNode != null;
-					if (flag4)
-					{
-						flag3 = xmlNode.InnerText.Equals("1");
-					}
-					XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/token");
-					bool flag5 = xmlNode2 != null;
-					if (flag5)
-					{
-						int.TryParse(xmlNode2.InnerText, out num);
-					}
-					bool flag6 = !flag3;
-					if (!flag6)
-					{
-						url = "/root/world!getTransferToken.action";
-						xml = protocol.getXml(url, "获取个人攻击令");
-						bool flag7 = xml == null;
-						if (!flag7)
-						{
-							bool flag8 = !xml.CmdSucceed;
-							if (!flag8)
-							{
-								cmdResult = xml.CmdResult;
-								base.logInfo(logger, string.Format("获取个人攻击令成功, 攻击令+{0}", num));
-							}
-						}
-					}
-				}
-			}
-		}
+        public void handleTransferInfo(ProtocolMgr protocol, ILogger logger, User user)
+        {
+            string url = "/root/world!getTranferInfo.action";
+            ServerResult xml = protocol.getXml(url, "获取马车信息");
+            bool flag = xml == null;
+            if (!flag)
+            {
+                bool flag2 = !xml.CmdSucceed;
+                if (!flag2)
+                {
+                    XmlDocument cmdResult = xml.CmdResult;
+                    bool flag3 = false;
+                    int num = 0;
+                    XmlNode xmlNode = cmdResult.SelectSingleNode("/results/canget");
+                    bool flag4 = xmlNode != null;
+                    if (flag4)
+                    {
+                        flag3 = xmlNode.InnerText.Equals("1");
+                    }
+                    XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/token");
+                    bool flag5 = xmlNode2 != null;
+                    if (flag5)
+                    {
+                        int.TryParse(xmlNode2.InnerText, out num);
+                    }
+                    bool flag6 = !flag3;
+                    if (!flag6)
+                    {
+                        url = "/root/world!getTransferToken.action";
+                        xml = protocol.getXml(url, "获取个人攻击令");
+                        bool flag7 = xml == null;
+                        if (!flag7)
+                        {
+                            bool flag8 = !xml.CmdSucceed;
+                            if (!flag8)
+                            {
+                                cmdResult = xml.CmdResult;
+                                base.logInfo(logger, string.Format("获取个人攻击令成功, 攻击令+{0}", num));
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-		public void getNationBattleInfo(ProtocolMgr protocol, ILogger logger, User user)
-		{
-			string url = "/root/nation!getNationTaskNewInfo.action";
-			ServerResult xml = protocol.getXml(url, "获取攻坚战信息");
-			bool flag = xml == null;
-			if (!flag)
-			{
-				bool flag2 = !xml.CmdSucceed;
-				if (!flag2)
-				{
-					XmlDocument cmdResult = xml.CmdResult;
-					XmlNode xmlNode = cmdResult.SelectSingleNode("/results/status");
-					bool flag3 = xmlNode != null;
-					if (flag3)
-					{
-						int.TryParse(xmlNode.InnerText, out user._attack_gongjian_status);
-					}
-					else
-					{
-						user._attack_gongjian_status = -1;
-					}
-					XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/remaintime");
-					bool flag4 = xmlNode2 != null;
-					if (flag4)
-					{
-						long.TryParse(xmlNode2.InnerText, out user._attack_nationBattleRemainTime);
-					}
-					else
-					{
-						user._attack_nationBattleRemainTime = 86400000L;
-					}
-					XmlNode xmlNode3 = cmdResult.SelectSingleNode("/results/masscity");
-					bool flag5 = xmlNode3 != null;
-					if (flag5)
-					{
-						user._attack_nation_battle_city = xmlNode3.InnerText;
-					}
-					else
-					{
-						user._attack_nation_battle_city = "";
-					}
-				}
-			}
-		}
+        public void getNationBattleInfo(ProtocolMgr protocol, ILogger logger, User user)
+        {
+            string url = "/root/nation!getNationTaskNewInfo.action";
+            ServerResult xml = protocol.getXml(url, "获取攻坚战信息");
+            bool flag = xml == null;
+            if (!flag)
+            {
+                bool flag2 = !xml.CmdSucceed;
+                if (!flag2)
+                {
+                    XmlDocument cmdResult = xml.CmdResult;
+                    XmlNode xmlNode = cmdResult.SelectSingleNode("/results/status");
+                    bool flag3 = xmlNode != null;
+                    if (flag3)
+                    {
+                        int.TryParse(xmlNode.InnerText, out user._attack_gongjian_status);
+                    }
+                    else
+                    {
+                        user._attack_gongjian_status = -1;
+                    }
+                    XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/remaintime");
+                    bool flag4 = xmlNode2 != null;
+                    if (flag4)
+                    {
+                        long.TryParse(xmlNode2.InnerText, out user._attack_nationBattleRemainTime);
+                    }
+                    else
+                    {
+                        user._attack_nationBattleRemainTime = 86400000L;
+                    }
+                    XmlNode xmlNode3 = cmdResult.SelectSingleNode("/results/masscity");
+                    bool flag5 = xmlNode3 != null;
+                    if (flag5)
+                    {
+                        user._attack_nation_battle_city = xmlNode3.InnerText;
+                    }
+                    else
+                    {
+                        user._attack_nation_battle_city = "";
+                    }
+                }
+            }
+        }
 
-		public void getNationBattleReward(ProtocolMgr protocol, ILogger logger)
-		{
-			string url = "/root/nation!getNationTaskNewReward.action";
-			ServerResult xml = protocol.getXml(url, "获取攻坚战奖励");
-			bool flag = xml == null;
-			if (!flag)
-			{
-				bool flag2 = !xml.CmdSucceed;
-				if (!flag2)
-				{
-					XmlDocument cmdResult = xml.CmdResult;
-					XmlNode xmlNode = cmdResult.SelectSingleNode("/results/box");
-					bool flag3 = xmlNode != null;
-					if (flag3)
-					{
-						base.logInfo(logger, string.Format("获取攻坚战奖励, 国家宝箱+{0}", xmlNode.InnerText));
-					}
-				}
-			}
-		}
+        public void getNationBattleReward(ProtocolMgr protocol, ILogger logger)
+        {
+            string url = "/root/nation!getNationTaskNewReward.action";
+            ServerResult xml = protocol.getXml(url, "获取攻坚战奖励");
+            bool flag = xml == null;
+            if (!flag)
+            {
+                bool flag2 = !xml.CmdSucceed;
+                if (!flag2)
+                {
+                    XmlDocument cmdResult = xml.CmdResult;
+                    XmlNode xmlNode = cmdResult.SelectSingleNode("/results/box");
+                    bool flag3 = xmlNode != null;
+                    if (flag3)
+                    {
+                        base.logInfo(logger, string.Format("获取攻坚战奖励, 国家宝箱+{0}", xmlNode.InnerText));
+                    }
+                }
+            }
+        }
 
-		private void getWorldTokenInfo(ProtocolMgr protocol, ILogger logger)
-		{
-			string url = "/root/world!getNewAreaNationToken.action";
-			ServerResult xml = protocol.getXml(url, "获取国家攻击/防御令城市信息");
-			bool flag = xml == null;
-			if (!flag)
-			{
-				bool flag2 = !xml.CmdSucceed;
-				if (!flag2)
-				{
-					XmlDocument cmdResult = xml.CmdResult;
-				}
-			}
-		}
+        private void getWorldTokenInfo(ProtocolMgr protocol, ILogger logger)
+        {
+            string url = "/root/world!getNewAreaNationToken.action";
+            ServerResult xml = protocol.getXml(url, "获取国家攻击/防御令城市信息");
+            bool flag = xml == null;
+            if (!flag)
+            {
+                bool flag2 = !xml.CmdSucceed;
+                if (!flag2)
+                {
+                    XmlDocument cmdResult = xml.CmdResult;
+                }
+            }
+        }
 
         /// <summary>
         /// 处理天降奇兵活动,0:有目标,1:空值,10:出错,9:领取奖励
@@ -3088,10 +3091,10 @@ namespace com.lover.astd.common.logic
         /// <param name="user"></param>
         /// <param name="remain_time"></param>
         /// <returns></returns>
-		public int handleNationEventInfo(ProtocolMgr protocol, ILogger logger, User user, out long remain_time)
-		{
-			remain_time = 1800000;
-			string[] array = new string[]
+        public int handleNationEventInfo(ProtocolMgr protocol, ILogger logger, User user, out long remain_time)
+        {
+            remain_time = 1800000;
+            string[] array = new string[]
 			{
 				"蛮族密探",
 				"蛮族山贼",
@@ -3099,12 +3102,12 @@ namespace com.lover.astd.common.logic
 				"蛮族统领",
 				"蛮族头目"
 			};
-			string url = "/root/nationDay!getNationDayEventInfo.action";
-			ServerResult xml = protocol.getXml(url, "获取天降奇兵信息");
-			if (xml == null)
-			{
-				return 1;
-			}
+            string url = "/root/nationDay!getNationDayEventInfo.action";
+            ServerResult xml = protocol.getXml(url, "获取天降奇兵信息");
+            if (xml == null)
+            {
+                return 1;
+            }
             else if (!xml.CmdSucceed)
             {
                 return 10;
@@ -3183,7 +3186,7 @@ namespace com.lover.astd.common.logic
                 }
             }
             return 9;
-		}
+        }
 
         /// <summary>
         /// 
@@ -3209,14 +3212,14 @@ namespace com.lover.astd.common.logic
         /// <param name="remain_time">返回剩余时间</param>
         /// <returns></returns>
         public int handleNewCityEventInfo(ProtocolMgr protocol, ILogger logger, User user, int max_star, int reserved_num, string move_target, bool is_doing_nation, out long remain_time)
-		{
-			remain_time = 0;
-			string url = "/root/world!getNewCityEventInfo.action";
-			ServerResult xml = protocol.getXml(url, "获取悬赏事件信息");
-			if (xml == null)
-			{
-				return 1;
-			}
+        {
+            remain_time = 0;
+            string url = "/root/world!getNewCityEventInfo.action";
+            ServerResult xml = protocol.getXml(url, "获取悬赏事件信息");
+            if (xml == null)
+            {
+                return 1;
+            }
             else if (!xml.CmdSucceed)
             {
                 return 10;
@@ -3423,450 +3426,450 @@ namespace com.lover.astd.common.logic
                 this.getNewAreaInfo(protocol, logger, user);
                 return 0;
             }
-		}
+        }
 
-		public bool acceptNewCityEvent(ProtocolMgr protocol, ILogger logger, int pos, int star)
-		{
-			string url = "/root/world!acceptNewCityEvent.action";
-			string data = "pos=" + pos;
-			ServerResult serverResult = protocol.postXml(url, data, "新世界接受悬赏事件");
-			bool flag = serverResult == null || !serverResult.CmdSucceed;
-			bool result;
-			if (flag)
-			{
-				result = false;
-			}
-			else
-			{
-				XmlDocument cmdResult = serverResult.CmdResult;
-				base.logInfo(logger, string.Format("新世界接受悬赏事件, 星级[{0}]星", star));
-				result = true;
-			}
-			return result;
-		}
+        public bool acceptNewCityEvent(ProtocolMgr protocol, ILogger logger, int pos, int star)
+        {
+            string url = "/root/world!acceptNewCityEvent.action";
+            string data = "pos=" + pos;
+            ServerResult serverResult = protocol.postXml(url, data, "新世界接受悬赏事件");
+            bool flag = serverResult == null || !serverResult.CmdSucceed;
+            bool result;
+            if (flag)
+            {
+                result = false;
+            }
+            else
+            {
+                XmlDocument cmdResult = serverResult.CmdResult;
+                base.logInfo(logger, string.Format("新世界接受悬赏事件, 星级[{0}]星", star));
+                result = true;
+            }
+            return result;
+        }
 
-		public bool getCityEventAward(ProtocolMgr protocol, ILogger logger)
-		{
-			string url = "/root/world!deliverNewCityEvent.action";
-			ServerResult xml = protocol.getXml(url, "新世界领取悬赏奖励");
-			bool flag = xml == null || !xml.CmdSucceed;
-			bool result;
-			if (flag)
-			{
-				result = false;
-			}
-			else
-			{
-				XmlDocument cmdResult = xml.CmdResult;
-				XmlNode xmlNode = cmdResult.SelectSingleNode("/results/rewardinfo/reward/num");
-				bool flag2 = xmlNode != null;
-				if (flag2)
-				{
-					base.logInfo(logger, string.Format("新世界领取悬赏奖励, 宝石+{0}", xmlNode.InnerText));
-				}
-				result = true;
-			}
-			return result;
-		}
+        public bool getCityEventAward(ProtocolMgr protocol, ILogger logger)
+        {
+            string url = "/root/world!deliverNewCityEvent.action";
+            ServerResult xml = protocol.getXml(url, "新世界领取悬赏奖励");
+            bool flag = xml == null || !xml.CmdSucceed;
+            bool result;
+            if (flag)
+            {
+                result = false;
+            }
+            else
+            {
+                XmlDocument cmdResult = xml.CmdResult;
+                XmlNode xmlNode = cmdResult.SelectSingleNode("/results/rewardinfo/reward/num");
+                bool flag2 = xmlNode != null;
+                if (flag2)
+                {
+                    base.logInfo(logger, string.Format("新世界领取悬赏奖励, 宝石+{0}", xmlNode.InnerText));
+                }
+                result = true;
+            }
+            return result;
+        }
 
-		public bool recvCityEventStarAward(ProtocolMgr protocol, ILogger logger, int pos)
-		{
-			string url = "/root/world!recvNewCityEventStarReward.action";
-			string data = "pos=" + pos;
-			ServerResult serverResult = protocol.postXml(url, data, "新世界领取悬赏星数奖励");
-			bool flag = serverResult == null || !serverResult.CmdSucceed;
-			bool result;
-			if (flag)
-			{
-				result = false;
-			}
-			else
-			{
-				XmlDocument cmdResult = serverResult.CmdResult;
-				XmlNode xmlNode = cmdResult.SelectSingleNode("/results/rewardinfo/reward/num");
-				bool flag2 = xmlNode != null;
-				if (flag2)
-				{
-					base.logInfo(logger, string.Format("新世界领取悬赏星数奖励, 宝石+{0}", xmlNode.InnerText));
-				}
-				result = true;
-			}
-			return result;
-		}
+        public bool recvCityEventStarAward(ProtocolMgr protocol, ILogger logger, int pos)
+        {
+            string url = "/root/world!recvNewCityEventStarReward.action";
+            string data = "pos=" + pos;
+            ServerResult serverResult = protocol.postXml(url, data, "新世界领取悬赏星数奖励");
+            bool flag = serverResult == null || !serverResult.CmdSucceed;
+            bool result;
+            if (flag)
+            {
+                result = false;
+            }
+            else
+            {
+                XmlDocument cmdResult = serverResult.CmdResult;
+                XmlNode xmlNode = cmdResult.SelectSingleNode("/results/rewardinfo/reward/num");
+                bool flag2 = xmlNode != null;
+                if (flag2)
+                {
+                    base.logInfo(logger, string.Format("新世界领取悬赏星数奖励, 宝石+{0}", xmlNode.InnerText));
+                }
+                result = true;
+            }
+            return result;
+        }
 
-		public List<ResCampaign> getResCampaigns(ProtocolMgr protocol, ILogger logger)
-		{
-			int num = 0;
-			List<ResCampaign> list = new List<ResCampaign>();
-			string url = "/root/resCampaign!getResCamList.action";
-			ServerResult xml = protocol.getXml(url, "获取资源副本信息");
-			bool flag = xml == null;
-			List<ResCampaign> result;
-			if (flag)
-			{
-				result = list;
-			}
-			else
-			{
-				bool flag2 = !xml.CmdSucceed;
-				if (flag2)
-				{
-					result = list;
-				}
-				else
-				{
-					XmlDocument cmdResult = xml.CmdResult;
-					XmlNode xmlNode = cmdResult.SelectSingleNode("/results/resetnum");
-					bool flag3 = xmlNode != null;
-					if (flag3)
-					{
-						int.TryParse(xmlNode.InnerText, out num);
-					}
-					XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/cam");
-					foreach (XmlNode xmlNode2 in xmlNodeList)
-					{
-						bool flag4 = xmlNode2 != null && xmlNode2.HasChildNodes;
-						if (flag4)
-						{
-							XmlNodeList childNodes = xmlNode2.ChildNodes;
-							ResCampaign resCampaign = new ResCampaign();
-							foreach (XmlNode xmlNode3 in childNodes)
-							{
-								bool flag5 = xmlNode3.Name == "id";
-								if (flag5)
-								{
-									resCampaign.id = int.Parse(xmlNode3.InnerText);
-								}
-								else
-								{
-									bool flag6 = xmlNode3.Name == "name";
-									if (flag6)
-									{
-										resCampaign.name = xmlNode3.InnerText;
-									}
-									else
-									{
-										bool flag7 = xmlNode3.Name == "armies";
-										if (flag7)
-										{
-											resCampaign.armies = xmlNode3.InnerText;
-										}
-										else
-										{
-											bool flag8 = xmlNode3.Name == "status";
-											if (flag8)
-											{
-												resCampaign.status = int.Parse(xmlNode3.InnerText);
-											}
-											else
-											{
-												bool flag9 = xmlNode3.Name == "reward";
-												if (flag9)
-												{
-													resCampaign.reward = xmlNode3.InnerText;
-												}
-												else
-												{
-													bool flag10 = xmlNode3.Name == "finishreward";
-													if (flag10)
-													{
-														resCampaign.finishreward = xmlNode3.InnerText;
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-							list.Add(resCampaign);
-						}
-					}
-					result = list;
-				}
-			}
-			return result;
-		}
+        public List<ResCampaign> getResCampaigns(ProtocolMgr protocol, ILogger logger)
+        {
+            int num = 0;
+            List<ResCampaign> list = new List<ResCampaign>();
+            string url = "/root/resCampaign!getResCamList.action";
+            ServerResult xml = protocol.getXml(url, "获取资源副本信息");
+            bool flag = xml == null;
+            List<ResCampaign> result;
+            if (flag)
+            {
+                result = list;
+            }
+            else
+            {
+                bool flag2 = !xml.CmdSucceed;
+                if (flag2)
+                {
+                    result = list;
+                }
+                else
+                {
+                    XmlDocument cmdResult = xml.CmdResult;
+                    XmlNode xmlNode = cmdResult.SelectSingleNode("/results/resetnum");
+                    bool flag3 = xmlNode != null;
+                    if (flag3)
+                    {
+                        int.TryParse(xmlNode.InnerText, out num);
+                    }
+                    XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/cam");
+                    foreach (XmlNode xmlNode2 in xmlNodeList)
+                    {
+                        bool flag4 = xmlNode2 != null && xmlNode2.HasChildNodes;
+                        if (flag4)
+                        {
+                            XmlNodeList childNodes = xmlNode2.ChildNodes;
+                            ResCampaign resCampaign = new ResCampaign();
+                            foreach (XmlNode xmlNode3 in childNodes)
+                            {
+                                bool flag5 = xmlNode3.Name == "id";
+                                if (flag5)
+                                {
+                                    resCampaign.id = int.Parse(xmlNode3.InnerText);
+                                }
+                                else
+                                {
+                                    bool flag6 = xmlNode3.Name == "name";
+                                    if (flag6)
+                                    {
+                                        resCampaign.name = xmlNode3.InnerText;
+                                    }
+                                    else
+                                    {
+                                        bool flag7 = xmlNode3.Name == "armies";
+                                        if (flag7)
+                                        {
+                                            resCampaign.armies = xmlNode3.InnerText;
+                                        }
+                                        else
+                                        {
+                                            bool flag8 = xmlNode3.Name == "status";
+                                            if (flag8)
+                                            {
+                                                resCampaign.status = int.Parse(xmlNode3.InnerText);
+                                            }
+                                            else
+                                            {
+                                                bool flag9 = xmlNode3.Name == "reward";
+                                                if (flag9)
+                                                {
+                                                    resCampaign.reward = xmlNode3.InnerText;
+                                                }
+                                                else
+                                                {
+                                                    bool flag10 = xmlNode3.Name == "finishreward";
+                                                    if (flag10)
+                                                    {
+                                                        resCampaign.finishreward = xmlNode3.InnerText;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            list.Add(resCampaign);
+                        }
+                    }
+                    result = list;
+                }
+            }
+            return result;
+        }
 
-		public int handleResCampaign(ProtocolMgr protocol, ILogger logger, int target_campaign_id = 1)
-		{
-			int num = 0;
-			List<ResCampaign> list = new List<ResCampaign>();
-			string url = "/root/resCampaign!getResCamList.action";
-			ServerResult xml = protocol.getXml(url, "获取资源副本信息");
-			bool flag = xml == null;
-			int result;
-			if (flag)
-			{
-				result = 1;
-			}
-			else
-			{
-				bool flag2 = !xml.CmdSucceed;
-				if (flag2)
-				{
-					result = 10;
-				}
-				else
-				{
-					XmlDocument cmdResult = xml.CmdResult;
-					XmlNode xmlNode = cmdResult.SelectSingleNode("/results/resetnum");
-					bool flag3 = xmlNode != null;
-					if (flag3)
-					{
-						int.TryParse(xmlNode.InnerText, out num);
-					}
-					XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/cam");
-					foreach (XmlNode xmlNode2 in xmlNodeList)
-					{
-						bool flag4 = xmlNode2 != null && xmlNode2.HasChildNodes;
-						if (flag4)
-						{
-							XmlNodeList childNodes = xmlNode2.ChildNodes;
-							ResCampaign resCampaign = new ResCampaign();
-							foreach (XmlNode xmlNode3 in childNodes)
-							{
-								bool flag5 = xmlNode3.Name == "id";
-								if (flag5)
-								{
-									resCampaign.id = int.Parse(xmlNode3.InnerText);
-								}
-								else
-								{
-									bool flag6 = xmlNode3.Name == "name";
-									if (flag6)
-									{
-										resCampaign.name = xmlNode3.InnerText;
-									}
-									else
-									{
-										bool flag7 = xmlNode3.Name == "armies";
-										if (flag7)
-										{
-											resCampaign.armies = xmlNode3.InnerText;
-										}
-										else
-										{
-											bool flag8 = xmlNode3.Name == "status";
-											if (flag8)
-											{
-												resCampaign.status = int.Parse(xmlNode3.InnerText);
-											}
-											else
-											{
-												bool flag9 = xmlNode3.Name == "reward";
-												if (flag9)
-												{
-													resCampaign.reward = xmlNode3.InnerText;
-												}
-												else
-												{
-													bool flag10 = xmlNode3.Name == "finishreward";
-													if (flag10)
-													{
-														resCampaign.finishreward = xmlNode3.InnerText;
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-							list.Add(resCampaign);
-						}
-					}
-					ResCampaign resCampaign2 = null;
-					foreach (ResCampaign current in list)
-					{
-						bool flag11 = current.id == target_campaign_id;
-						if (flag11)
-						{
-							resCampaign2 = current;
-							break;
-						}
-					}
-					bool flag12 = resCampaign2 == null;
-					if (flag12)
-					{
-						result = 2;
-					}
-					else
-					{
-						bool flag13 = resCampaign2.status == 2 && num == 0;
-						if (flag13)
-						{
-							result = 3;
-						}
-						else
-						{
-							bool flag14 = resCampaign2.status == 1;
-							if (flag14)
-							{
-								string armies = resCampaign2.armies;
-								int[] array = new int[armies.Length];
-								int num3;
-								for (int i = 0; i < armies.Length; i = num3 + 1)
-								{
-									int num2 = 0;
-									int.TryParse(string.Format("{0}", armies[i]), out num2);
-									array[i] = num2;
-									num3 = i;
-								}
-								for (int j = 0; j < array.Length; j = num3 + 1)
-								{
-									for (int k = 3 - array[j]; k > 0; k = num3 - 1)
-									{
-										int num4 = this.attackCampaignNpc(protocol, logger, resCampaign2, j);
-										bool flag15 = num4 == 1;
-										if (flag15)
-										{
-											result = 1;
-											return result;
-										}
-										bool flag16 = num4 == 2;
-										if (flag16)
-										{
-											result = 2;
-											return result;
-										}
-										bool flag17 = num4 == 3;
-										if (flag17)
-										{
-											result = 4;
-											return result;
-										}
-										num3 = k;
-									}
-									num3 = j;
-								}
-							}
-							else
-							{
-								bool flag18 = num > 0;
-								if (flag18)
-								{
-									this.useFreeTokenReleaseCampaign(protocol, logger, resCampaign2, ref num);
-									int[] array2 = new int[5];
-									int[] array3 = array2;
-									int num3;
-									for (int l = 0; l < array3.Length; l = num3 + 1)
-									{
-										for (int m = 3 - array3[l]; m > 0; m = num3 - 1)
-										{
-											int num5 = this.attackCampaignNpc(protocol, logger, resCampaign2, l);
-											bool flag19 = num5 == 1;
-											if (flag19)
-											{
-												result = 1;
-												return result;
-											}
-											bool flag20 = num5 == 2;
-											if (flag20)
-											{
-												result = 2;
-												return result;
-											}
-											bool flag21 = num5 == 3;
-											if (flag21)
-											{
-												result = 4;
-												return result;
-											}
-											num3 = m;
-										}
-										num3 = l;
-									}
-								}
-							}
-							bool flag22 = num - 1 > 0;
-							if (flag22)
-							{
-								result = 5;
-							}
-							else
-							{
-								result = 0;
-							}
-						}
-					}
-				}
-			}
-			return result;
-		}
+        public int handleResCampaign(ProtocolMgr protocol, ILogger logger, int target_campaign_id = 1)
+        {
+            int num = 0;
+            List<ResCampaign> list = new List<ResCampaign>();
+            string url = "/root/resCampaign!getResCamList.action";
+            ServerResult xml = protocol.getXml(url, "获取资源副本信息");
+            bool flag = xml == null;
+            int result;
+            if (flag)
+            {
+                result = 1;
+            }
+            else
+            {
+                bool flag2 = !xml.CmdSucceed;
+                if (flag2)
+                {
+                    result = 10;
+                }
+                else
+                {
+                    XmlDocument cmdResult = xml.CmdResult;
+                    XmlNode xmlNode = cmdResult.SelectSingleNode("/results/resetnum");
+                    bool flag3 = xmlNode != null;
+                    if (flag3)
+                    {
+                        int.TryParse(xmlNode.InnerText, out num);
+                    }
+                    XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/cam");
+                    foreach (XmlNode xmlNode2 in xmlNodeList)
+                    {
+                        bool flag4 = xmlNode2 != null && xmlNode2.HasChildNodes;
+                        if (flag4)
+                        {
+                            XmlNodeList childNodes = xmlNode2.ChildNodes;
+                            ResCampaign resCampaign = new ResCampaign();
+                            foreach (XmlNode xmlNode3 in childNodes)
+                            {
+                                bool flag5 = xmlNode3.Name == "id";
+                                if (flag5)
+                                {
+                                    resCampaign.id = int.Parse(xmlNode3.InnerText);
+                                }
+                                else
+                                {
+                                    bool flag6 = xmlNode3.Name == "name";
+                                    if (flag6)
+                                    {
+                                        resCampaign.name = xmlNode3.InnerText;
+                                    }
+                                    else
+                                    {
+                                        bool flag7 = xmlNode3.Name == "armies";
+                                        if (flag7)
+                                        {
+                                            resCampaign.armies = xmlNode3.InnerText;
+                                        }
+                                        else
+                                        {
+                                            bool flag8 = xmlNode3.Name == "status";
+                                            if (flag8)
+                                            {
+                                                resCampaign.status = int.Parse(xmlNode3.InnerText);
+                                            }
+                                            else
+                                            {
+                                                bool flag9 = xmlNode3.Name == "reward";
+                                                if (flag9)
+                                                {
+                                                    resCampaign.reward = xmlNode3.InnerText;
+                                                }
+                                                else
+                                                {
+                                                    bool flag10 = xmlNode3.Name == "finishreward";
+                                                    if (flag10)
+                                                    {
+                                                        resCampaign.finishreward = xmlNode3.InnerText;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            list.Add(resCampaign);
+                        }
+                    }
+                    ResCampaign resCampaign2 = null;
+                    foreach (ResCampaign current in list)
+                    {
+                        bool flag11 = current.id == target_campaign_id;
+                        if (flag11)
+                        {
+                            resCampaign2 = current;
+                            break;
+                        }
+                    }
+                    bool flag12 = resCampaign2 == null;
+                    if (flag12)
+                    {
+                        result = 2;
+                    }
+                    else
+                    {
+                        bool flag13 = resCampaign2.status == 2 && num == 0;
+                        if (flag13)
+                        {
+                            result = 3;
+                        }
+                        else
+                        {
+                            bool flag14 = resCampaign2.status == 1;
+                            if (flag14)
+                            {
+                                string armies = resCampaign2.armies;
+                                int[] array = new int[armies.Length];
+                                int num3;
+                                for (int i = 0; i < armies.Length; i = num3 + 1)
+                                {
+                                    int num2 = 0;
+                                    int.TryParse(string.Format("{0}", armies[i]), out num2);
+                                    array[i] = num2;
+                                    num3 = i;
+                                }
+                                for (int j = 0; j < array.Length; j = num3 + 1)
+                                {
+                                    for (int k = 3 - array[j]; k > 0; k = num3 - 1)
+                                    {
+                                        int num4 = this.attackCampaignNpc(protocol, logger, resCampaign2, j);
+                                        bool flag15 = num4 == 1;
+                                        if (flag15)
+                                        {
+                                            result = 1;
+                                            return result;
+                                        }
+                                        bool flag16 = num4 == 2;
+                                        if (flag16)
+                                        {
+                                            result = 2;
+                                            return result;
+                                        }
+                                        bool flag17 = num4 == 3;
+                                        if (flag17)
+                                        {
+                                            result = 4;
+                                            return result;
+                                        }
+                                        num3 = k;
+                                    }
+                                    num3 = j;
+                                }
+                            }
+                            else
+                            {
+                                bool flag18 = num > 0;
+                                if (flag18)
+                                {
+                                    this.useFreeTokenReleaseCampaign(protocol, logger, resCampaign2, ref num);
+                                    int[] array2 = new int[5];
+                                    int[] array3 = array2;
+                                    int num3;
+                                    for (int l = 0; l < array3.Length; l = num3 + 1)
+                                    {
+                                        for (int m = 3 - array3[l]; m > 0; m = num3 - 1)
+                                        {
+                                            int num5 = this.attackCampaignNpc(protocol, logger, resCampaign2, l);
+                                            bool flag19 = num5 == 1;
+                                            if (flag19)
+                                            {
+                                                result = 1;
+                                                return result;
+                                            }
+                                            bool flag20 = num5 == 2;
+                                            if (flag20)
+                                            {
+                                                result = 2;
+                                                return result;
+                                            }
+                                            bool flag21 = num5 == 3;
+                                            if (flag21)
+                                            {
+                                                result = 4;
+                                                return result;
+                                            }
+                                            num3 = m;
+                                        }
+                                        num3 = l;
+                                    }
+                                }
+                            }
+                            bool flag22 = num - 1 > 0;
+                            if (flag22)
+                            {
+                                result = 5;
+                            }
+                            else
+                            {
+                                result = 0;
+                            }
+                        }
+                    }
+                }
+            }
+            return result;
+        }
 
-		private int useFreeTokenReleaseCampaign(ProtocolMgr protocol, ILogger logger, ResCampaign campaign, ref int _freeTokenNumber)
-		{
-			string url = "/root/resCampaign!resetResCamNum.action";
-			string data = "id=" + campaign.id;
-			ServerResult serverResult = protocol.postXml(url, data, "使用副本重置卡");
-			bool flag = serverResult == null;
-			int result;
-			if (flag)
-			{
-				result = 1;
-			}
-			else
-			{
-				bool flag2 = !serverResult.CmdSucceed;
-				if (flag2)
-				{
-					result = 2;
-				}
-				else
-				{
-					base.logInfo(logger, string.Format("使用副本重置卡重置副本[{0}], 副本重置卡还剩[{1}]个", campaign.name, _freeTokenNumber - 1));
-					result = 0;
-				}
-			}
-			return result;
-		}
+        private int useFreeTokenReleaseCampaign(ProtocolMgr protocol, ILogger logger, ResCampaign campaign, ref int _freeTokenNumber)
+        {
+            string url = "/root/resCampaign!resetResCamNum.action";
+            string data = "id=" + campaign.id;
+            ServerResult serverResult = protocol.postXml(url, data, "使用副本重置卡");
+            bool flag = serverResult == null;
+            int result;
+            if (flag)
+            {
+                result = 1;
+            }
+            else
+            {
+                bool flag2 = !serverResult.CmdSucceed;
+                if (flag2)
+                {
+                    result = 2;
+                }
+                else
+                {
+                    base.logInfo(logger, string.Format("使用副本重置卡重置副本[{0}], 副本重置卡还剩[{1}]个", campaign.name, _freeTokenNumber - 1));
+                    result = 0;
+                }
+            }
+            return result;
+        }
 
-		private void getCampaignInfo(ProtocolMgr protocol, ILogger logger, int campaignId)
-		{
-			string url = "/root/resCampaign!getInfo.action";
-			string data = "id=" + campaignId;
-			ServerResult serverResult = protocol.postXml(url, data, "获取副本信息");
-			bool flag = serverResult == null || !serverResult.CmdSucceed;
-			if (!flag)
-			{
-				XmlDocument cmdResult = serverResult.CmdResult;
-			}
-		}
+        private void getCampaignInfo(ProtocolMgr protocol, ILogger logger, int campaignId)
+        {
+            string url = "/root/resCampaign!getInfo.action";
+            string data = "id=" + campaignId;
+            ServerResult serverResult = protocol.postXml(url, data, "获取副本信息");
+            bool flag = serverResult == null || !serverResult.CmdSucceed;
+            if (!flag)
+            {
+                XmlDocument cmdResult = serverResult.CmdResult;
+            }
+        }
 
-		private int attackCampaignNpc(ProtocolMgr protocol, ILogger logger, ResCampaign campaign, int npcIndex)
-		{
-			string url = "/root/resCampaign!attack.action";
-			string data = string.Format("armyIndex={0}&id={1}", npcIndex, campaign.id);
-			ServerResult serverResult = protocol.postXml(url, data, "攻击副本NPC");
-			bool flag = serverResult == null;
-			int result;
-			if (flag)
-			{
-				result = 1;
-			}
-			else
-			{
-				bool flag2 = !serverResult.CmdSucceed;
-				if (flag2)
-				{
-					result = 2;
-				}
-				else
-				{
-					XmlDocument cmdResult = serverResult.CmdResult;
-					string text = "攻击副本NPC, ";
-					XmlNode xmlNode = cmdResult.SelectSingleNode("/results/battlereport/message");
-					bool flag3 = xmlNode != null;
-					if (flag3)
-					{
-						text += xmlNode.InnerText;
-					}
-					text = text + " 您获得了 " + campaign.getRewardByNpcIndex(npcIndex);
-					base.logInfo(logger, text);
-					result = 0;
-				}
-			}
-			return result;
-		}
+        private int attackCampaignNpc(ProtocolMgr protocol, ILogger logger, ResCampaign campaign, int npcIndex)
+        {
+            string url = "/root/resCampaign!attack.action";
+            string data = string.Format("armyIndex={0}&id={1}", npcIndex, campaign.id);
+            ServerResult serverResult = protocol.postXml(url, data, "攻击副本NPC");
+            bool flag = serverResult == null;
+            int result;
+            if (flag)
+            {
+                result = 1;
+            }
+            else
+            {
+                bool flag2 = !serverResult.CmdSucceed;
+                if (flag2)
+                {
+                    result = 2;
+                }
+                else
+                {
+                    XmlDocument cmdResult = serverResult.CmdResult;
+                    string text = "攻击副本NPC, ";
+                    XmlNode xmlNode = cmdResult.SelectSingleNode("/results/battlereport/message");
+                    bool flag3 = xmlNode != null;
+                    if (flag3)
+                    {
+                        text += xmlNode.InnerText;
+                    }
+                    text = text + " 您获得了 " + campaign.getRewardByNpcIndex(npcIndex);
+                    base.logInfo(logger, text);
+                    result = 0;
+                }
+            }
+            return result;
+        }
 
         /// <summary>
         /// 使用道具,0:成功,-1:没有道具,-2:目标太远,-3:没有找到目标,-4:不能对本国玩家使用,-5:请求空值或出错,-6:区域不存在,-7:先逃跑或保护cd,-8:不存在道具类型
@@ -4413,6 +4416,53 @@ namespace com.lover.astd.common.logic
                 lua.ParseXml(result.CmdResult.SelectSingleNode("/results"));
                 int baoshi = lua.GetIntValue("results.baoshi");
                 logInfo(logger, string.Format("发动屠城，获得宝石+{0}", baoshi));
+            }
+        }
+        #endregion
+
+        #region 招募
+        //领取兵力
+        public bool receiveTroops(ProtocolMgr protocol, ILogger logger)
+        {
+            string url = "/root/world!receiveTroops.action";
+            ServerResult xml = protocol.getXml(url, "招兵买马-领取兵力");
+            if (xml == null)
+            {
+                return false;
+            }
+            else if (!xml.CmdSucceed)
+            {
+                logInfo(logger, string.Format("招兵买马-领取兵力异常:{0}", xml.CmdError));
+                return false;
+            }
+            else
+            {
+                int addtroops = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/addtroops"));
+                logInfo(logger, string.Format("招兵买马-获得兵力+{0}", addtroops));
+                return true;
+            }
+        }
+
+        //募兵
+        public bool startConscribe(ProtocolMgr protocol, ILogger logger, WorldExpansionInfo world_expansion, int areaId)
+        {
+            string url = "/root/world!startConscribe.action";
+            string data = string.Format("areaId={0}", areaId);
+            ServerResult xml = protocol.postXml(url, data, "招兵买马-募兵");
+            if (xml == null)
+            {
+                return false;
+            }
+            else if (!xml.CmdSucceed)
+            {
+                logInfo(logger, string.Format("招兵买马-募兵异常:{0}", xml.CmdError));
+                return false;
+            }
+            else
+            {
+                world_expansion.Parse(xml.CmdResult.SelectSingleNode("/results/worldexpansioninfo"));
+                logInfo(logger, "招兵买马-开始募兵");
+                return true;
             }
         }
         #endregion

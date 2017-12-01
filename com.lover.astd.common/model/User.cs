@@ -901,6 +901,8 @@ namespace com.lover.astd.common.model
             set { this.special_treasure_list_ = value; }
         }
 
+        public WorldExpansionInfo WorldExpansion_;
+
 		public void addUiToQueue(string ui_key)
 		{
 			bool flag = !this._ui_render_queue.Contains(ui_key);
@@ -1629,6 +1631,7 @@ namespace com.lover.astd.common.model
             this.changeStone_ = false;
             this._specialEquipSkillInfo = new SkillInfo();
             this.special_treasure_list_ = new List<Specialtreasure>();
+            this.WorldExpansion_ = new WorldExpansionInfo();
 			this._factory = factory;
 		}
 	}

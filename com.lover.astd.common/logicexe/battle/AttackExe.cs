@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using com.lover.astd.common.config;
 using System.Text;
+using com.lover.astd.common.model.battle;
 
 namespace com.lover.astd.common.logicexe.battle
 {
@@ -788,6 +789,21 @@ namespace com.lover.astd.common.logicexe.battle
             if (this._user._fengdi.finish == 1)
             {
                 battleManager.recvFengdiReward(_proto, _logger, _user);
+            }
+
+            //招兵买马
+            WorldExpansionInfo world_expansion = this._user.WorldExpansion_;
+            if (world_expansion.status == 2)
+            {
+                battleManager.receiveTroops(this._proto, this._logger);
+            }
+            else if (world_expansion.status == 0 && world_expansion.todaytimes < world_expansion.maxtimes)
+            {
+                AreaInfo area_info = this._user.getAreaById(this._user._attack_selfCityId);
+                if (area_info.nation == this._user.NationInt)
+                {
+                    battleManager.startConscribe(this._proto, this._logger, world_expansion, area_info.areaid);
+                }
             }
 
             //补充城防
