@@ -75,6 +75,8 @@ snowTradingConfig =
   reinforce = false,
   -- 加固雪橇费用
   reinforcecost = 20,
+  -- 奖励类型 1:镔铁 2:点券
+  choose = 2,
 }
 
 borrowingArrowsConfig =

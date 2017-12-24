@@ -10098,10 +10098,10 @@ namespace com.lover.astd.common.logic
         #endregion
 
         #region 雪地通商
-        public int snowTradingGetSnowTradingInfo(ProtocolMgr protocol, ILogger logger, User user, int buyroundcostlimit, int goldavailable, bool isreinforce, int reinforcecostlimit)
+        public int snowTradingGetSnowTradingInfo(ProtocolMgr protocol, ILogger logger, User user, int buyroundcostlimit, int goldavailable, bool isreinforce, int reinforcecostlimit, int choose)
         {
             if (user.isActivityRunning(ActivityType.SnowTradingEvent))
-                return snowTrading_.getSnowTradingInfo(protocol, logger, user, buyroundcostlimit, goldavailable, isreinforce, reinforcecostlimit);
+                return snowTrading_.getSnowTradingInfo(protocol, logger, user, buyroundcostlimit, goldavailable, isreinforce, reinforcecostlimit, choose);
             else
                 return 10;
         }

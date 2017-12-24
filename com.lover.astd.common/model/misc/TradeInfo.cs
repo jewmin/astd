@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace com.lover.astd.common.model.misc
 {
-    public class TradeInfo : XmlObject
+    public class TradeInfo : XmlObject, IComparable
     {
         public int id;
         public string name;
@@ -49,6 +49,14 @@ namespace com.lover.astd.common.model.misc
         {
             if (costtype == "copper") return true;
             return false;
+        }
+
+        public int CompareTo(object obj)
+        {
+            TradeInfo info = obj as TradeInfo;
+            if (this.active < info.active) return -1;
+            else if (this.active > info.active) return 1;
+            else return 0;
         }
     }
 }

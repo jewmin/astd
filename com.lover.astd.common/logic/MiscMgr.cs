@@ -8936,6 +8936,7 @@ namespace com.lover.astd.common.logic
             
             if (list != null)
             {
+                list.Sort();
                 foreach (TradeInfo item in list)
                 {
                     if (user.CurMovable >= item.active && item.active <= limit_active)
@@ -8944,6 +8945,7 @@ namespace com.lover.astd.common.logic
                         {
                             getWesternTradeReward(protocol, logger);
                         }
+                        break;
                     }
                 }
             }

@@ -7,7 +7,7 @@ SnowTradingExe.id = LuaExeId.eSnowTrading
 SnowTradingExe.exe = LuaExeFactory.createLuaExe(SnowTradingExe)
 
 SnowTradingExe.execute = function()
-    local result = ActivityManager():snowTradingGetSnowTradingInfo(ProtocolMgr(), ILogger(), User(), snowTradingConfig.buyroundcost, global.getGoldAvailable(), snowTradingConfig.reinforce, snowTradingConfig.reinforcecost)
+    local result = ActivityManager():snowTradingGetSnowTradingInfo(ProtocolMgr(), ILogger(), User(), snowTradingConfig.buyroundcost, global.getGoldAvailable(), snowTradingConfig.reinforce, snowTradingConfig.reinforcecost, snowTradingConfig.choose)
     if result == 1 then
         return SnowTradingExe.exe:next_halfhour()
     elseif result == 10 then
