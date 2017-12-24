@@ -10339,7 +10339,7 @@ namespace com.lover.astd.common.logic
                     foreach (KeyValuePair<int, RewardInfo> item in rewards)
                     {
                         int type = item.Value.getReward(0).Type;
-                        if (type == 56 || type == 57)
+                        if (type == 56 || type == 57 || type == 48)
                         {
                             if (!openGift(protocol, logger, user, item.Key)) return 1;
                         }
