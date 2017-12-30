@@ -155,6 +155,10 @@ namespace com.lover.astd.common.model
         /// 每日任务纺织次数
         /// </summary>
         public int _weave_task_num = 0;
+        /// <summary>
+        /// 每日任务炼制次数
+        /// </summary>
+        public int _refine_task_num = 0;
 
 		public int[] _fete_min_levels;
 

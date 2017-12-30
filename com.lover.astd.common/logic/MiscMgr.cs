@@ -877,6 +877,7 @@ namespace com.lover.astd.common.logic
             user._impose_task_num = 0;
             user._impose_force_task_num = 0;
             user._weave_task_num = 0;
+            user._refine_task_num = 0;
 
             string url = "/root/task!getNewPerdayTask.action";
             ServerResult xml = protocol.getXml(url, "新每日任务信息");
@@ -1040,11 +1041,16 @@ namespace com.lover.astd.common.logic
                             user._impose_force_task_num = finishline - finishnum;
                             base.logInfo(logger, string.Format("新每日任务，需要强征{0}次", user._impose_force_task_num));
                         }
-                        //else if (taskcontext.Contains("纺织"))
-                        //{
-                        //    user._weave_task_num = finishline - finishnum;
-                        //    base.logInfo(logger, string.Format("新每日任务，需要纺织{0}次", user._weave_task_num));
-                        //}
+                        else if (taskcontext.Contains("纺织"))
+                        {
+                            user._weave_task_num = finishline - finishnum;
+                            base.logInfo(logger, string.Format("新每日任务，需要纺织{0}次", user._weave_task_num));
+                        }
+                        else if (taskcontext.Contains("炼制"))
+                        {
+                            user._refine_task_num = finishline - finishnum;
+                            base.logInfo(logger, string.Format("新每日任务，需要炼制{0}次", user._refine_task_num));
+                        }
                     }
                     else if (taskstate == 3)
                     {
@@ -8867,7 +8873,7 @@ namespace com.lover.astd.common.logic
             if (!result.CmdSucceed) return 10;
 
             int remainhigh = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/remainhigh"));
-            if (remainhigh == 0) return 2;
+            if (remainhigh <= 0 && user._refine_task_num <= 0) return 2;
 
             if (doRefineBintieFactory(protocol, logger, user, mode)) return 0;
             return 10;
@@ -8885,6 +8891,7 @@ namespace com.lover.astd.common.logic
             ServerResult result = protocol.postXml(url, data, "高级炼制工坊-炼制");
             if (result == null || !result.CmdSucceed) return false;
 
+            user._refine_task_num--;
             int cri = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/cri"));
             //int basebintie = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/basebintie"));
             RewardInfo reward = new RewardInfo();
