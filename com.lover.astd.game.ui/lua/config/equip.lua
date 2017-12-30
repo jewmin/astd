@@ -15,4 +15,7 @@ equipConfig =
 
   -- 新科技研究消耗镔铁上限
   tech_consumebintie = 50,
+
+  -- 炼制模式 1:镔铁 2:铁锤
+  refine_mode = 2,
 }

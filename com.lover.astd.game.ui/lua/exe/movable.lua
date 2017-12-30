@@ -105,7 +105,7 @@ MovableExe.execute = function()
   	elseif order == "3" then -- Á¶ÖÆ
   		if is_refine_bintie then
   			-- local result = refine.getRefineBintieFactory()
-			local result = MiscManager():getRefineBintieFactory(ProtocolMgr(), ILogger(), User())
+			local result = MiscManager():getRefineBintieFactory(ProtocolMgr(), ILogger(), User(), equipConfig.refine_mode)
   			if result == 0 then
   				return MovableExe.exe:immediate()
   			elseif result == 1 then

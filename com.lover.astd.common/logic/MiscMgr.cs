@@ -8859,7 +8859,7 @@ namespace com.lover.astd.common.logic
         #endregion
 
         #region 高级炼制工坊
-        public int getRefineBintieFactory(ProtocolMgr protocol, ILogger logger, User user)
+        public int getRefineBintieFactory(ProtocolMgr protocol, ILogger logger, User user, int mode)
         {
             string url = "/root/refine!getRefineBintieFactory.action";
             ServerResult result = protocol.getXml(url, "高级炼制工坊-信息");
@@ -8869,7 +8869,7 @@ namespace com.lover.astd.common.logic
             int remainhigh = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/remainhigh"));
             if (remainhigh == 0) return 2;
 
-            if (doRefineBintieFactory(protocol, logger, user, 0)) return 0;
+            if (doRefineBintieFactory(protocol, logger, user, mode)) return 0;
             return 10;
         }
 
