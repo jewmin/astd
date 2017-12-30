@@ -8886,9 +8886,13 @@ namespace com.lover.astd.common.logic
             if (result == null || !result.CmdSucceed) return false;
 
             int cri = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/cri"));
-            int basebintie = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/basebintie"));
-            string tips = string.Format("高级炼制，获得镔铁+{0}", basebintie * cri);
-            if (cri > 1) tips = string.Format("高级炼制，{0}倍暴击，获得镔铁+{1}", cri, basebintie * cri);
+            //int basebintie = XmlHelper.GetValue<int>(result.CmdResult.SelectSingleNode("/results/basebintie"));
+            RewardInfo reward = new RewardInfo();
+            reward.handleXmlNode(result.CmdResult.SelectSingleNode("/results/rewardinfo"));
+            //string tips = string.Format("高级炼制，获得镔铁+{0}", basebintie * cri);
+            //if (cri > 1) tips = string.Format("高级炼制，{0}倍暴击，获得镔铁+{1}", cri, basebintie * cri);
+            string tips = string.Format("高级炼制，获得{0}", reward.ToString());
+            if (cri > 1) tips = string.Format("高级炼制，{0}倍暴击，获得{1}", cri, reward.ToString());
             logInfo(logger, tips);
             return true;
         }
