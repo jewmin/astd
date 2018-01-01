@@ -110,3 +110,13 @@ ParadeEventConfig =
     -- 轮次购买费用
     roundcostlimit = 2,
 }
+
+RingEventConfig =
+{
+  -- 随机敲钟费用
+  random_ring_cost = 5,
+  -- 福禄寿敲钟费用
+  other_ring_cost = 5,
+  -- 进度奖励
+  progress_choose = 1,
+}

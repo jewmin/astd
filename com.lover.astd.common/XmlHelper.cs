@@ -66,5 +66,48 @@ namespace com.lover.astd.common
             }
             return list;
         }
+
+        /// <summary>
+        /// 分隔字符串，返回整型列表
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="separator"></param>
+        /// <returns></returns>
+        public static List<int> GetStringSplit(XmlNode node, char separator = ',')
+        {
+            List<int> list = new List<int>();
+
+            if (node != null)
+            {
+                string[] split_strings = node.InnerText.Split(new char[] { separator }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (string str in split_strings)
+                {
+                    list.Add(Convert.ToInt32(str));
+                }
+            }
+
+            return list;
+        }
+
+        /// <summary>
+        /// 字典顺序排序
+        /// </summary>
+        /// <param name="dic"></param>
+        public static void DictionarySort(Dictionary<int, int> dic)
+        {
+            if (dic.Count > 0)
+            {
+                List<KeyValuePair<int, int>> list = new List<KeyValuePair<int, int>>(dic);
+                list.Sort(delegate(KeyValuePair<int, int> s1, KeyValuePair<int, int> s2)
+                {
+                    return s1.Value.CompareTo(s2.Value);
+                });
+                dic.Clear();
+                foreach (KeyValuePair<int, int> kvp in list)
+                {
+                    dic.Add(kvp.Key, kvp.Value);
+                }
+            }
+        }
     }
 }

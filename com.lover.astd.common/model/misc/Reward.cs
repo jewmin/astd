@@ -171,6 +171,11 @@ namespace com.lover.astd.common.model.misc
             return null;
         }
 
+        public int getRewardCount()
+        {
+            return _reward_list.Count;
+        }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();

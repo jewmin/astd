@@ -34,6 +34,10 @@ namespace com.lover.astd.common.logic
         /// 新国庆阅兵
         /// </summary>
         private ParadeEvent paradeEvent_;
+        /// <summary>
+        /// 新年敲钟
+        /// </summary>
+        private RingEvent ringEvent_;
 
         public class KfzbItem
         {
@@ -298,6 +302,7 @@ namespace com.lover.astd.common.logic
             borrowingArrows_ = new BorrowingArrowsEvent(tmrMgr, factory);
             arrestEvent_ = new ArrestEvent(tmrMgr, factory);
             paradeEvent_ = new ParadeEvent(tmrMgr, factory);
+            ringEvent_ = new RingEvent(tmrMgr, factory);
         }
 
         private bool doSilverFlopStep(char[,] s, int pos)
@@ -10540,6 +10545,16 @@ namespace com.lover.astd.common.logic
             reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
             logInfo(logger, string.Format("捡起奖励，获得{0}", reward.ToString()));
             return true;
+        }
+        #endregion
+
+        #region 新年敲钟
+        public long RingEventExecute(ProtocolMgr protocol, ILogger logger, User user, int random_ring_cost, int other_ring_cost, int progress_choose)
+        {
+            int result = ringEvent_.getRingEventInfo(protocol, logger, user, random_ring_cost, other_ring_cost, progress_choose);
+            if (result == 10) return next_halfhour();
+            else if (result == 2) return next_day();
+            else return immediate();
         }
         #endregion
     }
