@@ -160,6 +160,7 @@
     <Compile Include="model\attack\ProduceInfo.cs" />
     <Compile Include="model\attack\ScopeCity.cs" />
     <Compile Include="model\attack\UserToken.cs" />
+    <Compile Include="model\BaseObject.cs" />
     <Compile Include="model\battle\CampaignItem.cs" />
     <Compile Include="model\battle\Npc.cs" />
     <Compile Include="model\battle\ResCampaign.cs" />
@@ -255,12 +256,6 @@
     <Compile Include="partner\LoginResult.cs" />
     <Compile Include="partner\LoginStatusCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="protocol\command\BaseClientCommand.cs" />
-    <Compile Include="protocol\command\GetUserInfoCommand.cs" />
-    <Compile Include="protocol\command\LoginCommand.cs" />
-    <Compile Include="protocol\response\BaseClientResponse.cs" />
-    <Compile Include="protocol\response\GetUserInfoResponse.cs" />
-    <Compile Include="protocol\response\LoginResponse.cs" />
     <Compile Include="UserSessionMgr.cs" />
     <Compile Include="XmlHelper.cs" />
   </ItemGroup>
@@ -280,6 +275,10 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="locales\locale.zh_CN.resources" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="protocol\command\" />
+    <Folder Include="protocol\response\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
