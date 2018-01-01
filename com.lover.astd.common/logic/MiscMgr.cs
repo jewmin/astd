@@ -6627,22 +6627,22 @@ namespace com.lover.astd.common.logic
                     }
                     else if (refinenum < onceplus || refinenum < reserve_count)
                     {
-                        if (equipMgr.handleWarChariotUpgrade(protocol, logger, user, true) == 0)
-                        {
-                            return 0;
-                        }
+                        //if (equipMgr.handleWarChariotUpgrade(protocol, logger, user) == 0)
+                        //{
+                        //    return 0;
+                        //}
                         return 2;
                     }
                     else if (percost > 0)
                     {
-                        if (refinenum < maxrefinenum * 0.8)
+                        /*if (refinenum < maxrefinenum * 0.8)
                         {
-                            if (equipMgr.handleWarChariotUpgrade(protocol, logger, user, true) == 0)
+                            if (equipMgr.handleWarChariotUpgrade(protocol, logger, user) == 0)
                             {
                                 return 0;
                             }
                         }
-                        else if (do_high_refine)
+                        else */if (do_high_refine)
                         {
                             base.logInfo(logger, string.Format("余料: {0}/{1} 当前精炼队伍: {2} {3} {4}", refinenum, maxrefinenum, refinerList[0].Color, refinerList[1].Color, refinerList[2].Color));
                             return this.refine(protocol, logger);

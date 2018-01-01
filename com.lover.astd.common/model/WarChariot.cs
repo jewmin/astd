@@ -301,6 +301,19 @@ namespace com.lover.astd.common.model
             return string.Format("当前进度({0}%),普攻+{1},普防+{2},战攻+{3},战防+{4},策攻+{5},策防+{6},可带兵数+{7}", Percent, _att, _def, _satt, _sdef, _stgatt, _stgdef, _hp);
         }
 
+        public int GetHammer(int limit_level)
+        {
+            foreach (Hammer hammer in _hammerList)
+            {
+                if (hammer.Cri <= limit_level && hammer.Num > 0)
+                {
+                    return hammer.Cri;
+                }
+            }
+
+            return 0;
+        }
+
         public void fillValues(XmlNodeList nodes)
         {
             foreach (XmlNode xmlNode in nodes)

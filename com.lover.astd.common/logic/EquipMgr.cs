@@ -3104,7 +3104,7 @@ namespace com.lover.astd.common.logic
             return result;
         }
 
-        public int handleWarChariotUpgrade(ProtocolMgr protocol, ILogger logger, User user, bool notChuizi = false)
+        public int handleWarChariotUpgrade(ProtocolMgr protocol, ILogger logger, User user, int chuizi_level = 2, bool notChuizi = false)
         {
             if (user.Level < 288)
             {
@@ -3146,13 +3146,23 @@ namespace com.lover.astd.common.logic
                         }
                         warChariot.Equipitemnum += 50000;
                     }
-                    if (warChariot.Needtofull > 0 && (warChariot.Chuizi > 0 || notChuizi))
+                    //int chuizi = warChariot.Chuizi;
+                    //if (warChariot.Needtofull > 0 && ((chuizi > 0 && chuizi <= chuizi_level) || notChuizi))
+                    //{
+                    //    if (upgradeWarChariot(protocol, logger, chuizi))
+                    //    {
+                    //        return 0;
+                    //    }
+                    //}
+                    int chuizi = warChariot.GetHammer(chuizi_level);
+                    if (chuizi > 0 || notChuizi)
                     {
-                        if (upgradeWarChariot(protocol, logger, warChariot.Chuizi))
+                        if (upgradeWarChariot(protocol, logger, chuizi))
                         {
                             return 0;
                         }
                     }
+
                     return 2;
                 }
             }
@@ -3163,15 +3173,15 @@ namespace com.lover.astd.common.logic
             string url = "/root/warChariot!strengthenWarChariot.action";
             string data = string.Format("chuiziCri={0}", chuiziCri);
             string text = "强化战车";
-            if (chuiziCri == 1)
+            if (chuiziCri == 2)
             {
                 text = "墨家铁锤强化战车";
             }
-            else if (chuiziCri == 2)
+            else if (chuiziCri == 4)
             {
                 text = "中级铁锤强化战车";
             }
-            else if (chuiziCri == 3)
+            else if (chuiziCri == 10)
             {
                 text = "高级铁锤强化战车";
             }
