@@ -1051,6 +1051,11 @@ namespace com.lover.astd.common.logic
                             user._refine_task_num = finishline - finishnum;
                             base.logInfo(logger, string.Format("新每日任务，需要炼制{0}次", user._refine_task_num));
                         }
+                        else if (taskcontext.Contains("对战"))
+                        {
+                            user._kfrank_task_num = finishline - finishnum;
+                            base.logInfo(logger, string.Format("新每日任务，需要对战{0}次", user._kfrank_task_num));
+                        }
                     }
                     else if (taskstate == 3)
                     {

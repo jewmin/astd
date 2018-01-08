@@ -27,21 +27,22 @@ namespace com.lover.astd.common.logic
         private void initIndex()
         {
             indexs_["李白"] = 1000;
-            indexs_["蚩尤"] = 1100;
-            indexs_["炎帝"] = 1200;
             indexs_["黄帝"] = 1300;
             indexs_["后羿"] = 1400;
             indexs_["夏桀"] = 1500;
             indexs_["王翦"] = 1700;
+            indexs_["鬼谷子"] = 1702;
+            indexs_["荆轲"] = 1703;
+            indexs_["曹操"] = 1704;
+            indexs_["成吉思汗"] = 1705;
+            indexs_["蚩尤"] = 1706;
+            indexs_["炎帝"] = 1707;
+            indexs_["姜子牙"] = 1708;
             indexs_["秦始皇"] = 1800;
             indexs_["李牧"] = 1900;
-            indexs_["姜子牙"] = 1901;
             indexs_["张飞"] = 2000;
-            indexs_["荆轲"] = 2100;
-            indexs_["鬼谷子"] = 2200;
             indexs_["戚继光"] = 2201;
             indexs_["诸葛亮"] = 2202;
-            indexs_["曹操"] = 2203;
             indexs_["大禹"] = 2204;
             indexs_["商汤"] = 2300;
             indexs_["周文王"] = 2400;

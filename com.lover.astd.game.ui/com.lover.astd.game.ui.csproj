@@ -206,7 +206,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="lua\astd.lua" />
     <None Include="lua\config\activity.lua" />
     <None Include="lua\config\equip.lua" />
@@ -259,6 +258,10 @@
     <Content Include="laptop.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy $(SolutionDir)libs\SQLite.Interop.dll . /y
+xcopy $(ProjectDir)lua\* lua\ /s /e /y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

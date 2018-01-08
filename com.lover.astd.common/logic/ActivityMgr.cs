@@ -9705,7 +9705,7 @@ namespace com.lover.astd.common.logic
                 {
                     if (user.Token >= needtoken)
                     {
-                        startMatch(protocol, logger, needtoken, user.Token);
+                        startMatch(protocol, logger, user, needtoken, user.Token);
                         return 3000;
                     }
                     else
@@ -9721,7 +9721,7 @@ namespace com.lover.astd.common.logic
                 logger.logInfo(string.Format("乱世风云榜 - 我的积分:{0}", score));
                 if (user.Token >= needtoken)
                 {
-                    startMatch(protocol, logger, needtoken, user.Token);
+                    startMatch(protocol, logger, user, needtoken, user.Token);
                     return 3000;
                 }
                 else
@@ -9730,15 +9730,32 @@ namespace com.lover.astd.common.logic
                     return next_halfhour();
                 }
             }
+            //每日对战任务
+            if (user._kfrank_task_num > 0)
+            {
+                logger.logInfo(string.Format("每日对战 - 剩余次数:{0}", user._kfrank_task_num));
+                if (user.Token >= needtoken)
+                {
+                    startMatch(protocol, logger, user, needtoken, user.Token);
+                    return 3000;
+                }
+                else
+                {
+                    logInfo(logger, string.Format("军令不足，当前{0}军令，需要{1}军令", user.Token, needtoken));
+                    return next_halfhour();
+                }
+            }
+            
             return next_day_eight();
         }
 
-        public void startMatch(ProtocolMgr protocol, ILogger logger, int needtoken, int currtoken)
+        public void startMatch(ProtocolMgr protocol, ILogger logger, User user, int needtoken, int currtoken)
         {
             string url = "/root/kfrank!startMatch.action";
             ServerResult xml = protocol.getXml(url, "开始匹配对手");
             if (xml != null && xml.CmdSucceed)
             {
+                user._kfrank_task_num--;
                 logInfo(logger, string.Format("当前{0}军令，消耗{1}军令，开始匹配对手", currtoken, needtoken));
             }
         }
