@@ -1004,6 +1004,10 @@ namespace com.lover.astd.common.logic
                 {
                     equipList.Add(decoration);
                 }
+                else if (decoration.quality == 6)
+                {
+                    equipList.Add(decoration);
+                }
                 //else if (decoration.eventsrc == 1)
                 //{
                 //    upgradeList.Add(decoration);

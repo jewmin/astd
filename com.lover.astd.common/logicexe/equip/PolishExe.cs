@@ -28,6 +28,7 @@ namespace com.lover.astd.common.logicexe.equip
                 int reserve_item_count = 5;
                 int gold_merge_attrib = 10;
                 int melt_failcount = 0;
+                string lh_ids = "";
                 if (config.ContainsKey("reserve_count"))
                 {
                     int.TryParse(config["reserve_count"], out reserve_count);
@@ -46,27 +47,27 @@ namespace com.lover.astd.common.logicexe.equip
                 }
                 if (config.ContainsKey("lh_ids"))
                 {
-                    string lh_ids = config["lh_ids"];
-                    int ret = this._factory.getEquipManager().handlePolishInfo(this._proto, this._logger, this._user, base.getGoldAvailable(), lh_ids, this._user.Magic, reserve_count, reserve_item_count, gold_merge_attrib, melt_failcount);
-                    this.refreshUi();
-                    if (ret == 3)
-                    {
-                        return base.next_hour();
-                    }
-                    else if (ret == 4)
-                    {
-                        return base.immediate();
-                    }
-                    else if (ret == 0)
-                    {
-                        return 600000;
-                    }
-                    else
-                    {
-                        return base.next_hour();
-                    }
+                    lh_ids = config["lh_ids"];
                 }
-                return base.next_hour();
+
+                int ret = this._factory.getEquipManager().handlePolishInfo(this._proto, this._logger, this._user, base.getGoldAvailable(), lh_ids, this._user.Magic, reserve_count, reserve_item_count, gold_merge_attrib, melt_failcount);
+                this.refreshUi();
+                if (ret == 3)
+                {
+                    return base.next_hour();
+                }
+                else if (ret == 4)
+                {
+                    return base.immediate();
+                }
+                else if (ret == 0)
+                {
+                    return 600000;
+                }
+                else
+                {
+                    return base.next_hour();
+                }
             }
 		}
 
