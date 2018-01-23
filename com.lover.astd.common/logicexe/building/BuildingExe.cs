@@ -33,6 +33,16 @@ namespace com.lover.astd.common.logicexe.building
 			this.getAllBuildings();
 		}
 
+        private bool CanBuild(Building build, bool protect, int maincitylevel, int outcitylevel, int silverAvailable, int stone)
+        {
+            if (build != null && build.Level != this._user.Level && build.Name.IndexOf("监狱") < 0 && (!build.IsOutCity || build.Name.IndexOf("采集场") >= 0 || build.Level != outcitylevel) && (!protect || build.IsOutCity || build.Name.IndexOf("民居") >= 0 || build.Level < maincitylevel - 1) && (!build.IsOutCity || stone >= build.UpgradeCost) && (build.IsOutCity || silverAvailable >= build.UpgradeCost))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
 		public override long execute()
 		{
 			Dictionary<string, string> config = base.getConfig();
@@ -52,6 +62,15 @@ namespace com.lover.astd.common.logicexe.building
             }
 
             this.getAllBuildings();
+
+            //按cd时间分两列
+            List<Building> low_buildings = new List<Building>();
+            List<Building> high_buildings = new List<Building>();
+            foreach (Building b in this._user._buildings)
+            {
+                if (b.Cdtime < 240) low_buildings.Add(b);
+                else high_buildings.Add(b);
+            }
 
             //改造
             foreach (MoziBuilding current in this._user.mozi_buildings_)
@@ -73,6 +92,7 @@ namespace com.lover.astd.common.logicexe.building
                 }
             }
 
+            //没有建造队列
             if (!this._factory.getBuildingManager().hasEmptyLine(this._user._buildingLines))
             {
                 return this._factory.getBuildingManager().recentLineCd(this._user._buildingLines);
@@ -107,34 +127,87 @@ namespace com.lover.astd.common.logicexe.building
                             }
                         }
                     }
-                    goto IL_28B;
                 }
             }
-
-            foreach (Building current2 in this._user._buildings)
+            else
             {
-                if (current2.IsOutCity)
+                foreach (Building current2 in this._user._buildings)
                 {
-                    if (current2.Name.IndexOf("采集场") >= 0)
+                    if (current2.IsOutCity)
                     {
-                        outcitylevel = current2.Level;
+                        if (current2.Name.IndexOf("采集场") >= 0)
+                        {
+                            outcitylevel = current2.Level;
+                            break;
+                        }
                         break;
                     }
-                    break;
                 }
             }
 
-        IL_28B:
             stone *= 1000;
-            foreach (int current3 in buildingsToBuild)
+
+            if (this._factory.getBuildingManager().hasReadyCdLine(this._user._buildingLines))//建造队列已有建造时间，但未cd前，优先建造高cd时间的
             {
-                Building building3 = this._factory.getBuildingManager().getBuilding(this._user._buildings, current3);
-                if (building3 != null && building3.Level != this._user.Level && building3.Name.IndexOf("监狱") < 0 && (!building3.IsOutCity || building3.Name.IndexOf("采集场") >= 0 || building3.Level != outcitylevel) && (!protect || building3.IsOutCity || building3.Name.IndexOf("民居") >= 0 || building3.Level < maincitylevel - 1) && (!building3.IsOutCity || stone >= building3.UpgradeCost) && (building3.IsOutCity || silverAvailable >= building3.UpgradeCost))
+                foreach (int current3 in buildingsToBuild)
                 {
-                    building2 = building3;
-                    break;
+                    Building building3 = this._factory.getBuildingManager().getBuilding(high_buildings, current3);
+                    if (CanBuild(building3, protect, maincitylevel, outcitylevel, silverAvailable, stone))
+                    {
+                        building2 = building3;
+                        break;
+                    }
+                }
+
+                if (building2 == null)
+                {
+                    foreach (int current3 in buildingsToBuild)
+                    {
+                        Building building3 = this._factory.getBuildingManager().getBuilding(low_buildings, current3);
+                        if (CanBuild(building3, protect, maincitylevel, outcitylevel, silverAvailable, stone))
+                        {
+                            building2 = building3;
+                            break;
+                        }
+                    }
                 }
             }
+            else//优先建造低cd时间的
+            {
+                foreach (int current3 in buildingsToBuild)
+                {
+                    Building building3 = this._factory.getBuildingManager().getBuilding(low_buildings, current3);
+                    if (CanBuild(building3, protect, maincitylevel, outcitylevel, silverAvailable, stone))
+                    {
+                        building2 = building3;
+                        break;
+                    }
+                }
+
+                if (building2 == null)
+                {
+                    foreach (int current3 in buildingsToBuild)
+                    {
+                        Building building3 = this._factory.getBuildingManager().getBuilding(high_buildings, current3);
+                        if (CanBuild(building3, protect, maincitylevel, outcitylevel, silverAvailable, stone))
+                        {
+                            building2 = building3;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            //foreach (int current3 in buildingsToBuild)
+            //{
+            //    Building building3 = this._factory.getBuildingManager().getBuilding(this._user._buildings, current3);
+            //    if (CanBuild(building3, protect, maincitylevel, outcitylevel, silverAvailable, stone))
+            //    {
+            //        building2 = building3;
+            //        break;
+            //    }
+            //}
+
             if (building2 == null)
             {
                 return base.next_halfhour();

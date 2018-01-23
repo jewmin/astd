@@ -185,9 +185,13 @@ namespace com.lover.astd.common.model
 		public string _dinner_team_id;
 
 		public string _dinner_team_creator;
-
+        /// <summary>
+        /// 建筑
+        /// </summary>
 		public List<Building> _buildings;
-
+        /// <summary>
+        /// 墨子改造建筑
+        /// </summary>
         public List<MoziBuilding> mozi_buildings_;
 
         public int remainseniorslaves;

@@ -32,68 +32,56 @@ namespace com.lover.astd.common.logic
 
 		public Building getBuilding(List<Building> buildings, int buildingId)
 		{
-			Building result;
 			if (buildings == null || buildings.Count == 0)
 			{
-				result = null;
+				return null;
 			}
-			else
-			{
-				foreach (Building current in buildings)
-				{
-					if (current.Id == buildingId)
-					{
-						result = current;
-						return result;
-					}
-				}
-				result = null;
-			}
-			return result;
+
+            foreach (Building current in buildings)
+            {
+                if (current.Id == buildingId)
+                {
+                    return current;
+                }
+            }
+
+            return null;
 		}
 
 		public Building getBuilding(List<Building> buildings, string buildingName)
 		{
-			Building result;
-			if (buildings == null || buildings.Count == 0)
-			{
-				result = null;
-			}
-			else
-			{
-				foreach (Building current in buildings)
-				{
-					if (current.Name.Contains(buildingName))
-					{
-						result = current;
-						return result;
-					}
-				}
-				result = null;
-			}
-			return result;
+            if (buildings == null || buildings.Count == 0)
+            {
+                return null;
+            }
+
+            foreach (Building current in buildings)
+            {
+                if (current.Name.Contains(buildingName))
+                {
+                    return current;
+                }
+            }
+
+            return null;
 		}
 
         public Building getBuildingByBuildingId(List<Building> buildings, int buildingId)
         {
-            Building result;
             if (buildings == null || buildings.Count == 0)
             {
-                result = null;
+                return null;
             }
-            else
+
+            foreach (Building current in buildings)
             {
-                foreach (Building current in buildings)
+                if (current.BuildingId == buildingId)
                 {
-                    if (current.BuildingId == buildingId)
-                    {
-                        result = current;
-                        return result;
-                    }
+                    return current;
                 }
-                result = null;
             }
-            return result;
+
+            return null;
         }
 
 		private void renderBuildingNode(XmlNode building_node, List<Building> buildings)
@@ -257,7 +245,6 @@ namespace com.lover.astd.common.logic
             else
                 user.removeActivity(ActivityType.BombNianEvent);
 
-
             return true;
         }
 
@@ -265,67 +252,46 @@ namespace com.lover.astd.common.logic
 		{
 			string url = "/root/outCity.action";
 			ServerResult xml = protocol.getXml(url, "获取玩家外城信息");
-			bool flag = xml == null || !xml.CmdSucceed;
-			bool result;
-			if (flag)
-			{
-				result = false;
-			}
-			else
-			{
-				XmlDocument cmdResult = xml.CmdResult;
-				XmlNode xmlNode = cmdResult.SelectSingleNode("/results");
-				XmlNodeList childNodes = xmlNode.ChildNodes;
-				foreach (XmlNode xmlNode2 in childNodes)
-				{
-					bool flag2 = xmlNode2.Name == "outcitydto";
-					if (flag2)
-					{
-						this.renderBuildingNode(xmlNode2, user._buildings);
-					}
-					else
-					{
-						bool flag3 = xmlNode2.Name == "constructordto";
-						if (flag3)
-						{
-							this.updateBuildLine(xmlNode2.ChildNodes, user._buildingLines);
-						}
-					}
-				}
-				result = true;
-			}
-			return result;
+			if (xml == null || !xml.CmdSucceed) return false;
+
+            XmlDocument cmdResult = xml.CmdResult;
+            XmlNode xmlNode = cmdResult.SelectSingleNode("/results");
+            XmlNodeList childNodes = xmlNode.ChildNodes;
+            foreach (XmlNode xmlNode2 in childNodes)
+            {
+                if (xmlNode2.Name == "outcitydto")
+                {
+                    this.renderBuildingNode(xmlNode2, user._buildings);
+                }
+                else if (xmlNode2.Name == "constructordto")
+                {
+                    this.updateBuildLine(xmlNode2.ChildNodes, user._buildingLines);
+                }
+            }
+            return true;
 		}
 
 		private void updateBuildLine(XmlNodeList line_childs, Dictionary<int, BuildingLine> buildingLines)
 		{
 			BuildingLine buildingLine = new BuildingLine();
-			foreach (XmlNode xmlNode in line_childs)
-			{
-				bool flag = xmlNode.Name == "cid";
-				if (flag)
-				{
-					buildingLine.Id = int.Parse(xmlNode.InnerText);
-				}
-				else
-				{
-					bool flag2 = xmlNode.Name == "ctime";
-					if (flag2)
-					{
-						buildingLine.CdTime = long.Parse(xmlNode.InnerText);
-					}
-					else
-					{
-						bool flag3 = xmlNode.Name == "cdflag";
-						if (flag3)
-						{
-							buildingLine.CdFlag = int.Parse(xmlNode.InnerText);
-						}
-					}
-				}
-			}
-			bool flag4 = buildingLines.ContainsKey(buildingLine.Id);
-			if (flag4)
+
+            foreach (XmlNode xmlNode in line_childs)
+            {
+                if (xmlNode.Name == "cid")
+                {
+                    buildingLine.Id = int.Parse(xmlNode.InnerText);
+                }
+                else if (xmlNode.Name == "ctime")
+                {
+                    buildingLine.CdTime = long.Parse(xmlNode.InnerText);
+                }
+                else if (xmlNode.Name == "cdflag")
+                {
+                    buildingLine.CdFlag = int.Parse(xmlNode.InnerText);
+                }
+            }
+
+			if (buildingLines.ContainsKey(buildingLine.Id))
 			{
 				buildingLines[buildingLine.Id].CdTime = buildingLine.CdTime;
 				buildingLines[buildingLine.Id].CdFlag = buildingLine.CdFlag;
@@ -341,83 +307,67 @@ namespace com.lover.astd.common.logic
 			string cost = building.getCost();
 			string url = "/root/mainCity!upgradeLevel.action";
 			bool isOutCity = building.IsOutCity;
-			if (isOutCity)
-			{
-				url = "/root/outCity!upgradeLevel.action";
-			}
-			string data = "player_BuildingId=" + building.Id;
+            if (isOutCity) url = "/root/outCity!upgradeLevel.action";
+            string data = string.Format("player_BuildingId={0}", building.Id);
 			ServerResult serverResult = protocol.postXml(url, data, "升级建筑");
-			bool flag = serverResult == null || !serverResult.CmdSucceed;
-			bool result;
-			if (flag)
-			{
-				result = false;
-			}
-			else
-			{
-				XmlDocument cmdResult = serverResult.CmdResult;
-				XmlNode xmlNode = cmdResult.SelectSingleNode("/results");
-				XmlNodeList childNodes = xmlNode.ChildNodes;
-				foreach (XmlNode xmlNode2 in childNodes)
-				{
-					bool flag2 = xmlNode2.Name == "maincitydto";
-					if (flag2)
-					{
-						XmlNodeList childNodes2 = xmlNode2.ChildNodes;
-						building.fillValues(childNodes2);
-					}
-					else
-					{
-						bool flag3 = xmlNode2.Name == "outcitydto";
-						if (flag3)
-						{
-							XmlNodeList childNodes3 = xmlNode2.ChildNodes;
-							building.fillValues(childNodes3);
-						}
-						else
-						{
-							bool flag4 = xmlNode2.Name == "constructordto";
-							if (flag4)
-							{
-								this.updateBuildLine(xmlNode2.ChildNodes, buildingLines);
-							}
-						}
-					}
-				}
-				base.logInfo(logger, string.Format("升级建筑 {0} {1}=>{2}, 花费{3}", new object[]
-				{
-					building.Name,
-					building.Level - 1,
-					building.Level,
-					cost
-				}));
-				result = true;
-			}
-			return result;
+			if (serverResult == null || !serverResult.CmdSucceed) return false;
+
+            XmlDocument cmdResult = serverResult.CmdResult;
+            XmlNode xmlNode = cmdResult.SelectSingleNode("/results");
+            XmlNodeList childNodes = xmlNode.ChildNodes;
+            foreach (XmlNode xmlNode2 in childNodes)
+            {
+                if (xmlNode2.Name == "maincitydto")
+                {
+                    XmlNodeList childNodes2 = xmlNode2.ChildNodes;
+                    building.fillValues(childNodes2);
+                }
+                else if (xmlNode2.Name == "outcitydto")
+                {
+                    XmlNodeList childNodes3 = xmlNode2.ChildNodes;
+                    building.fillValues(childNodes3);
+                }
+                else if (xmlNode2.Name == "constructordto")
+                {
+                    this.updateBuildLine(xmlNode2.ChildNodes, buildingLines);
+                }
+            }
+            base.logInfo(logger, string.Format("升级建筑 {0} {1}=>{2}, 花费{3}", building.Name, building.Level - 1, building.Level, cost));
+            return true;
 		}
 
 		public bool hasEmptyLine(Dictionary<int, BuildingLine> buildingLines)
 		{
-			bool result = false;
 			foreach (BuildingLine current in buildingLines.Values)
 			{
-				bool flag = !current.AlreadyCd;
-				if (flag)
+				if (!current.AlreadyCd)
 				{
-					result = true;
-					break;
+					return true;
 				}
 			}
-			return result;
+
+            return false;
 		}
+
+        public bool hasReadyCdLine(Dictionary<int, BuildingLine> buildingLines)
+        {
+            foreach (BuildingLine current in buildingLines.Values)
+            {
+                if (current.CdTime > 0 && current.CdFlag == 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
 		public long recentLineCd(Dictionary<int, BuildingLine> buildingLines)
 		{
 			long num = -1L;
 			foreach (BuildingLine current in buildingLines.Values)
 			{
-				bool flag = num < 0L || num > current.CdTime;
-				if (flag)
+				if (num < 0L || num > current.CdTime)
 				{
 					num = current.CdTime;
 				}
