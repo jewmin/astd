@@ -3019,16 +3019,14 @@ namespace com.lover.astd.common.logic
             return result;
         }
 
-        public void buySpecialItem(ProtocolMgr protocol, ILogger logger)
+        public void buySpecialItem(ProtocolMgr protocol, ILogger logger, int commodityId)
         {
             string url = "/root/market!buySupperMarketSpecialGoods.action";
-            string data = "commodityId=1";
+            string data = string.Format("commodityId={0}", commodityId);
             ServerResult serverResult = protocol.postXml(url, data, "购买集市特供商品");
-            bool flag = serverResult == null || !serverResult.CmdSucceed;
-            if (!flag)
-            {
-                base.logInfo(logger, "购买集市特供商品, 花费3000万银币购买999宝石");
-            }
+            if (serverResult == null || !serverResult.CmdSucceed) return;
+
+            base.logInfo(logger, "购买集市特供商品, 花费3000万银币购买999宝石");
         }
 
         public void getDailyExtraItems(ProtocolMgr protocol, ILogger logger)
@@ -3077,16 +3075,43 @@ namespace com.lover.astd.common.logic
             XmlDocument cmdResult = xml.CmdResult;
             List<MiscMgr.MarketItem> list2 = new List<MiscMgr.MarketItem>();
             List<MiscMgr.MarketItem> list3 = new List<MiscMgr.MarketItem>();
-            bool state = false;
-            XmlNode xmlNode = cmdResult.SelectSingleNode("/results/special/state");
-            if (xmlNode != null)
+            //bool state = false;
+            //XmlNode xmlNode = cmdResult.SelectSingleNode("/results/special/state");
+            //if (xmlNode != null)
+            //{
+            //    state = (xmlNode.InnerText == "1");
+            //}
+            //if ((state & buy_super) && silver_available >= 30000000)
+            //{
+            //    this.buySpecialItem(protocol, logger);
+            //}
+
+            if (buy_super && silver_available >= 30000000)
             {
-                state = (xmlNode.InnerText == "1");
+                XmlNodeList specialNodeList = cmdResult.SelectNodes("/results/special");
+                foreach (XmlNode specialNode in specialNodeList)
+                {
+                    int commodityId = 0;
+                    int state = 0;
+                    XmlNodeList specialChildNodes = specialNode.ChildNodes;
+                    foreach (XmlNode specialChildNode in specialChildNodes)
+                    {
+                        if (specialChildNode.Name == "state")
+                        {
+                            state = int.Parse(specialChildNode.InnerText);
+                        }
+                        else if (specialChildNode.Name == "id")
+                        {
+                            commodityId = int.Parse(specialChildNode.InnerText);
+                        }
+                    }
+                    if (state == 1)
+                    {
+                        buySpecialItem(protocol, logger, commodityId);
+                    }
+                }
             }
-            if ((state & buy_super) && silver_available >= 30000000)
-            {
-                this.buySpecialItem(protocol, logger);
-            }
+
             XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/suppermarketdto");
             foreach (XmlNode xmlNode2 in xmlNodeList)
             {
