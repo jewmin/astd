@@ -10328,7 +10328,12 @@ namespace com.lover.astd.common.logic
                 springthundercost = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/cost/springthundercost"));
 
                 int canget = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/canget"));
-                Dictionary<int, RewardInfo> rewards = new Dictionary<int, RewardInfo>();
+                List<Dictionary<int, RewardInfo>> rewards = new List<Dictionary<int, RewardInfo>>();
+                rewards.Add(new Dictionary<int, RewardInfo>());
+                rewards.Add(new Dictionary<int, RewardInfo>());
+                rewards.Add(new Dictionary<int, RewardInfo>());
+                rewards.Add(new Dictionary<int, RewardInfo>());
+                rewards.Add(new Dictionary<int, RewardInfo>());
                 XmlNodeList rewardlist = xml.CmdResult.SelectNodes("/results/reward");
                 if (rewardlist != null)
                 {
@@ -10353,15 +10358,22 @@ namespace com.lover.astd.common.logic
                                 info.handleXmlNode(child_node);
                             }
                         }
-                        if (state == 1) rewards.Add(id, info);
+                        if (state == 1)
+                        {
+                            int type = info.getReward(0).Type;
+                            if (type == 56) rewards[0].Add(id, info);
+                            else if (type == 57) rewards[1].Add(id, info);
+                            else if (type == 48) rewards[2].Add(id, info);
+                            else if (type == 38) rewards[3].Add(id, info);
+                            else rewards[4].Add(id, info);
+                        }
                     }
                 }
-                if (canget == 1 && rewards.Count > 0)
+                if (canget == 1)
                 {
-                    foreach (KeyValuePair<int, RewardInfo> item in rewards)
+                    foreach (Dictionary<int, RewardInfo> reward in rewards)
                     {
-                        int type = item.Value.getReward(0).Type;
-                        if (type == 56 || type == 57 || type == 48)
+                        foreach (KeyValuePair<int, RewardInfo> item in reward)
                         {
                             if (!openGift(protocol, logger, user, item.Key)) return 1;
                         }
