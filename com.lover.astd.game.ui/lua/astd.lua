@@ -56,6 +56,7 @@ require("exe.borrowingarrows") -- ²İ´¬½è¼ı
 require("exe.arrestevent") -- ¶ËÎç
 require("exe.paradeevent") -- ĞÂ¹úÇìÔÄ±ø
 require("exe.ringevent") -- ĞÂÄêÇÃÖÓ
+require("exe.smeltspecialequip") -- ÈÛÁ¶×¨Êô
 
 -- Ö´ĞĞexecute
 function OnLuaExecute(exeId)
@@ -109,10 +110,11 @@ table.insert(ExeTable, MoralExe.exe)
 table.insert(ExeTable, SnowTradingExe.exe)
 table.insert(ExeTable, SpringFestivalWishExe.exe)
 table.insert(ExeTable, NewYearActivityExe.exe)
--- table.insert(ExeTable, SpecialEquipExe.exe)
+table.insert(ExeTable, SpecialEquipExe.exe)
 table.insert(ExeTable, ZhugeExe.exe)
 table.insert(ExeTable, TechnologyExe.exe)
 table.insert(ExeTable, BorrowingArrowsExe.exe)
 table.insert(ExeTable, ArrestEventExe.exe)
 table.insert(ExeTable, ParadeEventExe.exe)
 table.insert(ExeTable, RingEventExe.exe)
+table.insert(ExeTable, SmeltSpecialEquipExe.exe)

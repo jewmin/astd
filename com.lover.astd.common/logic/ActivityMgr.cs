@@ -10442,14 +10442,14 @@ namespace com.lover.astd.common.logic
                         if (springthundernum > 0) result = bombNian(protocol, logger, user, 3);
                         else if (stringfirecrackersnum > 0) result = bombNian(protocol, logger, user, 2);
                         else if (firecrackersnum > 0) result = bombNian(protocol, logger, user, 1);
-                        else return 2;
+                        else result = huntNian(protocol, logger, user);// return 2;
                     }
                     else
                     {
                         if (springthundercost <= cost10) result = bombNian(protocol, logger, user, 3);
                         else if (stringfirecrackerscost <= cost5) result = bombNian(protocol, logger, user, 2);
                         else if (firecrackerscost <= cost1) result = bombNian(protocol, logger, user, 1);
-                        else return 2;
+                        else result = huntNian(protocol, logger, user);// return 2;
                     }
                 }
                 else if (nianhp > 50)
@@ -10459,14 +10459,14 @@ namespace com.lover.astd.common.logic
                         if (stringfirecrackersnum > 0) result = bombNian(protocol, logger, user, 2);
                         else if (firecrackersnum > 0) result = bombNian(protocol, logger, user, 1);
                         else if (springthundernum > 0) result = bombNian(protocol, logger, user, 3);
-                        else return 2;
+                        else result = huntNian(protocol, logger, user);// return 2;
                     }
                     else
                     {
                         if (stringfirecrackerscost <= cost5) result = bombNian(protocol, logger, user, 2);
                         else if (firecrackerscost <= cost1) result = bombNian(protocol, logger, user, 1);
                         else if (springthundercost <= cost10) result = bombNian(protocol, logger, user, 3);
-                        else return 2;
+                        else result = huntNian(protocol, logger, user);// return 2;
                     }
                 }
                 else if (nianhp > 10)
@@ -10476,14 +10476,14 @@ namespace com.lover.astd.common.logic
                         if (firecrackersnum > 0) result = bombNian(protocol, logger, user, 1);
                         else if (stringfirecrackersnum > 0) result = bombNian(protocol, logger, user, 2);
                         else if (springthundernum > 0) result = bombNian(protocol, logger, user, 3);
-                        else return 2;
+                        else result = huntNian(protocol, logger, user);// return 2;
                     }
                     else
                     {
                         if (firecrackerscost <= cost1) result = bombNian(protocol, logger, user, 1);
                         else if (stringfirecrackerscost <= cost5) result = bombNian(protocol, logger, user, 2);
                         else if (springthundercost <= cost10) result = bombNian(protocol, logger, user, 3);
-                        else return 2;
+                        else result = huntNian(protocol, logger, user);// return 2;
                     }
                 }
                 else

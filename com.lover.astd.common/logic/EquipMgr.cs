@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Xml;
 using System.Text;
+using com.lover.astd.common.model.misc;
 
 namespace com.lover.astd.common.logic
 {
@@ -3325,6 +3326,117 @@ namespace com.lover.astd.common.logic
             user._specialEquipSkillInfo.Parse(xml.CmdResult.SelectSingleNode("/results"));
             logInfo(logger, string.Format("铸造{0}lv.{1}, 消耗镔铁*{2}, {3}*{4}", sheetinfo.name, sheetinfo.lv, sheetinfo.material2num, sheetinfo.goodsname, sheetinfo.material1num));
             return true;
+        }
+
+        /*<results>
+         *  <state>1</state>
+         *  <freetimes>5</freetimes>
+         *  <firstcost>0</firstcost>
+         *  <secondcost>50</secondcost>
+         *  <maxprogress>100</maxprogress>
+         *  <progress>40</progress>
+         *</results>*/
+        public long getSpecialEquipCastInfo(ProtocolMgr protocol, ILogger logger, User user, int firstcost_limit, int secondcost_limit)
+        {
+            string url = "/root/equip!getSpecialEquipCastInfo.action";
+            ServerResult xml = protocol.getXml(url, "装备铸造 - 信息");
+            if (xml == null || !xml.CmdSucceed) return next_halfhour();
+
+            int freetimes = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/freetimes"));
+            int firstcost = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/firstcost"));
+            int secondcost = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/secondcost"));
+            int maxprogress = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/maxprogress"));
+            int progress = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/progress"));
+            
+            if (firstcost <= firstcost_limit)
+            {
+                specialEquipCast(protocol, logger, user, 1);
+            }
+            else if (secondcost <= secondcost_limit)
+            {
+                specialEquipCast(protocol, logger, user, 2);
+            }
+            else
+            {
+                return next_day();
+            }
+
+            return immediate();
+        }
+
+        /*<results>
+         *  <state>1</state>
+         *  <specialequipcast><id>0</id><pic>yulvjindaijia1</pic><rewardinfo><reward><type>51</type><quality>5</quality><lv>5</lv><num>1</num></reward></rewardinfo></specialequipcast>
+         *  <specialequipcast><id>1</id><pic>bintie</pic><rewardinfo><reward><type>50</type><lv>1</lv><num>10000</num></reward></rewardinfo></specialequipcast>
+         *  <specialequipcast><id>2</id><pic>yulvjindaijia1</pic><rewardinfo><reward><type>51</type><itemname>专属·玉镂金带甲</itemname><quality>5</quality><lv>5</lv><num>1</num></reward></rewardinfo></specialequipcast>
+         *  <specialequipcast><id>3</id><pic>daodejinglunbingyaoyishu1</pic><rewardinfo><reward><type>51</type><itemname>专属·道德经论兵要义述</itemname><quality>2</quality><lv>2</lv><num>1</num></reward></rewardinfo></specialequipcast>
+         *  <specialequipcast><id>4</id><pic>maopilongfeipifeng1</pic><rewardinfo><reward><type>51</type><itemname>专属·毛皮龙飞披风</itemname><quality>3</quality><lv>3</lv><num>1</num></reward></rewardinfo></specialequipcast>
+         *  <specialequipcast><id>5</id><pic>bintie</pic><rewardinfo><reward><type>50</type><lv>1</lv><num>20000</num></reward></rewardinfo></specialequipcast>
+         *</results>*/
+        public void specialEquipCast(ProtocolMgr protocol, ILogger logger, User user, int type)
+        {
+            string url = "/root/equip!specialEquipCast.action";
+            string data = string.Format("type={0}", type);
+            ServerResult xml = protocol.postXml(url, data, "装备铸造 - 铸造");
+            if (xml == null || !xml.CmdSucceed) return;
+
+            XmlNodeList xmlnodelist = xml.CmdResult.SelectNodes("/results/specialequipcast");
+            if (xmlnodelist == null || xmlnodelist.Count == 0) return;
+
+            StringBuilder sb = new StringBuilder("装备铸造 - 铸造, 获得");
+            foreach (XmlNode xmlnode in xmlnodelist)
+            {
+                RewardInfo reward = new RewardInfo();
+                reward.handleXmlNode(xmlnode.SelectSingleNode("rewardinfo"));
+                sb.Append(reward.ToString());
+            }
+            logInfo(logger, sb.ToString());
+        }
+
+        public long getAllSpecialEquip(ProtocolMgr protocol, ILogger logger, User user, int equiplevel_limit, int quality_limit)
+        {
+            string url = "/root/equip!getAllSpecialEquip.action";
+            ServerResult xml = protocol.getXml(url, "专属仓库");
+            if (xml == null || !xml.CmdSucceed) return next_day();
+
+            List<SpecialEquip> equip_list = XmlHelper.GetClassList<SpecialEquip>(xml.CmdResult.SelectNodes("/results/equipdto"));
+            if (equip_list == null || equip_list.Count == 0) return next_day();
+
+            foreach (SpecialEquip equip in equip_list)
+            {
+                if (equip.quality <= quality_limit)
+                {
+                    smeltSpecialEquip(protocol, logger, user, equip);
+                }
+                else if (equip.equiplevel <= equiplevel_limit)
+                {
+                    smeltSpecialEquip(protocol, logger, user, equip);
+                }
+            }
+
+            return next_day();
+        }
+
+        /*<results>
+         *  <state>1</state>
+         *  <rewardinfo>
+         *      <reward>
+         *          <type>58</type>
+         *          <lv>1</lv>
+         *          <num>3</num>
+         *      </reward>
+         *  </rewardinfo>
+         *</results>*/
+        public void smeltSpecialEquip(ProtocolMgr protocol, ILogger logger, User user, SpecialEquip equip, int all = 1)
+        {
+            string url = "/root/equip!smeltSpecialEquip.action";
+            string data = string.Format("specialId={0}&all={1}", equip.storeid, all);
+            ServerResult xml = protocol.postXml(url, data, "熔炼专属");
+            if (xml == null || !xml.CmdSucceed) return;
+
+            RewardInfo reward = new RewardInfo();
+            reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
+            logInfo(logger, string.Format("熔炼[{0}], 获得{1}", equip.GetEquipName(), reward.ToString()));
         }
         #endregion
 

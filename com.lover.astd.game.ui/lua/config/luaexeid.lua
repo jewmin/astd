@@ -17,4 +17,5 @@ LuaExeId =
   eArrestEvent = 14, -- 端午
   eParadeEvent = 15, -- 新国庆阅兵
   eRingEvent = 16, -- 新年敲钟
+  eSmeltSpecialEquip = 17, -- 熔炼专属
 }

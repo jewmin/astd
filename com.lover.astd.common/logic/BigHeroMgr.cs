@@ -30,11 +30,12 @@ namespace com.lover.astd.common.logic
             indexs_["黄帝"] = 1300;
             indexs_["后羿"] = 1400;
             indexs_["夏桀"] = 1500;
-            indexs_["王翦"] = 1700;
+            indexs_["王翦"] = 1600;
+            indexs_["成吉思汗"] = 1601;
+            indexs_["张良"] = 1602;
             indexs_["鬼谷子"] = 1702;
             indexs_["荆轲"] = 1703;
             indexs_["曹操"] = 1704;
-            indexs_["成吉思汗"] = 1705;
             indexs_["蚩尤"] = 1706;
             indexs_["炎帝"] = 1707;
             indexs_["姜子牙"] = 1708;

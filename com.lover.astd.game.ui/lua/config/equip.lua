@@ -18,4 +18,16 @@ equipConfig =
 
   -- 炼制模式 1:镔铁 2:铁锤
   refine_mode = 2,
+
+  -- 新铸造, 铸造花费金币上限
+  firstcost_limit = 0,
+
+  -- 新铸造, 精火铸造花费金币上限
+  secondcost_limit = 0,
+
+  -- 熔炼，3星专属
+  equiplevel_limit = 3,
+
+  -- 熔炼，红色专属 1白 2蓝 3绿 4黄 5红 6紫
+  quality_limit = 5,
 }

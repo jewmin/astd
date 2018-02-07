@@ -140,6 +140,9 @@ namespace com.lover.astd.common.model.misc
                 case 57:
                     reward = "磨砺石";
                     break;
+                case 58:
+                    reward = "紫晶石";
+                    break;
                 default:
                     reward = string.Format("[type={0},itemname={1},quality={2},lv={3},num={4}]", Type, ItemName, Quality, Lv, Num);
                     break;

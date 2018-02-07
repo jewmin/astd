@@ -25,8 +25,8 @@ baijiayanConfig =
   select_db =
   {
     "夏桀",
-    "黄帝",
-    "蚩尤",
+    "成吉思汗",
+    "张良",
     "李白"
   }
 }
@@ -79,20 +79,22 @@ snowTradingConfig =
   choose = 2,
 }
 
+-- 草船借箭
 borrowingArrowsConfig =
 {
   -- 发船费用
-  buyboatcostlimit = 5,
+  buyboatcostlimit = 0,
   -- 是否使用神机妙算
   calculatestream = false,
   -- 神机妙算费用
-  calculatestreamcostlimit = 20,
+  calculatestreamcostlimit = 0,
   -- 邀功费用
   costlimit = 150000,
   -- 承重百分比
   percent = 0.8,
 }
 
+-- 抓捕
 arrestEventConfig =
 {
   -- 抓捕令费用
@@ -103,12 +105,13 @@ arrestEventConfig =
   hishenlimit = 0,
 }
 
+-- 阅兵庆典
 ParadeEventConfig =
 {
     -- 阅兵费用
     costlimit = 0,
     -- 轮次购买费用
-    roundcostlimit = 2,
+    roundcostlimit = 0,
 }
 
 RingEventConfig =
