@@ -35,76 +35,76 @@ global.type2name[48] = "%d倍暴击铁锤"
 global.type2name[50] = "镔铁"
 
 global.parseXmlNode = function(xmlNode)
-  if xmlNode == nil then return nil end
-  if xmlNode.HasChildNodes then
-    local childNodes = xmlNode.ChildNodes
-    if childNodes == nil then return nil end
-    local result = {}
-    for i = 1, childNodes.Count do
-      local item = childNodes:Item(i - 1)
-      if item == nil then return nil end
-      if item.NodeType == XmlNodeType.Text then return (tonumber(item.InnerText) or item.InnerText) end
+	if xmlNode == nil then return nil end
+	if xmlNode.HasChildNodes then
+		local childNodes = xmlNode.ChildNodes
+		if childNodes == nil then return nil end
+		local result = {}
+		for i = 1, childNodes.Count do
+			local item = childNodes:Item(i - 1)
+			if item == nil then return nil end
+			if item.NodeType == XmlNodeType.Text then return (tonumber(item.InnerText) or item.InnerText) end
 
-      local value = result[item.Name]
-      if not value or type(value) ~= "table" then result[item.Name] = {} end
-      table.insert(result[item.Name], global.parseXmlNode(item))
-    end
-    return result
-  else
-    return (tonumber(xmlNode.InnerText) or xmlNode.InnerText)
-  end
+			local value = result[item.Name]
+			if not value or type(value) ~= "table" then result[item.Name] = {} end
+			table.insert(result[item.Name], global.parseXmlNode(item))
+		end
+		return result
+	else
+		return (tonumber(xmlNode.InnerText) or xmlNode.InnerText)
+	end
 end
 
 -- 解析奖励xml
 global.handleXmlNode = function(xmlNode)
-  local list = xmlNode:SelectNodes("reward");
-  if list == nil then return nil end
-  local data = {}
-  for i = 1, list.Count do
-    local reward = {}
-    reward.type = 0
-    reward.name = ""
-    reward.quality = 1
-    reward.level = 1
-    reward.num = 0
-    local node = list:Item(i - 1)
-    local attr = node:SelectSingleNode("type")
-    if attr ~= nil then reward.type = tonumber(attr.InnerText) end
-    attr = node:SelectSingleNode("lv")
-    if attr ~= nil then reward.level = tonumber(attr.InnerText) end
-    attr = node:SelectSingleNode("num")
-    if attr ~= nil then reward.num = tonumber(attr.InnerText) end
-    attr = node:SelectSingleNode("itemname")
-    if attr ~= nil then reward.name = attr.InnerText end
-    attr = node:SelectSingleNode("quality")
-    if attr ~= nil then reward.quality = tonumber(attr.InnerText) end
-    table.insert(data, reward)
-  end
-  return data
+	local list = xmlNode:SelectNodes("reward");
+	if list == nil then return nil end
+	local data = {}
+	for i = 1, list.Count do
+		local reward = {}
+		reward.type = 0
+		reward.name = ""
+		reward.quality = 1
+		reward.level = 1
+		reward.num = 0
+		local node = list:Item(i - 1)
+		local attr = node:SelectSingleNode("type")
+		if attr ~= nil then reward.type = tonumber(attr.InnerText) end
+		attr = node:SelectSingleNode("lv")
+		if attr ~= nil then reward.level = tonumber(attr.InnerText) end
+		attr = node:SelectSingleNode("num")
+		if attr ~= nil then reward.num = tonumber(attr.InnerText) end
+		attr = node:SelectSingleNode("itemname")
+		if attr ~= nil then reward.name = attr.InnerText end
+		attr = node:SelectSingleNode("quality")
+		if attr ~= nil then reward.quality = tonumber(attr.InnerText) end
+		table.insert(data, reward)
+	end
+	return data
 end
 
 -- 输出奖励字符串
 global.tostring = function(data)
-  local info = ""
-  if data ~= nil then
-    for i, v in ipairs(data) do
-      info = info .. string.format("%s ", global.initstring(v))
-    end
-  end
-  return info
+	local info = ""
+	if data ~= nil then
+		for i, v in ipairs(data) do
+		info = info .. string.format("%s ", global.initstring(v))
+		end
+	end
+	return info
 end
 
 -- 根据奖励类型输出奖励内容
 global.initstring = function(reward)
-  local name = global.type2name[reward.type] or ""
-  if reward.type == 5 or reward.type == 48 then
-    name = string.format(global.type2name[reward.type], reward.level)
-  elseif reward.type == 6 or reward.type == 7 then
-    name = string.format(global.type2name[reward.type], reward.name)
-  elseif reward.type == 38 then
-    name = string.format(global.type2name[reward.type], reward.name, reward.level)
-  end
-  return string.format("%s+%d", name, reward.num)
+	local name = global.type2name[reward.type] or ""
+	if reward.type == 5 or reward.type == 48 then
+		name = string.format(global.type2name[reward.type], reward.level)
+	elseif reward.type == 6 or reward.type == 7 then
+		name = string.format(global.type2name[reward.type], reward.name)
+	elseif reward.type == 38 then
+		name = string.format(global.type2name[reward.type], reward.name, reward.level)
+	end
+	return string.format("%s+%d", name, reward.num)
 end
 
 -- 宝石性价比，返回1级宝石等价金币
@@ -154,20 +154,20 @@ end
 
 -- 取部队名称
 global.getArmy = function(army)
-  local armyname = {"普通", "精英", "首领"}
-  if army >= 1 and army <= 3 then
-    return armyname[army]
-  else
-    return "未知"
-  end
+	local armyname = {"普通", "精英", "首领"}
+	if army >= 1 and army <= 3 then
+		return armyname[army]
+	else
+		return "未知"
+	end
 end
 
 -- 取月亮
 global.getMoon = function(type)
-  local moon = {"月黑风高;士气低落", "月色朦胧;士气规整", "月满乾坤;士气高涨"}
-  if type >= 1 and type <= 3 then
-    return moon[type]
-  else
-    return "未知"
-  end
+	local moon = {"月黑风高;士气低落", "月色朦胧;士气规整", "月满乾坤;士气高涨"}
+	if type >= 1 and type <= 3 then
+		return moon[type]
+	else
+		return "未知"
+	end
 end

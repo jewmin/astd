@@ -3335,7 +3335,16 @@ namespace com.lover.astd.common.logic
          *  <secondcost>50</secondcost>
          *  <maxprogress>100</maxprogress>
          *  <progress>40</progress>
-         *</results>*/
+         *</results>
+          <results>
+         *  <state>1</state>
+         *  <freetimes>0</freetimes>
+         *  <firstcost>5</firstcost>
+         *  <secondcost>50</secondcost>
+         *  <maxprogress>100</maxprogress>
+         *  <progress>100</progress>
+         *</results>
+         */
         public long getSpecialEquipCastInfo(ProtocolMgr protocol, ILogger logger, User user, int firstcost_limit, int secondcost_limit)
         {
             string url = "/root/equip!getSpecialEquipCastInfo.action";
@@ -3347,8 +3356,12 @@ namespace com.lover.astd.common.logic
             int secondcost = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/secondcost"));
             int maxprogress = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/maxprogress"));
             int progress = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/progress"));
-            
-            if (firstcost <= firstcost_limit)
+
+            if (progress == maxprogress)
+            {
+                specialEquipCast(protocol, logger, user, 2);
+            }
+            else if (firstcost <= firstcost_limit)
             {
                 specialEquipCast(protocol, logger, user, 1);
             }

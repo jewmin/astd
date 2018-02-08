@@ -53,7 +53,7 @@ namespace com.lover.astd.common.activity
     public class exchangereward : XmlObject, IComparable
     {
         private string[] rewardname = { "镔铁", "点卷", "宝物", "宝石" };
-        private int[] priority = { 4, 3, 2, 1 };
+        private int[] priority = { 4, 2, 1, 3 };
         /// <summary>
         /// 邀功类型
         /// </summary>
