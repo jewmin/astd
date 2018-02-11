@@ -10165,13 +10165,15 @@ namespace com.lover.astd.common.logic
             //int nowevent = lua.GetIntValue("results.nowevent");
             //string wishstate = lua.GetStringValue("results.wishstate");
             //int cangetreward = lua.GetIntValue("results.cangetreward");
-            int haschoose = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/haschoose"));
+            //int haschoose; = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/haschoose"));
             int nowevent = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/nowevent"));
             string wishstate = XmlHelper.GetString(xml.CmdResult.SelectSingleNode("/results/wishstate"));
             int cangetreward = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/cangetreward"));
             if (nowevent == 1)
             {
-                if (haschoose == 0)
+                XmlNode node = xml.CmdResult.SelectSingleNode("/results/nextfu");
+                if (node != null)
+                //if (haschoose == 1)
                 {
                     if (!hangInTheTree(protocol, logger, user))
                     {
