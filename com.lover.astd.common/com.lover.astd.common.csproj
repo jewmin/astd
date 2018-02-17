@@ -44,6 +44,7 @@
     <Compile Include="activity\ActivitySnowTrading.cs" />
     <Compile Include="activity\ArrestEvent.cs" />
     <Compile Include="activity\BorrowingArrowsEvent.cs" />
+    <Compile Include="activity\MemoryEvent.cs" />
     <Compile Include="activity\ParadeEvent.cs" />
     <Compile Include="activity\RingEvent.cs" />
     <Compile Include="ClientCache.cs" />
@@ -150,6 +151,7 @@
     <Compile Include="manager\WeaponHelper.cs" />
     <Compile Include="model\AccountData.cs" />
     <Compile Include="model\activity\CaseState.cs" />
+    <Compile Include="model\activity\DoubleElevenEventReward.cs" />
     <Compile Include="model\activity\ProgressState.cs" />
     <Compile Include="model\activity\TaskInfo.cs" />
     <Compile Include="model\AsObject.cs" />

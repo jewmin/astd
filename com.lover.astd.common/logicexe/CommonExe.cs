@@ -42,6 +42,7 @@ namespace com.lover.astd.common.logicexe
 			}
             this._factory.getMiscManager().getGeneralTowerInfo(this._proto, this._logger);
             this._factory.getActivityManager().getPayHongbaoEventInfo(this._proto, this._logger);
+            this._factory.getActivityManager().getDoubleElevenEventInfo(this._proto, this._logger, this._user);
             if (this._user.Silver < 10000000)
             {
                 this._factory.getMiscManager().ticketExchangeMoney(this._proto, this._logger, 3);

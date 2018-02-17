@@ -114,6 +114,7 @@ ParadeEventConfig =
 	roundcostlimit = 0,
 }
 
+-- 新年敲钟
 RingEventConfig =
 {
 	-- 随机敲钟费用
@@ -122,4 +123,14 @@ RingEventConfig =
 	other_ring_cost = 5,
 	-- 进度奖励
 	progress_choose = 1,
+}
+
+-- 新春拜年
+MemoryEventConfig =
+{
+	-- 拜年费用
+	wish_cost = 5,
+
+	-- 红包费用
+	hongbao_cost = 0,
 }

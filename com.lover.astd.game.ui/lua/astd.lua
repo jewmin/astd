@@ -57,6 +57,7 @@ require("exe.arrestevent") -- 端午
 require("exe.paradeevent") -- 新国庆阅兵
 require("exe.ringevent") -- 新年敲钟
 require("exe.smeltspecialequip") -- 熔炼专属
+require("exe.memoryevent") -- 新春拜年
 
 -- 执行execute
 function OnLuaExecute(exeId)
@@ -118,3 +119,4 @@ table.insert(ExeTable, ArrestEventExe.exe)
 table.insert(ExeTable, ParadeEventExe.exe)
 table.insert(ExeTable, RingEventExe.exe)
 table.insert(ExeTable, SmeltSpecialEquipExe.exe)
+table.insert(ExeTable, MemoryEventExe.exe)

@@ -38,6 +38,10 @@ namespace com.lover.astd.common.logic
         /// 新年敲钟
         /// </summary>
         private RingEvent ringEvent_;
+        /// <summary>
+        /// 新春拜年
+        /// </summary>
+        private MemoryEvent memoryEvent_;
 
         public class KfzbItem
         {
@@ -303,6 +307,7 @@ namespace com.lover.astd.common.logic
             arrestEvent_ = new ArrestEvent(tmrMgr, factory);
             paradeEvent_ = new ParadeEvent(tmrMgr, factory);
             ringEvent_ = new RingEvent(tmrMgr, factory);
+            memoryEvent_ = new MemoryEvent(tmrMgr, factory);
         }
 
         private bool doSilverFlopStep(char[,] s, int pos)
@@ -3384,12 +3389,12 @@ namespace com.lover.astd.common.logic
                 bool flag4 = gold_available >= num;
                 if (flag4)
                 {
-                    this.openBox(protocol, logger, open_box_type);
+                    this.openHonbao(protocol, logger, open_box_type);
                     gold_available -= num;
                 }
                 else
                 {
-                    this.openBox(protocol, logger, 0);
+                    this.openHonbao(protocol, logger, 0);
                 }
                 num2 = i;
             }
@@ -3649,7 +3654,7 @@ namespace com.lover.astd.common.logic
             return result;
         }
 
-        private bool openBox(ProtocolMgr protocol, ILogger logger, int mode)
+        private bool openHonbao(ProtocolMgr protocol, ILogger logger, int mode)
         {
             string url = "/root/nian!openHonbao.action";
             bool flag = mode != 0 && mode != 2 && mode != 4 && mode != 10;
@@ -10586,6 +10591,64 @@ namespace com.lover.astd.common.logic
             if (result == 10) return next_halfhour();
             else if (result == 2) return next_day();
             else return immediate();
+        }
+        #endregion
+
+        #region 新春拜年
+        public long MemoryEventExecute(ProtocolMgr protocol, ILogger logger, User user, int wishcost_limit, int hongbaocost_limit)
+        {
+            int result = memoryEvent_.getMemoryEventInfo(protocol, logger, user, wishcost_limit, hongbaocost_limit);
+            if (result == 10) return next_hour();
+            else if (result == 2) return next_day();
+            else return immediate();
+        }
+        #endregion
+
+        #region 消费送礼
+        public int getDoubleElevenEventInfo(ProtocolMgr protocol, ILogger logger, User user)
+        {
+            string url = "/root/event!getDoubleElevenEventInfo.action";
+            ServerResult xml = protocol.getXml(url, "消费送礼 - 活动界面");
+            if (xml == null || !xml.CmdSucceed) return 10;
+
+            List<DoubleElevenEventReward> rewardlist = XmlHelper.GetClassList<DoubleElevenEventReward>(xml.CmdResult.SelectNodes("/results/reward"));
+            int giftnum = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/giftnum"));
+            foreach (DoubleElevenEventReward reward in rewardlist)
+            {
+                if (reward.state == 1)
+                {
+                    event_openBox(protocol, logger, user, reward);
+                }
+            }
+
+            while (giftnum > 0)
+            {
+                event_openGift(protocol, logger, user);
+                giftnum--;
+            }
+
+            return 0;
+        }
+
+        public void event_openGift(ProtocolMgr protocol, ILogger logger, User user)
+        {
+            string url = "/root/event!openGift.action";
+            ServerResult xml = protocol.getXml(url, "消费送礼 - 打开礼袋");
+            if (xml == null || !xml.CmdSucceed) return;
+
+            RewardInfo rewardinfo = new RewardInfo();
+            rewardinfo.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
+            logInfo(logger, string.Format("消费送礼, 打开礼袋, 获得{0}", rewardinfo.ToString()));
+        }
+
+        public void event_openBox(ProtocolMgr protocol, ILogger logger, User user, DoubleElevenEventReward deer)
+        {
+            string url = "/root/event!openBox.action";
+            string data = string.Format("boxNum={0}", deer.id);
+            ServerResult xml = protocol.postXml(url, data, "消费送礼 - 打开消费累计宝箱");
+            if (xml == null || !xml.CmdSucceed) return;
+
+            logInfo(logger, xml.getDebugInfo());
         }
         #endregion
     }
