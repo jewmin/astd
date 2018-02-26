@@ -1056,6 +1056,11 @@ namespace com.lover.astd.common.logic
                             user._kfrank_task_num = finishline - finishnum;
                             base.logInfo(logger, string.Format("新每日任务，需要对战{0}次", user._kfrank_task_num));
                         }
+                        else if (taskcontext.Contains("精炼"))
+                        {
+                            user._refine2_task_num = finishline - finishnum;
+                            base.logInfo(logger, string.Format("新每日任务，需要精炼{0}次", user._refine2_task_num));
+                        }
                     }
                     else if (taskstate == 3)
                     {
@@ -6672,10 +6677,10 @@ namespace com.lover.astd.common.logic
                                 return 0;
                             }
                         }
-                        else */if (do_high_refine)
+                        else */if (do_high_refine || user._refine2_task_num > 0)
                         {
                             base.logInfo(logger, string.Format("余料: {0}/{1} 当前精炼队伍: {2} {3} {4}", refinenum, maxrefinenum, refinerList[0].Color, refinerList[1].Color, refinerList[2].Color));
-                            return this.refine(protocol, logger);
+                            return this.refine(protocol, logger, user);
                         }
                         return 2;
                     }
@@ -6690,7 +6695,7 @@ namespace com.lover.astd.common.logic
                         }
                         else
                         {
-                            return this.refine(protocol, logger);
+                            return this.refine(protocol, logger, user);
                         }
                     }
                 }
@@ -6965,7 +6970,7 @@ namespace com.lover.astd.common.logic
             return result;
         }
 
-        public int refine(ProtocolMgr protocol, ILogger logger)
+        public int refine(ProtocolMgr protocol, ILogger logger, User user)
         {
             string url = "/root/refine!refine.action";
             string text = "精炼";
@@ -6980,6 +6985,7 @@ namespace com.lover.astd.common.logic
             }
             else
             {
+                user._refine2_task_num--;
                 XmlDocument cmdResult = xml.CmdResult;
                 XmlNode xmlNode = cmdResult.SelectSingleNode("/results");
                 XmlNodeList childNodes = xmlNode.ChildNodes;
