@@ -86,7 +86,7 @@ namespace com.lover.astd.common.model
 
 		private int _credit;
 
-		private int _prestige;
+		private long _prestige;
 
 		private int _token;
 
@@ -733,7 +733,7 @@ namespace com.lover.astd.common.model
 			}
 		}
 
-		public int Prestige
+		public long Prestige
 		{
 			get
 			{
@@ -1257,7 +1257,7 @@ namespace com.lover.astd.common.model
                     }
                     else if (xmlNode.Name == "prestige")
                     {
-                        this._prestige = int.Parse(xmlNode.InnerText);
+                        this._prestige = long.Parse(xmlNode.InnerText);
                     }
                     else if (xmlNode.Name == "year")
                     {
