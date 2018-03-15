@@ -9693,6 +9693,7 @@ namespace com.lover.astd.common.logic
             }
             if (globalstate == 2)
             {
+                if (user._kfrank_task_num > 0) return next_hour();
                 return next_day_eight();
             }
             else if (status == 2)
@@ -9750,7 +9751,8 @@ namespace com.lover.astd.common.logic
                     return next_halfhour();
                 }
             }
-            
+
+            if (user._kfrank_task_num > 0) return next_hour();
             return next_day_eight();
         }
 

@@ -26,6 +26,7 @@ namespace com.lover.astd.common.logic
         /// </summary>
         private void initIndex()
         {
+            indexs_["武则天"] = 900;
             indexs_["李白"] = 1000;
             indexs_["黄帝"] = 1300;
             indexs_["后羿"] = 1400;
@@ -33,6 +34,7 @@ namespace com.lover.astd.common.logic
             indexs_["王翦"] = 1600;
             indexs_["成吉思汗"] = 1601;
             indexs_["张良"] = 1602;
+            indexs_["墨子"] = 1603;
             indexs_["鬼谷子"] = 1702;
             indexs_["荆轲"] = 1703;
             indexs_["曹操"] = 1704;
@@ -48,7 +50,6 @@ namespace com.lover.astd.common.logic
             indexs_["商汤"] = 2300;
             indexs_["周文王"] = 2400;
             indexs_["蒙恬"] = 2500;
-            indexs_["墨子"] = 2800;
             indexs_["典韦"] = 2900;
             indexs_["文丑"] = 3000;
             indexs_["西施"] = 3100;
