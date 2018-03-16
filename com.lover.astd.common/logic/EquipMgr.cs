@@ -890,7 +890,8 @@ namespace com.lover.astd.common.logic
                     else if (child.Name == "canevolve") treasure.canevolve_ = int.Parse(child.InnerText);
                     
                 }
-                if (treasure.Id > 0 && treasure.generalname_ != "")
+                //if (treasure.Id > 0 && treasure.generalname_ != "")
+                if (treasure.Id > 0 && (treasure.attribute_int_ > 0 || treasure.attribute_lea_ > 0 || treasure.attribute_str_ > 0))
                 {
                     user.SpecialTreasureList.Add(treasure);
                 }
