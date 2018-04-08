@@ -8991,8 +8991,8 @@ namespace com.lover.astd.common.logic
                         if (westernTrade(protocol, logger, item))
                         {
                             getWesternTradeReward(protocol, logger);
+                            return 0;
                         }
-                        break;
                     }
                 }
             }

@@ -419,6 +419,8 @@ namespace com.lover.astd.common.model
 
         private List<Specialtreasure> special_treasure_list_;
 
+        public List<com.lover.astd.common.logic.EquipMgr.Decoration> baowu_list_;
+
         /// <summary>
         /// 专属铸造
         /// </summary>
@@ -918,6 +920,8 @@ namespace com.lover.astd.common.model
         }
 
         public WorldExpansionInfo WorldExpansion_;
+
+        public List<BigHero> BigHeroList;
 
 		public void addUiToQueue(string ui_key)
 		{
@@ -1648,6 +1652,8 @@ namespace com.lover.astd.common.model
             this._specialEquipSkillInfo = new SkillInfo();
             this.special_treasure_list_ = new List<Specialtreasure>();
             this.WorldExpansion_ = new WorldExpansionInfo();
+            BigHeroList = new List<BigHero>();
+            baowu_list_ = new List<EquipMgr.Decoration>();
 			this._factory = factory;
 		}
 	}

@@ -133,6 +133,8 @@ namespace com.lover.astd.game.ui
             this.dataGridViewCheckBoxColumn1 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.col_name_specialtreasure = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.col_attr_specialtreasure = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tabPage10 = new System.Windows.Forms.TabPage();
+            this.dg_decoration = new System.Windows.Forms.DataGridView();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
@@ -338,6 +340,10 @@ namespace com.lover.astd.game.ui
             this.chk_AutoBoat = new System.Windows.Forms.CheckBox();
             this.chk_ShenHuo = new System.Windows.Forms.CheckBox();
             this.groupBox17 = new System.Windows.Forms.GroupBox();
+            this.label79 = new System.Windows.Forms.Label();
+            this.label77 = new System.Windows.Forms.Label();
+            this.label78 = new System.Windows.Forms.Label();
+            this.nUD_BinTie = new System.Windows.Forms.NumericUpDown();
             this.chk_SuperUseFree = new System.Windows.Forms.CheckBox();
             this.label56 = new System.Windows.Forms.Label();
             this.label60 = new System.Windows.Forms.Label();
@@ -464,6 +470,15 @@ namespace com.lover.astd.game.ui
             this.chk_kf_banquet_enabled = new System.Windows.Forms.CheckBox();
             this.chk_kfwd_enable = new System.Windows.Forms.CheckBox();
             this.chk_kfwd_buyreward = new System.Windows.Forms.CheckBox();
+            this.setPage3 = new System.Windows.Forms.TabPage();
+            this.groupBox24 = new System.Windows.Forms.GroupBox();
+            this.chk_OnlyAwaken = new System.Windows.Forms.CheckBox();
+            this.chk_OpenAwaken = new System.Windows.Forms.CheckBox();
+            this.chk_UseAwakenWine = new System.Windows.Forms.CheckBox();
+            this.dgv_AwakenGeneral = new System.Windows.Forms.DataGridView();
+            this.dataGridViewCheckBoxColumn3 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Awaken = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.logPage = new System.Windows.Forms.TabPage();
             this.subBrowser = new AxSHDocVw.AxWebBrowser();
             this.lbl_tempStatus = new System.Windows.Forms.Label();
@@ -478,10 +493,9 @@ namespace com.lover.astd.game.ui
             this.lbl_playerinfo = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lbl_time = new System.Windows.Forms.Label();
-            this.label77 = new System.Windows.Forms.Label();
-            this.label78 = new System.Windows.Forms.Label();
-            this.nUD_BinTie = new System.Windows.Forms.NumericUpDown();
-            this.label79 = new System.Windows.Forms.Label();
+            this.dataGridViewCheckBoxColumn4 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_ticket_bighero)).BeginInit();
@@ -510,6 +524,8 @@ namespace com.lover.astd.game.ui
             ((System.ComponentModel.ISupportInitialize)(this.num_polish_reserve)).BeginInit();
             this.tabPage9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dg_specialtreasure)).BeginInit();
+            this.tabPage10.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dg_decoration)).BeginInit();
             this.groupBox10.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_4)).BeginInit();
@@ -563,6 +579,7 @@ namespace com.lover.astd.game.ui
             this.groupBox19.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nUD_boat_up_coin)).BeginInit();
             this.groupBox17.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nUD_BinTie)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nUD_DianQuan)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nUD_CiShu)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nUD_BaoShi)).BeginInit();
@@ -591,9 +608,11 @@ namespace com.lover.astd.game.ui
             this.groupBox11.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_crossplatm_compete_gold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_kf_banquet_buygold)).BeginInit();
+            this.setPage3.SuspendLayout();
+            this.groupBox24.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_AwakenGeneral)).BeginInit();
             this.logPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.subBrowser)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nUD_BinTie)).BeginInit();
             this.SuspendLayout();
             // 
             // mainMenu
@@ -958,6 +977,7 @@ namespace com.lover.astd.game.ui
             this.mainTab.Controls.Add(this.gamePage);
             this.mainTab.Controls.Add(this.setPage);
             this.mainTab.Controls.Add(this.setPage2);
+            this.mainTab.Controls.Add(this.setPage3);
             this.mainTab.Controls.Add(this.logPage);
             this.mainTab.Location = new System.Drawing.Point(2, 25);
             this.mainTab.Name = "mainTab";
@@ -1044,6 +1064,7 @@ namespace com.lover.astd.game.ui
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Controls.Add(this.tabPage9);
+            this.tabControl1.Controls.Add(this.tabPage10);
             this.tabControl1.Location = new System.Drawing.Point(5, 17);
             this.tabControl1.Margin = new System.Windows.Forms.Padding(0);
             this.tabControl1.Name = "tabControl1";
@@ -1459,6 +1480,11 @@ namespace com.lover.astd.game.ui
             // num_upgrade_crystal
             // 
             this.num_upgrade_crystal.Location = new System.Drawing.Point(179, 126);
+            this.num_upgrade_crystal.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
             this.num_upgrade_crystal.Minimum = new decimal(new int[] {
             5,
             0,
@@ -1678,11 +1704,11 @@ namespace com.lover.astd.game.ui
             this.dataGridViewCheckBoxColumn1,
             this.col_name_specialtreasure,
             this.col_attr_specialtreasure});
-            this.dg_specialtreasure.Location = new System.Drawing.Point(6, 27);
+            this.dg_specialtreasure.Location = new System.Drawing.Point(3, 6);
             this.dg_specialtreasure.Name = "dg_specialtreasure";
             this.dg_specialtreasure.RowHeadersWidth = 30;
             this.dg_specialtreasure.RowTemplate.Height = 23;
-            this.dg_specialtreasure.Size = new System.Drawing.Size(363, 188);
+            this.dg_specialtreasure.Size = new System.Drawing.Size(366, 209);
             this.dg_specialtreasure.TabIndex = 20;
             // 
             // dataGridViewCheckBoxColumn1
@@ -1705,6 +1731,36 @@ namespace com.lover.astd.game.ui
             this.col_attr_specialtreasure.HeaderText = "属性";
             this.col_attr_specialtreasure.Name = "col_attr_specialtreasure";
             this.col_attr_specialtreasure.Width = 150;
+            // 
+            // tabPage10
+            // 
+            this.tabPage10.BackColor = System.Drawing.Color.DarkSeaGreen;
+            this.tabPage10.Controls.Add(this.dg_decoration);
+            this.tabPage10.Location = new System.Drawing.Point(4, 22);
+            this.tabPage10.Name = "tabPage10";
+            this.tabPage10.Size = new System.Drawing.Size(375, 221);
+            this.tabPage10.TabIndex = 5;
+            this.tabPage10.Text = "玉佩";
+            // 
+            // dg_decoration
+            // 
+            this.dg_decoration.AllowDrop = true;
+            this.dg_decoration.AllowUserToAddRows = false;
+            this.dg_decoration.AllowUserToDeleteRows = false;
+            this.dg_decoration.AllowUserToOrderColumns = true;
+            this.dg_decoration.AllowUserToResizeRows = false;
+            this.dg_decoration.BackgroundColor = System.Drawing.Color.DarkSeaGreen;
+            this.dg_decoration.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dg_decoration.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridViewCheckBoxColumn4,
+            this.dataGridViewTextBoxColumn2,
+            this.dataGridViewTextBoxColumn5});
+            this.dg_decoration.Location = new System.Drawing.Point(3, 5);
+            this.dg_decoration.Name = "dg_decoration";
+            this.dg_decoration.RowHeadersWidth = 30;
+            this.dg_decoration.RowTemplate.Height = 23;
+            this.dg_decoration.Size = new System.Drawing.Size(369, 213);
+            this.dg_decoration.TabIndex = 21;
             // 
             // groupBox10
             // 
@@ -4139,6 +4195,55 @@ namespace com.lover.astd.game.ui
             this.groupBox17.TabStop = false;
             this.groupBox17.Text = "拜神";
             // 
+            // label79
+            // 
+            this.label79.AutoSize = true;
+            this.label79.Location = new System.Drawing.Point(42, 88);
+            this.label79.Name = "label79";
+            this.label79.Size = new System.Drawing.Size(17, 12);
+            this.label79.TabIndex = 72;
+            this.label79.Text = "≥";
+            // 
+            // label77
+            // 
+            this.label77.AutoSize = true;
+            this.label77.Location = new System.Drawing.Point(126, 88);
+            this.label77.Name = "label77";
+            this.label77.Size = new System.Drawing.Size(77, 12);
+            this.label77.TabIndex = 71;
+            this.label77.Text = "使用高级祭祀";
+            // 
+            // label78
+            // 
+            this.label78.AutoSize = true;
+            this.label78.Location = new System.Drawing.Point(8, 88);
+            this.label78.Name = "label78";
+            this.label78.Size = new System.Drawing.Size(41, 12);
+            this.label78.TabIndex = 70;
+            this.label78.Text = "镔铁：";
+            // 
+            // nUD_BinTie
+            // 
+            this.nUD_BinTie.Increment = new decimal(new int[] {
+            5000,
+            0,
+            0,
+            0});
+            this.nUD_BinTie.Location = new System.Drawing.Point(62, 85);
+            this.nUD_BinTie.Maximum = new decimal(new int[] {
+            90000000,
+            0,
+            0,
+            0});
+            this.nUD_BinTie.Name = "nUD_BinTie";
+            this.nUD_BinTie.Size = new System.Drawing.Size(63, 21);
+            this.nUD_BinTie.TabIndex = 69;
+            this.nUD_BinTie.Value = new decimal(new int[] {
+            60000,
+            0,
+            0,
+            0});
+            // 
             // chk_SuperUseFree
             // 
             this.chk_SuperUseFree.AutoSize = true;
@@ -5684,6 +5789,98 @@ namespace com.lover.astd.game.ui
             this.chk_kfwd_buyreward.Text = "购买武斗会宝箱";
             this.chk_kfwd_buyreward.UseVisualStyleBackColor = true;
             // 
+            // setPage3
+            // 
+            this.setPage3.BackColor = System.Drawing.Color.DarkSeaGreen;
+            this.setPage3.Controls.Add(this.groupBox24);
+            this.setPage3.Location = new System.Drawing.Point(4, 22);
+            this.setPage3.Name = "setPage3";
+            this.setPage3.Size = new System.Drawing.Size(1052, 607);
+            this.setPage3.TabIndex = 4;
+            this.setPage3.Text = "设置3";
+            // 
+            // groupBox24
+            // 
+            this.groupBox24.Controls.Add(this.chk_OnlyAwaken);
+            this.groupBox24.Controls.Add(this.chk_OpenAwaken);
+            this.groupBox24.Controls.Add(this.chk_UseAwakenWine);
+            this.groupBox24.Controls.Add(this.dgv_AwakenGeneral);
+            this.groupBox24.Location = new System.Drawing.Point(6, 3);
+            this.groupBox24.Name = "groupBox24";
+            this.groupBox24.Size = new System.Drawing.Size(322, 269);
+            this.groupBox24.TabIndex = 0;
+            this.groupBox24.TabStop = false;
+            this.groupBox24.Text = "觉醒";
+            // 
+            // chk_OnlyAwaken
+            // 
+            this.chk_OnlyAwaken.AutoSize = true;
+            this.chk_OnlyAwaken.Location = new System.Drawing.Point(174, 20);
+            this.chk_OnlyAwaken.Name = "chk_OnlyAwaken";
+            this.chk_OnlyAwaken.Size = new System.Drawing.Size(84, 16);
+            this.chk_OnlyAwaken.TabIndex = 24;
+            this.chk_OnlyAwaken.Text = "觉醒后停止";
+            this.chk_OnlyAwaken.UseVisualStyleBackColor = true;
+            // 
+            // chk_OpenAwaken
+            // 
+            this.chk_OpenAwaken.AutoSize = true;
+            this.chk_OpenAwaken.Location = new System.Drawing.Point(6, 20);
+            this.chk_OpenAwaken.Name = "chk_OpenAwaken";
+            this.chk_OpenAwaken.Size = new System.Drawing.Size(72, 16);
+            this.chk_OpenAwaken.TabIndex = 23;
+            this.chk_OpenAwaken.Text = "开启觉醒";
+            this.chk_OpenAwaken.UseVisualStyleBackColor = true;
+            // 
+            // chk_UseAwakenWine
+            // 
+            this.chk_UseAwakenWine.AutoSize = true;
+            this.chk_UseAwakenWine.Location = new System.Drawing.Point(84, 20);
+            this.chk_UseAwakenWine.Name = "chk_UseAwakenWine";
+            this.chk_UseAwakenWine.Size = new System.Drawing.Size(84, 16);
+            this.chk_UseAwakenWine.TabIndex = 22;
+            this.chk_UseAwakenWine.Text = "使用觉醒酒";
+            this.chk_UseAwakenWine.UseVisualStyleBackColor = true;
+            // 
+            // dgv_AwakenGeneral
+            // 
+            this.dgv_AwakenGeneral.AllowDrop = true;
+            this.dgv_AwakenGeneral.AllowUserToAddRows = false;
+            this.dgv_AwakenGeneral.AllowUserToDeleteRows = false;
+            this.dgv_AwakenGeneral.AllowUserToOrderColumns = true;
+            this.dgv_AwakenGeneral.AllowUserToResizeRows = false;
+            this.dgv_AwakenGeneral.BackgroundColor = System.Drawing.Color.DarkSeaGreen;
+            this.dgv_AwakenGeneral.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_AwakenGeneral.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridViewCheckBoxColumn3,
+            this.dataGridViewTextBoxColumn1,
+            this.Awaken});
+            this.dgv_AwakenGeneral.Location = new System.Drawing.Point(6, 42);
+            this.dgv_AwakenGeneral.Name = "dgv_AwakenGeneral";
+            this.dgv_AwakenGeneral.RowHeadersWidth = 30;
+            this.dgv_AwakenGeneral.RowTemplate.Height = 23;
+            this.dgv_AwakenGeneral.Size = new System.Drawing.Size(310, 221);
+            this.dgv_AwakenGeneral.TabIndex = 21;
+            // 
+            // dataGridViewCheckBoxColumn3
+            // 
+            this.dataGridViewCheckBoxColumn3.DataPropertyName = "IsChecked";
+            this.dataGridViewCheckBoxColumn3.HeaderText = "";
+            this.dataGridViewCheckBoxColumn3.Name = "dataGridViewCheckBoxColumn3";
+            this.dataGridViewCheckBoxColumn3.Width = 30;
+            // 
+            // dataGridViewTextBoxColumn1
+            // 
+            this.dataGridViewTextBoxColumn1.DataPropertyName = "Desc";
+            this.dataGridViewTextBoxColumn1.HeaderText = "名字";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            // 
+            // Awaken
+            // 
+            this.Awaken.DataPropertyName = "Awaken";
+            this.Awaken.HeaderText = "觉醒";
+            this.Awaken.Name = "Awaken";
+            // 
             // logPage
             // 
             this.logPage.Controls.Add(this.subBrowser);
@@ -5828,54 +6025,28 @@ namespace com.lover.astd.game.ui
             this.lbl_time.Size = new System.Drawing.Size(0, 12);
             this.lbl_time.TabIndex = 8;
             // 
-            // label77
+            // dataGridViewCheckBoxColumn4
             // 
-            this.label77.AutoSize = true;
-            this.label77.Location = new System.Drawing.Point(126, 88);
-            this.label77.Name = "label77";
-            this.label77.Size = new System.Drawing.Size(77, 12);
-            this.label77.TabIndex = 71;
-            this.label77.Text = "使用高级祭祀";
+            this.dataGridViewCheckBoxColumn4.DataPropertyName = "IsChecked";
+            this.dataGridViewCheckBoxColumn4.HeaderText = "";
+            this.dataGridViewCheckBoxColumn4.Name = "dataGridViewCheckBoxColumn4";
+            this.dataGridViewCheckBoxColumn4.Width = 30;
             // 
-            // label78
+            // dataGridViewTextBoxColumn2
             // 
-            this.label78.AutoSize = true;
-            this.label78.Location = new System.Drawing.Point(8, 88);
-            this.label78.Name = "label78";
-            this.label78.Size = new System.Drawing.Size(41, 12);
-            this.label78.TabIndex = 70;
-            this.label78.Text = "镔铁：";
+            this.dataGridViewTextBoxColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dataGridViewTextBoxColumn2.DataPropertyName = "NameWithGeneral";
+            this.dataGridViewTextBoxColumn2.HeaderText = "名字";
+            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            this.dataGridViewTextBoxColumn2.Width = 54;
             // 
-            // nUD_BinTie
+            // dataGridViewTextBoxColumn5
             // 
-            this.nUD_BinTie.Increment = new decimal(new int[] {
-            5000,
-            0,
-            0,
-            0});
-            this.nUD_BinTie.Location = new System.Drawing.Point(62, 85);
-            this.nUD_BinTie.Maximum = new decimal(new int[] {
-            90000000,
-            0,
-            0,
-            0});
-            this.nUD_BinTie.Name = "nUD_BinTie";
-            this.nUD_BinTie.Size = new System.Drawing.Size(63, 21);
-            this.nUD_BinTie.TabIndex = 69;
-            this.nUD_BinTie.Value = new decimal(new int[] {
-            60000,
-            0,
-            0,
-            0});
-            // 
-            // label79
-            // 
-            this.label79.AutoSize = true;
-            this.label79.Location = new System.Drawing.Point(42, 88);
-            this.label79.Name = "label79";
-            this.label79.Size = new System.Drawing.Size(17, 12);
-            this.label79.TabIndex = 72;
-            this.label79.Text = "≥";
+            this.dataGridViewTextBoxColumn5.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.dataGridViewTextBoxColumn5.DataPropertyName = "Attributes";
+            this.dataGridViewTextBoxColumn5.HeaderText = "属性";
+            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
+            this.dataGridViewTextBoxColumn5.Width = 54;
             // 
             // NewMainForm
             // 
@@ -5927,6 +6098,8 @@ namespace com.lover.astd.game.ui
             ((System.ComponentModel.ISupportInitialize)(this.num_polish_reserve)).EndInit();
             this.tabPage9.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dg_specialtreasure)).EndInit();
+            this.tabPage10.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dg_decoration)).EndInit();
             this.groupBox10.ResumeLayout(false);
             this.groupBox10.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_fete_5)).EndInit();
@@ -5999,6 +6172,7 @@ namespace com.lover.astd.game.ui
             ((System.ComponentModel.ISupportInitialize)(this.nUD_boat_up_coin)).EndInit();
             this.groupBox17.ResumeLayout(false);
             this.groupBox17.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nUD_BinTie)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nUD_DianQuan)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nUD_CiShu)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nUD_BaoShi)).EndInit();
@@ -6035,10 +6209,13 @@ namespace com.lover.astd.game.ui
             this.groupBox11.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_crossplatm_compete_gold)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_kf_banquet_buygold)).EndInit();
+            this.setPage3.ResumeLayout(false);
+            this.groupBox24.ResumeLayout(false);
+            this.groupBox24.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_AwakenGeneral)).EndInit();
             this.logPage.ResumeLayout(false);
             this.logPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.subBrowser)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nUD_BinTie)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -6497,6 +6674,20 @@ namespace com.lover.astd.game.ui
         private System.Windows.Forms.Label label77;
         private System.Windows.Forms.Label label78;
         public System.Windows.Forms.NumericUpDown nUD_BinTie;
+        private System.Windows.Forms.TabPage setPage3;
+        private System.Windows.Forms.GroupBox groupBox24;
+        public System.Windows.Forms.DataGridView dgv_AwakenGeneral;
+        public System.Windows.Forms.CheckBox chk_UseAwakenWine;
+        public System.Windows.Forms.CheckBox chk_OpenAwaken;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Awaken;
+        public System.Windows.Forms.CheckBox chk_OnlyAwaken;
+        public System.Windows.Forms.TabPage tabPage10;
+        public System.Windows.Forms.DataGridView dg_decoration;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn4;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
 
     }
 }

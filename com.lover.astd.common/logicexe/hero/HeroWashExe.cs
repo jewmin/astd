@@ -26,30 +26,44 @@ namespace com.lover.astd.common.logicexe.hero
             int superWashCount = 0;
             int canawaken = 0;
             HeroMgr heroManager = this._factory.getHeroManager();
-            List<com.lover.astd.common.model.BigHero> heros = heroManager.getWashModes(this._proto, this._logger, ref creditCostToWash, ref goldWashCount, ref superWashCount, ref canawaken);
-            heros.Sort();
+            this._user.BigHeroList = heroManager.getWashModes(this._proto, this._logger, ref creditCostToWash, ref goldWashCount, ref superWashCount, ref canawaken);
+            this._user.BigHeroList.Sort();
 
             if (canawaken == 1)
             {
-                foreach (com.lover.astd.common.model.BigHero general in heros)
+                if (config.ContainsKey("open_awaken") && config["open_awaken"].ToLower().Equals("true"))
                 {
-                    if (general.CanAwaken == 1)
+                    string bh_ids = "";
+                    if (config.ContainsKey("bh_ids")) bh_ids = config["bh_ids"];
+                    List<int> ids = base.generateIds(bh_ids);
+
+                    bool onlyawaken = config.ContainsKey("only_awaken") && config["only_awaken"].ToLower().Equals("true");
+                    bool useawakenwine = config.ContainsKey("use_awaken_wine") && config["use_awaken_wine"].ToLower().Equals("true");
+
+                    foreach (com.lover.astd.common.model.BigHero general in this._user.BigHeroList)
                     {
-                        GeneralAwakeInfo info = heroManager.getAwakenGeneralInfo(this._proto, this._logger, general);
-                        if (info != null)
+                        if (ids.Contains(general.Id) && general.CanAwaken == 1)
                         {
-                            if (info.isawaken == 0)
+                            GeneralAwakeInfo info = heroManager.getAwakenGeneralInfo(this._proto, this._logger, general);
+                            if (info != null)
                             {
-                                while (info.freeliquornum >= info.needliquornum)
+                                if (!onlyawaken || info.isawaken == 0)
                                 {
-                                    heroManager.awakenGeneral(this._proto, this._logger, general, true, ref info.needliquornum);
-                                    info.freeliquornum -= info.needliquornum;
+                                    while (info.freeliquornum >= info.needliquornum)
+                                    {
+                                        heroManager.awakenGeneral(this._proto, this._logger, general, true, ref info.needliquornum);
+                                        info.freeliquornum -= info.needliquornum;
+                                    }
+
+                                    if (useawakenwine)
+                                    {
+                                        while (info.liquornum >= info.needliquornum)
+                                        {
+                                            heroManager.awakenGeneral(this._proto, this._logger, general, false, ref info.needliquornum);
+                                            info.liquornum -= info.needliquornum;
+                                        }
+                                    }
                                 }
-                                //while (info.liquornum >= info.needliquornum)
-                                //{
-                                //    heroManager.awakenGeneral(this._proto, this._logger, general, false, ref info.needliquornum);
-                                //    info.liquornum -= info.needliquornum;
-                                //}
                             }
                         }
                     }
@@ -72,7 +86,7 @@ namespace com.lover.astd.common.logicexe.hero
             }
 
             bool finish = true;
-            foreach (com.lover.astd.common.model.BigHero general in heros)
+            foreach (com.lover.astd.common.model.BigHero general in this._user.BigHeroList)
             {
                 int[] old_attrib = new int[3];
                 int result = heroManager.startWash(this._proto, this._logger, this._user, general.Id, wash_attrib, true, base.getCreditAvailable(), 20, ref old_attrib);
@@ -95,6 +109,17 @@ namespace com.lover.astd.common.logicexe.hero
 
             return base.immediate();
         }
+
+        public override void init_data()
+        {
+            int creditCostToWash = 0;
+            int goldWashCount = 0;
+            int superWashCount = 0;
+            int canawaken = 0;
+            this._user.BigHeroList = this._factory.getHeroManager().getWashModes(this._proto, this._logger, ref creditCostToWash, ref goldWashCount, ref superWashCount, ref canawaken);
+            this.refreshUi();
+        }
+
         //public override long execute()
         //{
         //    Dictionary<string, string> config = base.getConfig();

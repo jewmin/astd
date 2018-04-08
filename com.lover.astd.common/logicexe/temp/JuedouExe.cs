@@ -141,11 +141,11 @@ namespace com.lover.astd.common.logicexe.temp
                 {
                     _finished = true;
                 }
-                else if (_user._attack_cityHp <= 80)
-                {
-                    logInfo("城防低于80, 不能进行决斗");
-                    _finished = true;
-                }
+                //else if (_user._attack_cityHp <= 80)
+                //{
+                //    logInfo("城防低于80, 不能进行决斗");
+                //    _finished = true;
+                //}
                 else
                 {
                     if (battleManager.handleDaoju(_proto, _logger, _user, areaInfo.areaid, 2, min_level, max_level, _otherConf.BlackList) == 0)

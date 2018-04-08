@@ -114,6 +114,13 @@ namespace com.lover.astd.common.model
             get { return string.Format("{0} {1}级", Name, BigLevel); }
         }
         /// <summary>
+        /// 觉醒
+        /// </summary>
+        public string Awaken
+        {
+            get { return canawaken_ == 1 ? "觉醒" : ""; }
+        }
+        /// <summary>
         /// 处理xml
         /// </summary>
         /// <param name="nodes"></param>

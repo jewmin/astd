@@ -35,7 +35,7 @@ namespace com.lover.astd.common.logic
             }
         }
 
-        public class Decoration
+        public class Decoration : AsObject
         {
             public int storeid;
 
@@ -60,13 +60,37 @@ namespace com.lover.astd.common.logic
             public int attribute_lea;
 
             public int attribute_str;
-            
+
             public int attribute_int;
+
+            public int add_lea;
+
+            public int add_str;
+
+            public int add_int;
+
+            public int add_max;
 
             public bool IsNormalBaowu()
             {
                 if (attribute_lea == 50 && attribute_str == 50 && attribute_int == 50) return true;
                 return false;
+            }
+
+            public bool CanUpgrade()
+            {
+                if (attribute_lea + add_lea < add_max || attribute_str + add_str < add_max || attribute_int + add_int < add_max) return true;
+                return false;
+            }
+
+            public string NameWithGeneral
+            {
+                get { return string.Format("{0}({1})", this.name, this.generalname); }
+            }
+
+            public string Attributes
+            {
+                get { return string.Format("统+{0:00}(+{1:00}) 勇+{2:00}(+{3:00}) 智+{4:00}(+{5:00}) 上限+{6:00}", this.attribute_lea, this.add_lea, this.attribute_str, this.add_str, this.attribute_int, this.add_int, this.add_max); }
             }
         }
 
@@ -906,34 +930,24 @@ namespace com.lover.astd.common.logic
             return true;
         }
 
-        public int handlePolishInfo(ProtocolMgr protocol, ILogger logger, User user, int gold_available, string lh_ids, int magic_now, int reserve_count, int reserve_item_count, int gold_merge_attrib, int melt_failcount)
+        public bool getBaowuPolishInfo(ProtocolMgr protocol, ILogger logger, User user, ref List<Decoration> list, ref List<Decoration> equipList, ref List<Decoration> upgradeList, ref int num)
         {
+            list.Clear();
+            equipList.Clear();
+            upgradeList.Clear();
+
             string url = "/root/polish!getBaowuPolishInfo.action";
             ServerResult xml = protocol.getXml(url, "获取炼化信息");
-            if (xml == null)
-            {
-                return 1;
-            }
-            else if (!xml.CmdSucceed)
-            {
-                return 10;
-            }
+            if (xml == null || !xml.CmdSucceed) return false;
+
             XmlDocument cmdResult = xml.CmdResult;
-            int num = 0;
-            int level = 0;
             XmlNode xmlNode = cmdResult.SelectSingleNode("/results/num");
-            if (xmlNode != null)
-            {
-                int.TryParse(xmlNode.InnerText, out num);
-            }
+            if (xmlNode != null) int.TryParse(xmlNode.InnerText, out num);
+
+            int level = 0;
             XmlNode xmlNode2 = cmdResult.SelectSingleNode("/results/level");
-            if (xmlNode2 != null)
-            {
-                int.TryParse(xmlNode2.InnerText, out level);
-            }
-            List<EquipMgr.Decoration> list = new List<EquipMgr.Decoration>();
-            List<Decoration> equipList = new List<Decoration>();
-            List<Decoration> upgradeList = new List<Decoration>();
+            if (xmlNode2 != null) int.TryParse(xmlNode2.InnerText, out level);
+
             XmlNodeList xmlNodeList = cmdResult.SelectNodes("/results/baowu");
             foreach (XmlNode xmlNode3 in xmlNodeList)
             {
@@ -944,6 +958,7 @@ namespace com.lover.astd.common.logic
                     if (xmlNode4.Name == "storeid")
                     {
                         decoration.storeid = int.Parse(xmlNode4.InnerText);
+                        decoration.Id = decoration.storeid;
                     }
                     else if (xmlNode4.Name == "attribute_base")
                     {
@@ -993,37 +1008,69 @@ namespace com.lover.astd.common.logic
                     {
                         decoration.attribute_int = int.Parse(xmlNode4.InnerText);
                     }
+                    else if (xmlNode4.Name == "leaadd")
+                    {
+                        decoration.add_lea = int.Parse(xmlNode4.InnerText);
+                    }
+                    else if (xmlNode4.Name == "stradd")
+                    {
+                        decoration.add_str = int.Parse(xmlNode4.InnerText);
+                    }
+                    else if (xmlNode4.Name == "intadd")
+                    {
+                        decoration.add_int = int.Parse(xmlNode4.InnerText);
+                    }
+                    else if (xmlNode4.Name == "maxadd")
+                    {
+                        decoration.add_max = int.Parse(xmlNode4.InnerText);
+                    }
                 }
                 if (decoration.polishtimes < 10)
                 {
                     list.Add(decoration);
                 }
-                else if (decoration.upgradestate == 2 && decoration.succprob > 0.1)
-                {
-                    equipList.Add(decoration);
-                }
-                else if (decoration.upgradestate == 4 && decoration.succprob > 0.01)
-                {
-                    equipList.Add(decoration);
-                }
-                else if (decoration.quality == 6)
-                {
-                    equipList.Add(decoration);
-                }
+                //else if (decoration.upgradestate == 2 && decoration.succprob > 0.1)
+                //{
+                //    equipList.Add(decoration);
+                //}
+                //else if (decoration.upgradestate == 4 && decoration.succprob > 0.01)
+                //{
+                //    equipList.Add(decoration);
+                //}
+                //else if (decoration.quality == 6)
+                //{
+                //    equipList.Add(decoration);
+                //}
                 //else if (decoration.eventsrc == 1)
                 //{
                 //    upgradeList.Add(decoration);
                 //}
+                else if (!string.IsNullOrEmpty(decoration.generalname))
+                {
+                    equipList.Add(decoration);
+                }
                 else if (decoration.IsNormalBaowu())
                 {
                     upgradeList.Add(decoration);
                 }
             }
 
+            return true;
+        }
+
+        public int handlePolishInfo(ProtocolMgr protocol, ILogger logger, User user, int gold_available, string lh_ids, string bw_ids, int magic_now, int reserve_count, int reserve_item_count, int gold_merge_attrib, int melt_failcount)
+        {
+            //获取炼化信息
+            int num = 0;
+            List<Decoration> list = new List<Decoration>();
+            List<Decoration> upgradeList = new List<Decoration>();
+            if (!getBaowuPolishInfo(protocol, logger, user, ref list, ref user.baowu_list_, ref upgradeList, ref num)) return 1;
+
             //专属玉佩
             if (!getBaowuPolishInfo(protocol, logger, user, lh_ids)) return 1;
-            List<Specialtreasure> treasure_list = user.SpecialTreasureList;
+
             //专属开光
+            List<Specialtreasure> treasure_list = user.SpecialTreasureList;
             foreach (Specialtreasure current3 in treasure_list)
             {
                 if (current3.CanConsecrate)
@@ -1035,49 +1082,75 @@ namespace com.lover.astd.common.logic
                     if (!evolveSpecialTreasure(protocol, logger, current3)) return 10;
                 }
             }
-            //专属升级
-            List<int> ids = base.generateIds(lh_ids);
-            foreach (int current in ids)
-            {
-                Specialtreasure treasure = null;
-                foreach (Specialtreasure current2 in treasure_list)
-                {
-                    if (current2.Id == current)
-                    {
-                        treasure = current2;
-                        break;
-                    }
-                }
 
-                if (treasure != null && treasure.CanUpgrade && upgradeList.Count > 0)
+            //专属升级
+            List<int> ids;
+            if (upgradeList.Count > 0 && treasure_list.Count > 0)
+            {
+                ids = base.generateIds(lh_ids);
+                foreach (int current in ids)
                 {
-                    while (treasure.CanUpgrade && upgradeList.Count > 0)
+                    Specialtreasure treasure = null;
+                    foreach (Specialtreasure current2 in treasure_list)
                     {
-                        if (!upgradeBaowu(protocol, logger, treasure, upgradeList[0])) return 10;
-                        upgradeList.RemoveAt(0);
+                        if (current2.Id == current)
+                        {
+                            treasure = current2;
+                            break;
+                        }
+                    }
+
+                    if (treasure != null && treasure.CanUpgrade && upgradeList.Count > 0)
+                    {
+                        while (treasure.CanUpgrade && upgradeList.Count > 0)
+                        {
+                            if (!upgradeBaowu(protocol, logger, treasure, upgradeList[0])) return 10;
+                            upgradeList.RemoveAt(0);
+                        }
                     }
                 }
             }
             
+            
             //宝物升级
-            if (upgradeList.Count > 0 && equipList.Count > 0)
+            if (upgradeList.Count > 0 && user.baowu_list_.Count > 0)
             {
-                while (upgradeList.Count > 0)
+                ids = base.generateIds(bw_ids);
+                foreach (int current in ids)
                 {
-                    upgradeBaowu(protocol, logger, equipList[0], upgradeList[0]);
-                    upgradeList.RemoveAt(0);
+                    Decoration dec = null;
+                    foreach (Decoration current2 in user.baowu_list_)
+                    {
+                        if (current2.Id == current)
+                        {
+                            dec = current2;
+                            break;
+                        }
+                    }
+
+                    if (dec != null && dec.CanUpgrade() && upgradeList.Count > 0)
+                    {
+                        while (dec.CanUpgrade() && upgradeList.Count > 0)
+                        {
+                            if (!upgradeBaowu(protocol, logger, dec, upgradeList[0])) return 10;
+                            upgradeList.RemoveAt(0);
+                        }
+                    }
                 }
             }
+
             //保留炼化次数
             if (num <= reserve_count)
             {
                 return 2;
             }
+
             //没有宝物
             if (list.Count == 0)
             {
                 return 2;
             }
+
             //保留宝物个数
             int idx = 0;
             while (list.Count > 0 && list.Count > reserve_item_count)
@@ -1098,6 +1171,7 @@ namespace com.lover.astd.common.logic
                     list.RemoveAt(idx);
                 }
             }
+
             //炼化宝物
             foreach (EquipMgr.Decoration dec in list)
             {
@@ -1151,6 +1225,7 @@ namespace com.lover.astd.common.logic
                     return 4;
                 }
             }
+
             return 2;
         }
 

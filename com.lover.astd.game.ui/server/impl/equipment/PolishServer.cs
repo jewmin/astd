@@ -48,6 +48,10 @@ namespace com.lover.astd.game.ui.server.impl.equipment
             {
                 base.renderDataGridToSelected<Specialtreasure>(_mainForm.dg_specialtreasure, config["lh_ids"]);
             }
+            if (config.ContainsKey("bw_ids"))
+            {
+                base.renderDataGridToSelected<com.lover.astd.common.logic.EquipMgr.Decoration>(_mainForm.dg_decoration, config["bw_ids"]);
+            }
             this.renderData();
 		}
 
@@ -60,6 +64,7 @@ namespace com.lover.astd.game.ui.server.impl.equipment
             expr_0D.setConfig(this.ServerName, "melt_failcount", _mainForm.num_polish_melt_failcount.Value.ToString());
             expr_0D.setConfig(this.ServerName, "gold_merge_attrib", _mainForm.num_polish_goon.Value.ToString());
             expr_0D.setConfig(this.ServerName, "lh_ids", base.getDataGridSelectedIds<Specialtreasure>(_mainForm.dg_specialtreasure));
+            expr_0D.setConfig(this.ServerName, "bw_ids", base.getDataGridSelectedIds<com.lover.astd.common.logic.EquipMgr.Decoration>(_mainForm.dg_decoration));
 		}
 
 		public override void loadDefaultSettings()
@@ -71,6 +76,7 @@ namespace com.lover.astd.game.ui.server.impl.equipment
 			expr_06.setConfig(this.ServerName, "melt_failcount", "2");
 			expr_06.setConfig(this.ServerName, "gold_merge_attrib", "10");
             expr_06.setConfig(this.ServerName, "lh_ids", "");
+            expr_06.setConfig(this.ServerName, "bw_ids", "");
 			this.renderSettings();
 		}
 
@@ -84,6 +90,15 @@ namespace com.lover.astd.game.ui.server.impl.equipment
                 this._mainForm.dg_specialtreasure.DataSource = bindingSource;
             }
             this._mainForm.dg_specialtreasure.Refresh();
+
+            if (this._mainForm.dg_decoration.DataSource == null)
+            {
+                BindingSource bindingSource = new BindingSource();
+                bindingSource.DataSource = base.getUser().baowu_list_;
+                this._mainForm.dg_decoration.AutoGenerateColumns = false;
+                this._mainForm.dg_decoration.DataSource = bindingSource;
+            }
+            this._mainForm.dg_decoration.Refresh();
         }
 	}
 }

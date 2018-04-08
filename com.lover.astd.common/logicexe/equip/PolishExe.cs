@@ -29,6 +29,7 @@ namespace com.lover.astd.common.logicexe.equip
                 int gold_merge_attrib = 10;
                 int melt_failcount = 0;
                 string lh_ids = "";
+                string bw_ids = "";
                 if (config.ContainsKey("reserve_count"))
                 {
                     int.TryParse(config["reserve_count"], out reserve_count);
@@ -49,8 +50,11 @@ namespace com.lover.astd.common.logicexe.equip
                 {
                     lh_ids = config["lh_ids"];
                 }
-
-                int ret = this._factory.getEquipManager().handlePolishInfo(this._proto, this._logger, this._user, base.getGoldAvailable(), lh_ids, this._user.Magic, reserve_count, reserve_item_count, gold_merge_attrib, melt_failcount);
+                if (config.ContainsKey("bw_ids"))
+                {
+                    bw_ids = config["bw_ids"];
+                }
+                int ret = this._factory.getEquipManager().handlePolishInfo(this._proto, this._logger, this._user, base.getGoldAvailable(), lh_ids, bw_ids, this._user.Magic, reserve_count, reserve_item_count, gold_merge_attrib, melt_failcount);
                 this.refreshUi();
                 if (ret == 3)
                 {
@@ -73,7 +77,11 @@ namespace com.lover.astd.common.logicexe.equip
 
         public override void init_data()
         {
+            int num = 0;
+            List<com.lover.astd.common.logic.EquipMgr.Decoration> list = new List<logic.EquipMgr.Decoration>();
+            List<com.lover.astd.common.logic.EquipMgr.Decoration> upgradeList = new List<logic.EquipMgr.Decoration>();
             this._factory.getEquipManager().getBaowuPolishInfo(this._proto, this._logger, this._user, "");
+            this._factory.getEquipManager().getBaowuPolishInfo(this._proto, this._logger, this._user, ref list, ref _user.baowu_list_, ref upgradeList, ref num);
             this.refreshUi();
         }
 	}
