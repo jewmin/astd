@@ -134,6 +134,7 @@ namespace com.lover.astd.common.logic
         {
             long ticketnumber = 0;
             int maxtaozhuanglv = 0;
+            int xuli = 0;
             DataTable dt = null;
             int result = equip_getUpgradeInfo(proto, logger, ref ticketnumber, ref maxtaozhuanglv, ref dt);
             if (result != 0) return next_halfhour();
@@ -160,7 +161,7 @@ namespace com.lover.astd.common.logic
 
                     if (Convert.ToInt32(dr["tickets"]) <= use_tickets)
                     {
-                        equip_upgradeMonkeyTao(proto, logger, name, Convert.ToInt32(dr["composite"]), 0);
+                        equip_upgradeMonkeyTao(proto, logger, name, Convert.ToInt32(dr["composite"]), 0, ref xuli);
                         upgraded = true;
                     }
                 }
@@ -182,7 +183,7 @@ namespace com.lover.astd.common.logic
             return 0;
         }
 
-        public int equip_upgradeMonkeyTao(ProtocolMgr proto, ILogger logger, string name, int composite, int num)
+        public int equip_upgradeMonkeyTao(ProtocolMgr proto, ILogger logger, string name, int composite, int num, ref int xuli)
         {
             string url = "/root/equip!upgradeMonkeyTao.action";
             string data = string.Format("composite={0}&num={1}", composite, num);
@@ -191,6 +192,7 @@ namespace com.lover.astd.common.logic
 
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("强化 {0} 成功", name);
+            xuli = GetValue(xml.CmdResult, "/results/changeinfo/xuli", 0);
             int baoji = GetValue(xml.CmdResult, "/results/baoji", 0);
             if (baoji > 0) sb.AppendFormat(", {0}倍暴击", baoji);
             //DataTable dt = GetValue(xml.CmdResult, "/results/addinfo", "addinfo");

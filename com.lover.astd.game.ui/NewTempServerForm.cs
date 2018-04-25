@@ -357,7 +357,7 @@ namespace com.lover.astd.game.ui
             int molicost = Convert.ToInt32(dr["molicost"]);
             while (time > 0 && tickets_ >= molicost)
             {
-                _frm.Factory.getCommonManager().equip_moli(protocol_, logger_, name, composite, 1);
+                if (_frm.Factory.getCommonManager().equip_moli(protocol_, logger_, name, composite, 1) != 0) break;
                 tickets_ -= molicost;
                 time--;
             }
@@ -387,6 +387,37 @@ namespace com.lover.astd.game.ui
             sb.AppendLine(string.Format("状态: {0}", canmoli == 1 ? "可磨砺" : "不可磨砺"));
             sb.AppendLine(string.Format("费用: {0}点券", dr["molicost"]));
             label_playerequipdto.Text = sb.ToString();
+        }
+
+        private void btn_qianghua_Click(object sender, EventArgs e)
+        {
+            int idx = cb_playerequipdto.SelectedIndex;
+            if (idx < 0) return;
+
+            CommonMgr common_mgr = _frm.Factory.getCommonManager();
+            int time = Convert.ToInt32(num_moli.Value);
+            DataRow dr = equipment_list_.Rows[idx];
+            string name = string.Format("{0}({1})", dr["equipname"], dr["generalname"]);
+            int composite = Convert.ToInt32(dr["composite"]);
+            int tickets = Convert.ToInt32(dr["tickets"]);
+            int maxxuli = Convert.ToInt32(dr["maxxuli"]);
+            int xuli = Convert.ToInt32(dr["xuli"]);
+            if (xuli >= maxxuli)
+            {
+                if (common_mgr.equip_useXuli(protocol_, logger_, name, composite) != 0) return;
+            }
+            while (time > 0 && tickets_ >= tickets)
+            {
+                if (common_mgr.equip_upgradeMonkeyTao(protocol_, logger_, name, composite, 40, ref xuli) != 0) break;
+                if (xuli >= maxxuli)
+                {
+                    if (common_mgr.equip_useXuli(protocol_, logger_, name, composite) != 0) break;
+                }
+                tickets_ -= tickets;
+                time--;
+            }
+            loadEquipment();
+            lbl_ticket.Text = tickets_.ToString();
         }
     }
 }

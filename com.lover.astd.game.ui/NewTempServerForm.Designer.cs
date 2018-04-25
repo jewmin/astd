@@ -92,12 +92,13 @@
             this.label14 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
-            this.cb_playerequipdto = new System.Windows.Forms.ComboBox();
-            this.btn_moli = new System.Windows.Forms.Button();
-            this.label18 = new System.Windows.Forms.Label();
-            this.label19 = new System.Windows.Forms.Label();
-            this.num_moli = new System.Windows.Forms.NumericUpDown();
             this.label_playerequipdto = new System.Windows.Forms.Label();
+            this.num_moli = new System.Windows.Forms.NumericUpDown();
+            this.label19 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.btn_moli = new System.Windows.Forms.Button();
+            this.cb_playerequipdto = new System.Windows.Forms.ComboBox();
+            this.btn_qianghua = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.num_ticketWeapons)).BeginInit();
             this.groupBox4.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -846,6 +847,7 @@
             // 
             // groupBox9
             // 
+            this.groupBox9.Controls.Add(this.btn_qianghua);
             this.groupBox9.Controls.Add(this.label_playerequipdto);
             this.groupBox9.Controls.Add(this.num_moli);
             this.groupBox9.Controls.Add(this.label19);
@@ -854,48 +856,19 @@
             this.groupBox9.Controls.Add(this.cb_playerequipdto);
             this.groupBox9.Location = new System.Drawing.Point(2, 341);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(224, 192);
+            this.groupBox9.Size = new System.Drawing.Size(335, 192);
             this.groupBox9.TabIndex = 25;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "猴子套装";
             // 
-            // cb_playerequipdto
+            // label_playerequipdto
             // 
-            this.cb_playerequipdto.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cb_playerequipdto.FormattingEnabled = true;
-            this.cb_playerequipdto.Location = new System.Drawing.Point(55, 20);
-            this.cb_playerequipdto.Name = "cb_playerequipdto";
-            this.cb_playerequipdto.Size = new System.Drawing.Size(135, 20);
-            this.cb_playerequipdto.TabIndex = 3;
-            this.cb_playerequipdto.SelectedIndexChanged += new System.EventHandler(this.cb_playerequipdto_SelectedIndexChanged);
-            // 
-            // btn_moli
-            // 
-            this.btn_moli.Location = new System.Drawing.Point(138, 157);
-            this.btn_moli.Name = "btn_moli";
-            this.btn_moli.Size = new System.Drawing.Size(75, 23);
-            this.btn_moli.TabIndex = 4;
-            this.btn_moli.Text = "磨砺";
-            this.btn_moli.UseVisualStyleBackColor = true;
-            this.btn_moli.Click += new System.EventHandler(this.btn_moli_Click);
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(8, 24);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(41, 12);
-            this.label18.TabIndex = 9;
-            this.label18.Text = "套装：";
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(8, 162);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(41, 12);
-            this.label19.TabIndex = 10;
-            this.label19.Text = "次数：";
+            this.label_playerequipdto.AutoSize = true;
+            this.label_playerequipdto.Location = new System.Drawing.Point(8, 50);
+            this.label_playerequipdto.Name = "label_playerequipdto";
+            this.label_playerequipdto.Size = new System.Drawing.Size(65, 12);
+            this.label_playerequipdto.TabIndex = 11;
+            this.label_playerequipdto.Text = "套装描述：";
             // 
             // num_moli
             // 
@@ -919,14 +892,53 @@
             0,
             0});
             // 
-            // label_playerequipdto
+            // label19
             // 
-            this.label_playerequipdto.AutoSize = true;
-            this.label_playerequipdto.Location = new System.Drawing.Point(8, 50);
-            this.label_playerequipdto.Name = "label_playerequipdto";
-            this.label_playerequipdto.Size = new System.Drawing.Size(65, 12);
-            this.label_playerequipdto.TabIndex = 11;
-            this.label_playerequipdto.Text = "套装描述：";
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(8, 162);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(41, 12);
+            this.label19.TabIndex = 10;
+            this.label19.Text = "次数：";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(8, 24);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(41, 12);
+            this.label18.TabIndex = 9;
+            this.label18.Text = "套装：";
+            // 
+            // btn_moli
+            // 
+            this.btn_moli.Location = new System.Drawing.Point(138, 157);
+            this.btn_moli.Name = "btn_moli";
+            this.btn_moli.Size = new System.Drawing.Size(75, 23);
+            this.btn_moli.TabIndex = 4;
+            this.btn_moli.Text = "磨砺";
+            this.btn_moli.UseVisualStyleBackColor = true;
+            this.btn_moli.Click += new System.EventHandler(this.btn_moli_Click);
+            // 
+            // cb_playerequipdto
+            // 
+            this.cb_playerequipdto.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cb_playerequipdto.FormattingEnabled = true;
+            this.cb_playerequipdto.Location = new System.Drawing.Point(55, 20);
+            this.cb_playerequipdto.Name = "cb_playerequipdto";
+            this.cb_playerequipdto.Size = new System.Drawing.Size(135, 20);
+            this.cb_playerequipdto.TabIndex = 3;
+            this.cb_playerequipdto.SelectedIndexChanged += new System.EventHandler(this.cb_playerequipdto_SelectedIndexChanged);
+            // 
+            // btn_qianghua
+            // 
+            this.btn_qianghua.Location = new System.Drawing.Point(219, 157);
+            this.btn_qianghua.Name = "btn_qianghua";
+            this.btn_qianghua.Size = new System.Drawing.Size(75, 23);
+            this.btn_qianghua.TabIndex = 12;
+            this.btn_qianghua.Text = "连强40次";
+            this.btn_qianghua.UseVisualStyleBackColor = true;
+            this.btn_qianghua.Click += new System.EventHandler(this.btn_qianghua_Click);
             // 
             // NewTempServerForm
             // 
@@ -1049,5 +1061,6 @@
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label label_playerequipdto;
+        private System.Windows.Forms.Button btn_qianghua;
     }
 }
