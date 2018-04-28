@@ -186,6 +186,7 @@
     <Compile Include="model\GoodsType.cs" />
     <Compile Include="model\Hero.cs" />
     <Compile Include="model\LogLevel.cs" />
+    <Compile Include="model\misc\BuPi.cs" />
     <Compile Include="model\misc\KfzbItemConfig.cs" />
     <Compile Include="model\misc\Reward.cs" />
     <Compile Include="model\misc\SlaveInfo.cs" />

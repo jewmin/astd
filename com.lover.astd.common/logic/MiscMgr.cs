@@ -5917,6 +5917,138 @@ namespace com.lover.astd.common.logic
             return true;
         }
 
+        //0:success, 1:null, 2:finish, 3:movable, 4:price, 10:error
+        public int handleRoyaltyWeaveInfo2(ProtocolMgr protocol, ILogger logger, User user, int weave_count, string convert_condition, ref int like, bool do_tired_weave = false)
+        {
+            string url = "/root/make!royaltyWeaveInfo2.action";
+            ServerResult xml = protocol.getXml(url, "获取御用精纺信息");
+            if (xml == null)
+            {
+                return 1;
+            }
+            else if (!xml.CmdSucceed)
+            {
+                return 10;
+            }
+
+            int activestatus = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/activestatus"));
+            int needactive = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/needactive"));
+            int canwork = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/canwork"));
+            int remainhigh = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/remainhigh"));
+            int limit = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/limit"));
+            int remainlimit = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/remainlimit"));
+            int cost1 = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/cost1"));
+            int cost2 = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/cost2"));
+            int high = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/high"));
+            int todaytimes = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/todaytimes"));
+
+            int oncenum = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/oncenum"));
+            int maxnum = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/maxnum"));
+            int weavenum = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/weavenum"));
+            int needweavenum = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/needweavenum"));
+            int freetimes = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/freetimes"));
+            int cost = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/cost"));
+
+            //bool hasReward = false;
+            //RewardInfo rewards = new RewardInfo();
+            //rewards.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
+            //string[] conditions = convert_condition.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            //foreach (string condition in conditions)
+            //{
+            //    string[] conds = condition.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            //    if (conds.Length == 4)
+            //    {
+            //        int convert_type = int.Parse(conds[0]);
+            //        int convert_quality = int.Parse(conds[1]);
+            //        int convert_lv = int.Parse(conds[2]);
+            //        int convert_limit = int.Parse(conds[3]);
+            //        List<Reward> convert_list = rewards.getRewardList(convert_type);
+            //        foreach (Reward item in convert_list)
+            //        {
+            //            if (item.Quality == convert_quality && item.Lv == convert_lv && weavenum >= needweavenum && needweavenum <= convert_limit)
+            //            {
+            //                convertRoyaltyWeaveNew2(protocol, logger);
+            //                break;
+            //            }
+            //        }
+            //    }
+            //}
+
+            //if (!hasReward && freetimes > 0)
+            //{
+            //    if (refreshRoyaltyWeaveNew(protocol, logger)) return 0;
+            //    return 10;
+            //}
+
+            int use = limit - remainlimit;
+            if (remainlimit <= 0)
+            {
+                return 2;
+            }
+            else if (activestatus == 2 && !do_tired_weave)
+            {
+                return 2;
+            }
+            else if (user.CurMovable < needactive)
+            {
+                return 3;
+            }
+            else if (use >= weave_count)
+            {
+                return 2;
+            }
+
+            if (royaltyWeave2(protocol, logger, 1))
+            {
+                user._weave_task_num--;
+                return 0;
+            }
+
+            return 10;
+        }
+
+        public bool royaltyWeave2(ProtocolMgr protocol, ILogger logger, int times)
+        {
+            string url = "/root/make!royaltyWeave2.action";
+            string data = string.Format("times={0}", times);
+            ServerResult xml = protocol.postXml(url, data, "纺织");
+            if (xml == null || !xml.CmdSucceed)
+            {
+                return false;
+            }
+
+            int weavenum = 0;
+            int oncenum = XmlHelper.GetValue<int>(xml.CmdResult.SelectSingleNode("/results/oncenum"));
+            List<BuPi> list = XmlHelper.GetClassList<BuPi>(xml.CmdResult.SelectNodes("/results/bupi"));
+            foreach (BuPi item in list)
+            {
+                weavenum += item.modulus * oncenum;
+            }
+            logInfo(logger, string.Format("纺织, 皇家布匹+{0}", weavenum));
+
+            return true;
+        }
+
+        public bool convertRoyaltyWeaveNew2(ProtocolMgr protocol, ILogger logger)
+        {
+            string url = "/root/make!convertRoyaltyWeaveNew2.action";
+            ServerResult xml = protocol.getXml(url, "换购");
+            if (xml == null || !xml.CmdSucceed) return false;
+
+            RewardInfo reward = new RewardInfo();
+            reward.handleXmlNode(xml.CmdResult.SelectSingleNode("/results/rewardinfo"));
+            logInfo(logger, string.Format("换购, 获得{0}", reward.ToString()));
+            return true;
+        }
+
+        public bool refreshRoyaltyWeaveNew(ProtocolMgr protocol, ILogger logger)
+        {
+            string url = "/root/make!refreshRoyaltyWeaveNew.action";
+            ServerResult xml = protocol.getXml(url, "刷新商人");
+            if (xml == null || !xml.CmdSucceed) return false;
+            return true;
+        }
+
         public int handleWeaveInfo(ProtocolMgr protocol, ILogger logger, User user, int weave_price, int weave_count, string convert_condition, out int weave_state, ref int like, bool do_tired_weave = false, bool only_free = true, bool only_task = true)
         {
             weave_state = 0;
@@ -5939,7 +6071,14 @@ namespace com.lover.astd.common.logic
             }
             if (isRoyaltyWeave)
             {
-                return handleRoyaltyWeaveInfo(protocol, logger, user, weave_count, convert_condition, ref like, do_tired_weave);
+                if (user.Level >= 400)
+                {
+                    return handleRoyaltyWeaveInfo2(protocol, logger, user, weave_count, convert_condition, ref like, do_tired_weave);
+                }
+                else
+                {
+                    return handleRoyaltyWeaveInfo(protocol, logger, user, weave_count, convert_condition, ref like, do_tired_weave);
+                }
             }
 
             string url = "/root/make.action";
