@@ -40,7 +40,7 @@ namespace com.lover.astd.common.logicexe
 			{
 				this._factory.getMiscManager().autoBuyCredit(this._proto, this._logger, this._user);
 			}
-            this._factory.getMiscManager().getGeneralTowerInfo(this._proto, this._logger);
+            //this._factory.getMiscManager().getGeneralTowerInfo(this._proto, this._logger);
             this._factory.getActivityManager().getPayHongbaoEventInfo(this._proto, this._logger);
             this._factory.getActivityManager().getDoubleElevenEventInfo(this._proto, this._logger, this._user);
             if (this._user.Silver < 10000000)

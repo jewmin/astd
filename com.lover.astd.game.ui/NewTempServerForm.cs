@@ -354,10 +354,10 @@ namespace com.lover.astd.game.ui
             DataRow dr = equipment_list_.Rows[idx];
             string name = string.Format("{0}({1})", dr["equipname"], dr["generalname"]);
             int composite = Convert.ToInt32(dr["composite"]);
-            int molicost = Convert.ToInt32(dr["molicost"]);
+            int molicost = Convert.ToInt32(dr["molicost"]) * 40;
             while (time > 0 && tickets_ >= molicost)
             {
-                if (_frm.Factory.getCommonManager().equip_moli(protocol_, logger_, name, composite, 1) != 0) break;
+                if (_frm.Factory.getCommonManager().equip_moli(protocol_, logger_, name, composite, 40) != 0) break;
                 tickets_ -= molicost;
                 time--;
             }
