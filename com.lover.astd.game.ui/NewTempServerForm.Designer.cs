@@ -92,13 +92,20 @@
             this.label14 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.btn_qianghua = new System.Windows.Forms.Button();
             this.label_playerequipdto = new System.Windows.Forms.Label();
             this.num_moli = new System.Windows.Forms.NumericUpDown();
             this.label19 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
             this.btn_moli = new System.Windows.Forms.Button();
             this.cb_playerequipdto = new System.Windows.Forms.ComboBox();
-            this.btn_qianghua = new System.Windows.Forms.Button();
+            this.groupBox10 = new System.Windows.Forms.GroupBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.cb_warDrum = new System.Windows.Forms.ComboBox();
+            this.num_levelup = new System.Windows.Forms.NumericUpDown();
+            this.label21 = new System.Windows.Forms.Label();
+            this.btn_activeSpecialSkill = new System.Windows.Forms.Button();
+            this.label_warDrum = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.num_ticketWeapons)).BeginInit();
             this.groupBox4.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -117,6 +124,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.num_ticket_num)).BeginInit();
             this.groupBox9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_moli)).BeginInit();
+            this.groupBox10.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_levelup)).BeginInit();
             this.SuspendLayout();
             // 
             // btn_ticketWeapon
@@ -558,7 +567,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("宋体", 12F);
+            this.label4.Font = new System.Drawing.Font("SimSun", 12F);
             this.label4.ForeColor = System.Drawing.Color.IndianRed;
             this.label4.Location = new System.Drawing.Point(11, 8);
             this.label4.Name = "label4";
@@ -861,6 +870,16 @@
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "猴子套装";
             // 
+            // btn_qianghua
+            // 
+            this.btn_qianghua.Location = new System.Drawing.Point(219, 157);
+            this.btn_qianghua.Name = "btn_qianghua";
+            this.btn_qianghua.Size = new System.Drawing.Size(75, 23);
+            this.btn_qianghua.TabIndex = 12;
+            this.btn_qianghua.Text = "连强40次";
+            this.btn_qianghua.UseVisualStyleBackColor = true;
+            this.btn_qianghua.Click += new System.EventHandler(this.btn_qianghua_Click);
+            // 
             // label_playerequipdto
             // 
             this.label_playerequipdto.AutoSize = true;
@@ -930,21 +949,96 @@
             this.cb_playerequipdto.TabIndex = 3;
             this.cb_playerequipdto.SelectedIndexChanged += new System.EventHandler(this.cb_playerequipdto_SelectedIndexChanged);
             // 
-            // btn_qianghua
+            // groupBox10
             // 
-            this.btn_qianghua.Location = new System.Drawing.Point(219, 157);
-            this.btn_qianghua.Name = "btn_qianghua";
-            this.btn_qianghua.Size = new System.Drawing.Size(75, 23);
-            this.btn_qianghua.TabIndex = 12;
-            this.btn_qianghua.Text = "连强40次";
-            this.btn_qianghua.UseVisualStyleBackColor = true;
-            this.btn_qianghua.Click += new System.EventHandler(this.btn_qianghua_Click);
+            this.groupBox10.Controls.Add(this.label_warDrum);
+            this.groupBox10.Controls.Add(this.num_levelup);
+            this.groupBox10.Controls.Add(this.label21);
+            this.groupBox10.Controls.Add(this.label20);
+            this.groupBox10.Controls.Add(this.btn_activeSpecialSkill);
+            this.groupBox10.Controls.Add(this.cb_warDrum);
+            this.groupBox10.Location = new System.Drawing.Point(346, 341);
+            this.groupBox10.Name = "groupBox10";
+            this.groupBox10.Size = new System.Drawing.Size(262, 192);
+            this.groupBox10.TabIndex = 26;
+            this.groupBox10.TabStop = false;
+            this.groupBox10.Text = "战鼓";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(10, 24);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(41, 12);
+            this.label20.TabIndex = 11;
+            this.label20.Text = "战鼓：";
+            // 
+            // cb_warDrum
+            // 
+            this.cb_warDrum.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cb_warDrum.FormattingEnabled = true;
+            this.cb_warDrum.Location = new System.Drawing.Point(57, 20);
+            this.cb_warDrum.Name = "cb_warDrum";
+            this.cb_warDrum.Size = new System.Drawing.Size(135, 20);
+            this.cb_warDrum.TabIndex = 10;
+            this.cb_warDrum.SelectedIndexChanged += new System.EventHandler(this.cb_warDrum_SelectedIndexChanged);
+            // 
+            // num_levelup
+            // 
+            this.num_levelup.Location = new System.Drawing.Point(57, 159);
+            this.num_levelup.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.num_levelup.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.num_levelup.Name = "num_levelup";
+            this.num_levelup.Size = new System.Drawing.Size(77, 21);
+            this.num_levelup.TabIndex = 14;
+            this.num_levelup.Value = new decimal(new int[] {
+            500,
+            0,
+            0,
+            0});
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(10, 163);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(41, 12);
+            this.label21.TabIndex = 15;
+            this.label21.Text = "次数：";
+            // 
+            // btn_activeSpecialSkill
+            // 
+            this.btn_activeSpecialSkill.Location = new System.Drawing.Point(140, 158);
+            this.btn_activeSpecialSkill.Name = "btn_activeSpecialSkill";
+            this.btn_activeSpecialSkill.Size = new System.Drawing.Size(75, 23);
+            this.btn_activeSpecialSkill.TabIndex = 13;
+            this.btn_activeSpecialSkill.Text = "加成";
+            this.btn_activeSpecialSkill.UseVisualStyleBackColor = true;
+            this.btn_activeSpecialSkill.Click += new System.EventHandler(this.btn_activeSpecialSkill_Click);
+            // 
+            // label_warDrum
+            // 
+            this.label_warDrum.AutoSize = true;
+            this.label_warDrum.Location = new System.Drawing.Point(10, 50);
+            this.label_warDrum.Name = "label_warDrum";
+            this.label_warDrum.Size = new System.Drawing.Size(65, 12);
+            this.label_warDrum.TabIndex = 13;
+            this.label_warDrum.Text = "战鼓描述：";
             // 
             // NewTempServerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(878, 545);
+            this.Controls.Add(this.groupBox10);
             this.Controls.Add(this.groupBox9);
             this.Controls.Add(this.groupBox8);
             this.Controls.Add(this.groupBox7);
@@ -985,6 +1079,9 @@
             this.groupBox9.ResumeLayout(false);
             this.groupBox9.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.num_moli)).EndInit();
+            this.groupBox10.ResumeLayout(false);
+            this.groupBox10.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.num_levelup)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1062,5 +1159,12 @@
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label label_playerequipdto;
         private System.Windows.Forms.Button btn_qianghua;
+        private System.Windows.Forms.GroupBox groupBox10;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.ComboBox cb_warDrum;
+        private System.Windows.Forms.NumericUpDown num_levelup;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Button btn_activeSpecialSkill;
+        private System.Windows.Forms.Label label_warDrum;
     }
 }

@@ -66,6 +66,8 @@ namespace com.lover.astd.game.ui
 
         private DataTable equipment_list_;
 
+        private DataTable war_drum_list_;
+
         public NewTempServerForm(NewMainForm frm)
         {
             InitializeComponent();
@@ -339,10 +341,19 @@ namespace com.lover.astd.game.ui
             cb_playerequipdto.ValueMember = "composite";
         }
 
+        private void loadWarDrum()
+        {
+            _frm.Factory.getEquipManager().GetWarDrumInfo(protocol_, logger_, ref war_drum_list_);
+            cb_warDrum.DataSource = war_drum_list_;
+            cb_warDrum.DisplayMember = "name";
+            cb_warDrum.ValueMember = "type";
+        }
+
         private void NewTempServerForm_Load(object sender, EventArgs e)
         {
             loadTicketInfo();
             loadEquipment();
+            loadWarDrum();
         }
 
         private void btn_moli_Click(object sender, EventArgs e)
@@ -418,6 +429,43 @@ namespace com.lover.astd.game.ui
             }
             loadEquipment();
             lbl_ticket.Text = tickets_.ToString();
+        }
+
+        private void btn_activeSpecialSkill_Click(object sender, EventArgs e)
+        {
+            int idx = cb_warDrum.SelectedIndex;
+            if (idx < 0) return;
+
+            int time = Convert.ToInt32(num_levelup.Value);
+            DataRow dr = war_drum_list_.Rows[idx];
+            int type = Convert.ToInt32(dr["type"]);
+            int cost = Convert.ToInt32(dr["needticketnum"]);
+            int total_cost = cost;
+            string name = string.Format("{0}", dr["name"]);
+            while (time > 0)
+            {
+                if (!_frm.Factory.getEquipManager().ActiveSpecialSkill(protocol_, logger_, type, cost)) break;
+                time--;
+                total_cost += cost;
+            }
+            if (total_cost >= 100000000) logger_.logInfo(string.Format("本次战鼓技能提升，花费点券+{0}亿", total_cost / 100000000));
+            else logger_.logInfo(string.Format("本次战鼓技能提升，花费点券+{0}万", total_cost / 10000));
+            loadWarDrum();
+        }
+
+        private void cb_warDrum_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int idx = cb_warDrum.SelectedIndex;
+            if (idx < 0) return;
+
+            DataRow dr = war_drum_list_.Rows[idx];
+            //type speciallevel skilleffect maxspeciallevel drumlevel name maxskillnum sumnum enablednum
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(string.Format("战鼓: {0}", dr["name"]));
+            sb.AppendLine(string.Format("效果: {0}", dr["skilleffect"]));
+            sb.AppendLine(string.Format("技能: {0}/{1}", dr["speciallevel"], dr["maxspeciallevel"]));
+            sb.AppendLine(string.Format("状态: {0}/{1}", dr["sumnum"], dr["maxskillnum"]));
+            label_warDrum.Text = sb.ToString();
         }
     }
 }

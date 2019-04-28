@@ -7,6 +7,8 @@ using System.Drawing;
 using System.Xml;
 using System.Text;
 using com.lover.astd.common.model.misc;
+using System.Data;
+using System.IO;
 
 namespace com.lover.astd.common.logic
 {
@@ -3884,6 +3886,84 @@ namespace com.lover.astd.common.logic
         //    ServerResult
         //    return 0;
         //}
+        #endregion
+
+        #region 战鼓
+        private DataTable GetValue(XmlDocument doc, string xpath, string table_name)
+        {
+            DataTable dt = new DataTable(table_name);
+            XmlNode node = doc.SelectSingleNode(string.Format("{0}[1]", xpath));
+            if (node != null)
+            {
+                string column;
+                for (int i = 0; i < node.ChildNodes.Count; i++)
+                {
+                    column = node.ChildNodes.Item(i).Name;
+                    dt.Columns.Add(column);
+                }
+            }
+
+            DataSet ds = new DataSet();
+            ds.Tables.Add(dt);
+            string xml_string = doc.InnerXml;
+            XmlTextReader xr = new XmlTextReader(new StringReader(xml_string));
+            ds.ReadXml(xr);
+
+            return dt;
+        }
+
+        private int GetValue(XmlDocument doc, string xpath, int def_value)
+        {
+            XmlNode node = doc.SelectSingleNode(xpath);
+            if (node != null)
+            {
+                int value;
+                if (int.TryParse(node.InnerText, out value))
+                    return value;
+            }
+            return def_value;
+        }
+
+        /// <summary>
+        /// 战鼓
+        /// </summary>
+        /// <param name="protocol"></param>
+        /// <param name="logger"></param>
+        /// <param name="dt"></param>
+        public void GetWarDrumInfo(ProtocolMgr protocol, ILogger logger, ref DataTable dt)
+        {
+            string url = "/root/warDrum!getWarDrumInfo.action";
+            ServerResult xml = protocol.getXml(url, "战鼓");
+            if (xml != null && xml.CmdSucceed)
+            {
+                dt = GetValue(xml.CmdResult, "/results/getwardruminfo/wardrum", "wardrum");
+            }
+        }
+        /// <summary>
+        /// 战鼓加成
+        /// </summary>
+        /// <param name="type">1:机械将攻防,2:战法将攻防,3:策略将攻防,4:大将攻防</param>
+        public bool ActiveSpecialSkill(ProtocolMgr protocol, ILogger logger, int type, int cost)
+        {
+            string url = "/root/warDrum!activeSpecialSkill.action";
+            string data = string.Format("type={0}", type);
+            ServerResult xml = protocol.postXml(url, data, "战鼓加成");
+            if (xml != null && xml.CmdSucceed)
+            {
+                int issuccess = GetValue(xml.CmdResult, "/results/issuccess", 0);
+                if (issuccess == 1)
+                {
+                    logInfo(logger, string.Format("花费点券+{0}万，战鼓提升技能成功", cost / 10000));
+                    return false;
+                }
+                else
+                {
+                    logInfo(logger, string.Format("花费点券+{0}万，战鼓提升技能失败", cost / 10000));
+                    return true;
+                }
+            }
+            return false;
+        }
         #endregion
     }
 }
