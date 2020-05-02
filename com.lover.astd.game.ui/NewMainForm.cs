@@ -1057,6 +1057,7 @@ namespace com.lover.astd.game.ui
 
         public void startServer()
         {
+            return;
             stopServer(false);
             _server_running = true;
             _exeMgr.clear_runtime();
@@ -1067,6 +1068,7 @@ namespace com.lover.astd.game.ui
 
         public void stopServer(bool is_user_operate = false)
         {
+            return;
             _server_running = false;
             if (_exe_thread != null)
             {
