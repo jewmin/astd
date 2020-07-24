@@ -59,7 +59,7 @@ namespace com.lover.astd.common.logic
             if (user.Silver < needcopper)
             {
                 int times = needcopper / 10000000 + 1;
-                this._factory.getMiscManager().ticketExchangeMoney(protocol, logger, times);
+                //this._factory.getMiscManager().ticketExchangeMoney(protocol, logger, times);
             }
 			if (user.Forces < forces && !this.draught(protocol, logger, forces - user.Forces))
 			{

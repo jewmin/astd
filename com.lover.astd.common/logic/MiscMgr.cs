@@ -4393,7 +4393,7 @@ namespace com.lover.astd.common.logic
         {
             if (user.Silver < 10000000)
             {
-                ticketExchangeMoney(protocol, logger, 3);
+                //ticketExchangeMoney(protocol, logger, 3);
             }
 
             map_count = 0;
@@ -4697,7 +4697,7 @@ namespace com.lover.astd.common.logic
         {
             if (user.Silver < 10000000)
             {
-                ticketExchangeMoney(protocol, logger, 3);
+                //ticketExchangeMoney(protocol, logger, 3);
             }
 
             state = 0;
@@ -7198,7 +7198,7 @@ namespace com.lover.astd.common.logic
         {
             if (user.Silver < 10000000)
             {
-                ticketExchangeMoney(protocol, logger, 5);
+                //ticketExchangeMoney(protocol, logger, 5);
             }
 
             int result;
@@ -9058,7 +9058,7 @@ namespace com.lover.astd.common.logic
         {
             if (user.Silver < 10000000)
             {
-                ticketExchangeMoney(protocol, logger, 5);
+                //ticketExchangeMoney(protocol, logger, 5);
             }
 
             string url = "/root/refine!doRefineBintieFactory.action";
