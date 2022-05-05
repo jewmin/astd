@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -771,10 +771,10 @@ namespace com.lover.astd.game.ui
                         _logger = new LogHelper(EnumString.getString(_account.Server_type), _account.ServerId, _gameUser.Username, "");
                     }
                     buildServers();
-                    lua_mgr_ = new LuaMgr(protocolMgr, this, _factory, _account.GameConf, _account.OtherConf, _gameUser);
+                    //lua_mgr_ = new LuaMgr(protocolMgr, this, _factory, _account.GameConf, _account.OtherConf, _gameUser);
                     _exeMgr.setExeVariables(protocolMgr, this, this, _gameUser, _account.GameConf, _account.OtherConf, _factory);
                     _exeMgr.init_data();
-                    lua_mgr_.CreateVM(_exeMgr);
+                    //lua_mgr_.CreateVM(_exeMgr);
                     DbHelper.CreateTable(EnumString.getString(_account.Server_type), _account.ServerId, _gameUser.Username);
                     DbHelper.InsertUser((int)_account.Server_type, _account.ServerId, _gameUser.Id, _gameUser.Username);
                     _gameUser._db_userid = DbHelper.GetUserId((int)_account.Server_type, _account.ServerId, _gameUser.Id);
@@ -2021,7 +2021,7 @@ namespace com.lover.astd.game.ui
         private void menu_lua_Click(object sender, EventArgs e)
         {
             menu_stopServer_Click(null, null);
-            lua_mgr_.CreateVM(_exeMgr);
+            //lua_mgr_.CreateVM(_exeMgr);
         }
 
         private void menu_train_hero_Click(object sender, EventArgs e)

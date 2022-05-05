@@ -1257,7 +1257,15 @@ namespace com.lover.astd.common.model
                     }
                     else if (xmlNode.Name == "jyungong")
                     {
-                        this._credit = int.Parse(xmlNode.InnerText);
+                        long tmp = long.Parse(xmlNode.InnerText);
+                        if (tmp > int.MaxValue)
+                        {
+                            this._credit = int.MaxValue;
+                        }
+                        else
+                        {
+                            this._credit = (int)tmp;
+                        }
                     }
                     else if (xmlNode.Name == "prestige")
                     {
@@ -1349,8 +1357,9 @@ namespace com.lover.astd.common.model
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine(string.Format("ERROR::{0}::{1}", ex.Message, ex.StackTrace));
             }
             if (num >= 0 && num2 >= 0)
             {
