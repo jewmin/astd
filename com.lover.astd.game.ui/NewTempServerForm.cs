@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -57,6 +57,8 @@ namespace com.lover.astd.game.ui
         private List<HeroWashInfo> _heroes_to_wash = new List<HeroWashInfo>();
 
         private long tickets_ = 0;
+
+        private long molistone_ = 0;
 
         private List<TicketItem> ticket_item_list_ = new List<TicketItem>();
 
@@ -335,7 +337,7 @@ namespace com.lover.astd.game.ui
         {
             long ticketnumber = 0;
             int maxtaozhuanglv = 0;
-            _frm.Factory.getCommonManager().equip_getUpgradeInfo(protocol_, logger_, ref ticketnumber, ref maxtaozhuanglv, ref equipment_list_);
+            _frm.Factory.getCommonManager().equip_getUpgradeInfo(protocol_, logger_, ref ticketnumber, ref molistone_, ref maxtaozhuanglv, ref equipment_list_);
             cb_playerequipdto.DataSource = equipment_list_;
             cb_playerequipdto.DisplayMember = "generalname";
             cb_playerequipdto.ValueMember = "composite";
@@ -366,6 +368,13 @@ namespace com.lover.astd.game.ui
             string name = string.Format("{0}({1})", dr["equipname"], dr["generalname"]);
             int composite = Convert.ToInt32(dr["composite"]);
             int molicost = Convert.ToInt32(dr["molicost"]) * 40;
+            int molistone_cost = 40;
+            while (time > 0 && molistone_ >= molistone_cost)
+            {
+                if (_frm.Factory.getCommonManager().equip_moli(protocol_, logger_, name, composite, 40) != 0) break;
+                molistone_ -= molistone_cost;
+                time--;
+            }
             while (time > 0 && tickets_ >= molicost)
             {
                 if (_frm.Factory.getCommonManager().equip_moli(protocol_, logger_, name, composite, 40) != 0) break;
