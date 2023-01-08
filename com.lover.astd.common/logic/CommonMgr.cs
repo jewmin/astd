@@ -133,10 +133,11 @@ namespace com.lover.astd.common.logic
         public long equip_handleMonkeyTao(ProtocolMgr proto, ILogger logger, long leave_tickets, int use_tickets)
         {
             long ticketnumber = 0;
+            long molistone = 0;
             int maxtaozhuanglv = 0;
             int xuli = 0;
             DataTable dt = null;
-            int result = equip_getUpgradeInfo(proto, logger, ref ticketnumber, ref maxtaozhuanglv, ref dt);
+            int result = equip_getUpgradeInfo(proto, logger, ref ticketnumber, ref molistone, ref maxtaozhuanglv, ref dt);
             if (result != 0) return next_halfhour();
 
             if (ticketnumber < leave_tickets)
@@ -171,13 +172,14 @@ namespace com.lover.astd.common.logic
             return next_hour();
         }
 
-        public int equip_getUpgradeInfo(ProtocolMgr proto, ILogger logger, ref long ticketnumber, ref int maxtaozhuanglv, ref DataTable dt)
+        public int equip_getUpgradeInfo(ProtocolMgr proto, ILogger logger, ref long ticketnumber, ref long molistone, ref int maxtaozhuanglv, ref DataTable dt)
         {
             string url = "/root/equip!getUpgradeInfo.action";
             ServerResult xml = proto.getXml(url, "强化");
             if (xml == null || !xml.CmdSucceed) return 10;
 
             ticketnumber = GetLongValue(xml.CmdResult, "/results/ticketnumber", 0);
+            molistone = GetLongValue(xml.CmdResult, "/results/molistone", 0);
             maxtaozhuanglv = GetValue(xml.CmdResult, "/results/taozhuang/maxtaozhuanglv", 0);
             dt = GetValue(xml.CmdResult, "/results/playerequipdto", "playerequipdto");
             return 0;
