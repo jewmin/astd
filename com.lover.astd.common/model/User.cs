@@ -1342,7 +1342,15 @@ namespace com.lover.astd.common.model
                     else if (xmlNode.Name == "bowlder")
                     {
                         string innerText = xmlNode.InnerText;
-                        this._stone = int.Parse(innerText.Substring(0, innerText.Length - 3));
+                        long tmp = long.Parse(innerText.Substring(0, innerText.Length - 3));
+                        if (tmp > int.MaxValue)
+                        {
+                            this._stone = int.MaxValue;
+                        }
+                        else
+                        {
+                            this._stone = (int)tmp;
+                        }
                     }
                     else if (xmlNode.Name == "arreststate")
                     {
